@@ -1,0 +1,48 @@
+# 릴리스가 끝나면 그 버전의 코드를 공개 소스 저장소(sigcrew/token-slayer)에 커밋 하나로 올린다.
+# 비공개 저장소의 커밋 기록은 옮기지 않고, 버전마다 "Token Slayer vX.Y.Z source" 커밋만 쌓인다.
+# 공개 저장소는 Actions를 꺼 두었다 (같이 올라가는 배포 설정이 거기서 돌지 않게).
+name: Source
+
+on:
+  workflow_run:
+    workflows: [Release]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: source-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    env:
+      PUBLIC_REPO: sigcrew/token-slayer
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - name: 공개 저장소에 올리기
+        env:
+          GH_TOKEN: ${{ secrets.SOURCE_TOKEN || secrets.RELEASES_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then echo "::warning title=소스 공개 건너뜀::SOURCE_TOKEN(또는 RELEASES_TOKEN) 시크릿이 없어요"; exit 0; fi
+          version="$(node -p "require('./package.json').version")"
+          git clone -q --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/${PUBLIC_REPO}.git" "$RUNNER_TEMP/pub"
+          # 공개 저장소 내용을 이 커밋의 추적 파일들로 통째로 바꾼다 (지운 파일도 반영)
+          find "$RUNNER_TEMP/pub" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          git archive HEAD | tar -x -C "$RUNNER_TEMP/pub"
+          cd "$RUNNER_TEMP/pub"
+          git add -A
+          if git diff --cached --quiet; then echo "바뀐 게 없어요 (v$version)"; exit 0; fi
+          git -c user.name="Yong" -c user.email="yong@sigcrew.com" commit -q -m "Token Slayer v$version source" \
+            -m "Released builds: https://github.com/sigcrew/token-slayer-releases/releases/tag/v$version"
+          # gh api의 permissions는 계정 권한이라, 세분화 토큰에 이 저장소가 빠져 있어도 true로 나온다 → 실제 푸시 결과로 판단
+          if ! git push -q origin HEAD:main 2> push.log; then
+            echo "::error title=소스 공개 실패::토큰으로 $PUBLIC_REPO 에 푸시하지 못했어요 ($(tr '\n' ' ' < push.log | sed 's/x-access-token:[^@]*@//')). 토큰의 Repository access에 $PUBLIC_REPO 를 추가하고 Contents를 Read and write로 하거나, 그런 토큰을 SOURCE_TOKEN 시크릿으로 넣어 주세요"; exit 1
+          fi
+          echo "→ $PUBLIC_REPO 에 v$version 소스를 올렸어요"
