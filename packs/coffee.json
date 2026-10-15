@@ -1,0 +1,24 @@
+{
+ "id": "coffee",
+ "type": "rest",
+ "name": "커피 타임",
+ "tier": "free",
+ "glow": null,
+ "steam": true,
+ "frames": [
+  [
+   ".......",
+   "ooooo..",
+   "occco..",
+   "owwwooo",
+   "owwwo.o",
+   "owwwooo",
+   ".ooo..."
+  ]
+ ],
+ "palette": {
+  "o": "#171522",
+  "w": "#F4F1EA",
+  "c": "#6B3F1D"
+ }
+}

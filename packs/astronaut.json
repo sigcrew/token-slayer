@@ -1,0 +1,412 @@
+{
+ "id": "astronaut",
+ "type": "hero",
+ "name": "우주인",
+ "tier": "free",
+ "weapon": "raygun",
+ "grid": [
+  ".....yy.....",
+  ".....oo.....",
+  "..oohhhhoo..",
+  ".ohhhhhhhho.",
+  "ohvqvvvvvvho",
+  "ohqvvvvvvvho",
+  "ohvvvvvvvvho",
+  "ohvvvvvvvvho",
+  "ohvvvvvvvvho",
+  "ohvvvvvvvvho",
+  ".occcccccco.",
+  "..oooooooo.."
+ ],
+ "palette": {
+  "h": "#F2F5FA",
+  "v": "#1F2F5C",
+  "q": "#7C9BFF",
+  "y": "#FF5C8A"
+ },
+ "face": {
+  "eyeColor": "#BFE9FF",
+  "mouthColor": "#BFE9FF",
+  "cheeks": false,
+  "colorAlways": true
+ },
+ "hd": {
+  "grid": [
+   "..........ÀÀÀy..........",
+   "..........yÁÁÁ..........",
+   "..........oooo..........",
+   "..........oÂho..........",
+   ".....oooÂÂÂhhÂÂhooo.....",
+   "...oooÂÂhhhhhhhhÂhooo...",
+   "...oÂÂhhhhhhhhhhhhÂho...",
+   ".ooÂhhhhhhhhhhhhhhhhhoo.",
+   "ooÂhhvqqvvvvvvvvvvvhhhoo",
+   "oÂhhvqqqvvvvvvvvvvvvhÃoo",
+   "oÂhhqqqvvvvvvvvvvvvvhÃoo",
+   "oÂhhqqvvvvvvvvvvvvvvhÃoo",
+   "oÂhhvvvvvvvvvvvvvvvvhÃoo",
+   "oÂhhvvvvvvvvvvvvvvvvhÃoo",
+   "oÂhhvvvvvvvvvvvvvvvvhÃoo",
+   "oÂhhvvvvvvvvvvvvvvvvhÃoo",
+   "oÂhhvvvvvvvvvvvvvvvvhÃoo",
+   "oÂhhvvvvvvvvvvvvvvvvhÃoo",
+   "ohhhvvvvvvvvvvvvvvvvhÃoo",
+   "oohÃvvvvvvvvvvvvvvvvÃooo",
+   ".oooĉccccccccccccccċooo.",
+   "...ocċċċċċċċċċċċċċċoo...",
+   "...oooooooooooooooooo...",
+   "....oooooooooooooooo...."
+  ],
+  "faces": {
+   "fight": [
+    [
+     12,
+     14,
+     "È"
+    ],
+    [
+     13,
+     14,
+     "È"
+    ],
+    [
+     12,
+     15,
+     "È"
+    ],
+    [
+     13,
+     15,
+     "È"
+    ],
+    [
+     12,
+     16,
+     "È"
+    ],
+    [
+     13,
+     16,
+     "È"
+    ],
+    [
+     12,
+     14,
+     "W"
+    ],
+    [
+     18,
+     14,
+     "È"
+    ],
+    [
+     19,
+     14,
+     "È"
+    ],
+    [
+     18,
+     15,
+     "È"
+    ],
+    [
+     19,
+     15,
+     "È"
+    ],
+    [
+     18,
+     16,
+     "È"
+    ],
+    [
+     19,
+     16,
+     "È"
+    ],
+    [
+     18,
+     14,
+     "W"
+    ],
+    [
+     14,
+     18,
+     "É"
+    ],
+    [
+     15,
+     19,
+     "É"
+    ],
+    [
+     16,
+     19,
+     "É"
+    ],
+    [
+     17,
+     18,
+     "É"
+    ]
+   ],
+   "rest": [
+    [
+     12,
+     16,
+     "È"
+    ],
+    [
+     13,
+     16,
+     "È"
+    ],
+    [
+     18,
+     16,
+     "È"
+    ],
+    [
+     19,
+     16,
+     "È"
+    ],
+    [
+     14,
+     18,
+     "É"
+    ],
+    [
+     15,
+     19,
+     "É"
+    ],
+    [
+     16,
+     19,
+     "É"
+    ],
+    [
+     17,
+     18,
+     "É"
+    ]
+   ],
+   "hit": [
+    [
+     12,
+     14,
+     "o"
+    ],
+    [
+     14,
+     14,
+     "o"
+    ],
+    [
+     13,
+     15,
+     "o"
+    ],
+    [
+     12,
+     16,
+     "o"
+    ],
+    [
+     14,
+     16,
+     "o"
+    ],
+    [
+     18,
+     14,
+     "o"
+    ],
+    [
+     20,
+     14,
+     "o"
+    ],
+    [
+     19,
+     15,
+     "o"
+    ],
+    [
+     18,
+     16,
+     "o"
+    ],
+    [
+     20,
+     16,
+     "o"
+    ],
+    [
+     15,
+     19,
+     "É"
+    ],
+    [
+     16,
+     19,
+     "É"
+    ]
+   ],
+   "happy": [
+    [
+     12,
+     16,
+     "o"
+    ],
+    [
+     18,
+     16,
+     "o"
+    ],
+    [
+     13,
+     15,
+     "o"
+    ],
+    [
+     19,
+     15,
+     "o"
+    ],
+    [
+     14,
+     16,
+     "o"
+    ],
+    [
+     20,
+     16,
+     "o"
+    ],
+    [
+     14,
+     18,
+     "É"
+    ],
+    [
+     15,
+     19,
+     "É"
+    ],
+    [
+     16,
+     19,
+     "É"
+    ],
+    [
+     17,
+     18,
+     "É"
+    ]
+   ],
+   "tired": [
+    [
+     12,
+     15,
+     "o"
+    ],
+    [
+     13,
+     15,
+     "o"
+    ],
+    [
+     18,
+     15,
+     "o"
+    ],
+    [
+     19,
+     15,
+     "o"
+    ],
+    [
+     12,
+     16,
+     "o"
+    ],
+    [
+     18,
+     16,
+     "o"
+    ],
+    [
+     15,
+     19,
+     "T"
+    ],
+    [
+     16,
+     19,
+     "T"
+    ]
+   ],
+   "blink": [
+    [
+     12,
+     16,
+     "o"
+    ],
+    [
+     13,
+     16,
+     "o"
+    ],
+    [
+     18,
+     16,
+     "o"
+    ],
+    [
+     19,
+     16,
+     "o"
+    ],
+    [
+     14,
+     18,
+     "É"
+    ],
+    [
+     15,
+     19,
+     "É"
+    ],
+    [
+     16,
+     19,
+     "É"
+    ],
+    [
+     17,
+     18,
+     "É"
+    ]
+   ]
+  },
+  "palette": {
+   "À": "#ff8aab",
+   "Á": "#db4f77",
+   "Â": "#f6f8fb",
+   "Ã": "#d0d3d7",
+   "Ä": "#5e698a",
+   "Å": "#1b284f",
+   "Æ": "#a1b7ff",
+   "Ç": "#6b85db",
+   "È": "#BFE9FF",
+   "É": "#BFE9FF",
+   "W": "#FFFFFF",
+   "H": "#FF9DA7",
+   "T": "#FF6F86",
+   "R": "#B03A2E",
+   "V": "#0E7A8A"
+  }
+ }
+}

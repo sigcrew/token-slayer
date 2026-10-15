@@ -1,0 +1,120 @@
+{
+ "id": "autumntemple",
+ "type": "backdrop",
+ "name": "단풍 산사",
+ "tier": "premium",
+ "unlockLevel": 13,
+ "series": "한국풍",
+ "sky": [
+  "#1E1030",
+  "#5A2540",
+  "#C0583A"
+ ],
+ "floor": {
+  "color": "#2E1F2E",
+  "edge": "#8A4A4A"
+ },
+ "props": [
+  {
+   "grid": [
+    "....RRRR....",
+    "..RROOYRRR..",
+    ".ROOYRRROOR.",
+    "RROYYRROORRR",
+    "ROORRRYOOYOR",
+    ".RROORRRRRR.",
+    "..RRRROORR..",
+    ".....bb.....",
+    ".....bb.....",
+    ".....bb.....",
+    "....bbbb...."
+   ],
+   "palette": {
+    "R": "#D9381E",
+    "O": "#F28C28",
+    "Y": "#FFD166",
+    "b": "#4A2F20"
+   },
+   "x": -70,
+   "dy": 0,
+   "s": 2,
+   "lanes": [
+    0,
+    2
+   ]
+  },
+  {
+   "grid": [
+    "....kk....",
+    "...kggk...",
+    "..kkkkkk..",
+    "...kGGk...",
+    ".kkkkkkkk.",
+    "..kgGGgk..",
+    "kkkkkkkkkk",
+    ".kGggggGk.",
+    ".kggggggk.",
+    "kkkkkkkkkk"
+   ],
+   "palette": {
+    "k": "#1A1224",
+    "g": "#C4C2D6",
+    "G": "#8A889E"
+   },
+   "x": -28,
+   "dy": 0,
+   "s": 2
+  },
+  {
+   "grid": [
+    "....RRRR....",
+    "..RROOYRRR..",
+    ".ROOYRRROOR.",
+    "RROYYRROORRR",
+    "ROORRRYOOYOR",
+    ".RROORRRRRR.",
+    "..RRRROORR..",
+    ".....bb.....",
+    ".....bb.....",
+    ".....bb.....",
+    "....bbbb...."
+   ],
+   "palette": {
+    "R": "#E5622A",
+    "O": "#F7A83A",
+    "Y": "#FFE08A",
+    "b": "#4A2F20"
+   },
+   "x": -110,
+   "dy": 0,
+   "s": 2,
+   "lanes": [
+    1
+   ]
+  }
+ ],
+ "glows": [
+  {
+   "x": -50,
+   "dy": -22,
+   "color": "#FF8A4A",
+   "r": 32,
+   "a": 0.14,
+   "speed": 8
+  }
+ ],
+ "particles": {
+  "kind": "fall",
+  "count": 28,
+  "colors": [
+   "#D9381E",
+   "#F28C28",
+   "#FFD166"
+  ],
+  "size": 2,
+  "speed": 14,
+  "drift": 10,
+  "sway": 1.2
+ },
+ "veil": 0.08
+}

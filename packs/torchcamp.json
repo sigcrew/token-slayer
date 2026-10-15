@@ -1,0 +1,49 @@
+{
+ "id": "torchcamp",
+ "type": "rest",
+ "name": "횃불 야영",
+ "tier": "premium",
+ "unlockLevel": 22,
+ "series": "던전",
+ "glow": "#FFB347",
+ "embers": true,
+ "frames": [
+  [
+   "..y.......",
+   ".yfy......",
+   ".yfy......",
+   "..o..ggggg",
+   "..k..wwgww",
+   "..k..wwwww",
+   "sskssbbbbb"
+  ],
+  [
+   ".y........",
+   "..fy......",
+   ".yfy......",
+   "..o..ggggg",
+   "..k..wwgww",
+   "..k..wwwww",
+   "sskssbbbbb"
+  ],
+  [
+   "...y......",
+   ".yf.y.....",
+   "..fy......",
+   "..o..ggggg",
+   "..k..wwgww",
+   "..k..wwwww",
+   "sskssbbbbb"
+  ]
+ ],
+ "palette": {
+  "y": "#FFE066",
+  "f": "#FF9F1C",
+  "o": "#8B5A2B",
+  "k": "#6B4A2A",
+  "s": "#6E6A86",
+  "g": "#E8B93B",
+  "w": "#8B5A2B",
+  "b": "#5E3A1A"
+ }
+}

@@ -1,0 +1,58 @@
+{
+ "id": "lava",
+ "type": "backdrop",
+ "name": "용암",
+ "tier": "premium",
+ "unlockLevel": 18,
+ "series": "야근 지옥",
+ "sky": [
+  "#180A10",
+  "#3B1013",
+  "#8C2A12"
+ ],
+ "tile": {
+  "grid": [
+   "aabaaaaabaaa",
+   "abaaaaaaaaba",
+   "aaaaabaaaaaa",
+   "baaaaaaaabaa",
+   "aaalaaaaaaaa",
+   "aaallaaaabaa",
+   "aaaaaaaaaaaa"
+  ],
+  "palette": {
+   "a": "#231013",
+   "b": "#2E1517",
+   "l": "#8F2A17"
+  },
+  "s": 2
+ },
+ "floor": {
+  "color": "#2A1315",
+  "edge": "#FF6A1F"
+ },
+ "glows": [
+  {
+   "x": 116,
+   "dy": 2,
+   "color": "#FF6A1F",
+   "r": 80,
+   "a": 0.2,
+   "speed": 5
+  }
+ ],
+ "particles": {
+  "kind": "rise",
+  "count": 22,
+  "colors": [
+   "#FF9F1C",
+   "#FFD166",
+   "#FF5A1F"
+  ],
+  "size": 1,
+  "speed": 22,
+  "drift": 7,
+  "sway": 1.8
+ },
+ "veil": 0.14
+}

@@ -1,0 +1,33 @@
+{
+ "id": "lantern",
+ "type": "rest",
+ "name": "별밤 랜턴",
+ "tier": "premium",
+ "glow": "#FFE9A8",
+ "embers": false,
+ "frames": [
+  [
+   "..o..",
+   ".ooo.",
+   "oyyyo",
+   "oyYyo",
+   "oyyyo",
+   ".ooo."
+  ],
+  [
+   "..o..",
+   ".ooo.",
+   "oyyyo",
+   "oyyyo",
+   "oyyyo",
+   ".ooo."
+  ]
+ ],
+ "palette": {
+  "o": "#171522",
+  "y": "#FFE066",
+  "Y": "#FFFFFF"
+ },
+ "unlockLevel": 20,
+ "series": "일본풍"
+}

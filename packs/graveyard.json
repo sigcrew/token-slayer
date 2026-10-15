@@ -1,0 +1,108 @@
+{
+ "id": "graveyard",
+ "type": "backdrop",
+ "name": "달밤 묘지",
+ "tier": "premium",
+ "unlockLevel": 11,
+ "series": "할로윈",
+ "sky": [
+  "#0B0620",
+  "#2A1450",
+  "#5A2A6E"
+ ],
+ "floor": {
+  "color": "#150C2A",
+  "edge": "#4A2C6A"
+ },
+ "props": [
+  {
+   "grid": [
+    "....mm....",
+    "..mmmddd..",
+    ".mmmddddd.",
+    ".mmmddddd.",
+    "mmmmdddddd",
+    "mmmmdddddm",
+    ".mmmmdddm.",
+    ".mmmmmmmm.",
+    "..mmmmmm..",
+    "....mm...."
+   ],
+   "palette": {
+    "m": "#FFE0A8",
+    "d": "#F5C77A"
+   },
+   "x": -92,
+   "dy": -6,
+   "s": 2,
+   "lanes": [
+    0
+   ]
+  },
+  {
+   "grid": [
+    "..oo..",
+    ".oggo.",
+    "oggggo",
+    "ogGGgo",
+    "oggggo",
+    "oggggo",
+    "oggggo",
+    "oooooo"
+   ],
+   "palette": {
+    "o": "#0C0818",
+    "g": "#8E88A8",
+    "G": "#6A6486"
+   },
+   "x": -44,
+   "dy": 0,
+   "s": 2
+  },
+  {
+   "grid": [
+    "...o...",
+    "..oko..",
+    ".oooko.",
+    "...o...",
+    "..oko..",
+    "..oko..",
+    "..oko..",
+    "..ooo.."
+   ],
+   "palette": {
+    "o": "#0C0818",
+    "k": "#6A6486"
+   },
+   "x": -96,
+   "dy": 0,
+   "s": 2,
+   "lanes": [
+    1,
+    2
+   ]
+  }
+ ],
+ "glows": [
+  {
+   "x": -86,
+   "dy": -16,
+   "color": "#8CFF6B",
+   "r": 22,
+   "a": 0.16,
+   "speed": 5
+  }
+ ],
+ "particles": {
+  "kind": "rise",
+  "count": 10,
+  "colors": [
+   "#CFC4F0",
+   "#8CFF6B"
+  ],
+  "size": 2,
+  "speed": 10,
+  "drift": 10
+ },
+ "veil": 0.1
+}

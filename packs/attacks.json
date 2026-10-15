@@ -1,0 +1,30 @@
+{
+ "id": "attacks",
+ "type": "enemies",
+ "name": "사이버 공격",
+ "tier": "premium",
+ "unlockLevel": 35,
+ "series": "사이버",
+ "texts": [
+  "XSS",
+  "DDOS",
+  "SQLI",
+  "CSRF",
+  "MITM",
+  "RCE",
+  "0DAY",
+  "PHISH",
+  "ROOTKIT"
+ ],
+ "colors": [
+  "#22E6FF",
+  "#FF2BD6",
+  "#3DFF7A",
+  "#FFD166"
+ ],
+ "fatal": [
+  "BREACH",
+  "RANSOM",
+  "ROOT"
+ ]
+}

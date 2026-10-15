@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:" />
+  <title>Token Slayer 시작하기</title>
+  <link rel="stylesheet" href="onboarding.css" />
+</head>
+<body>
+  <main>
+    <div class="dots"><i></i><i></i><i></i><i></i></div>
+
+    <!-- 1. 소개 -->
+    <section data-step="0">
+      <canvas id="hero" width="232" height="180"></canvas>
+      <h1>Token Slayer</h1>
+      <p class="lead">AI 에이전트의 <b>남은 사용량이 곧 용사의 HP</b>예요.</p>
+      <ul class="bullets">
+        <li>⚔️ 에이전트가 일하면 용사가 날아오는 코드를 베어요</li>
+        <li>🔥 쉬는 동안엔 모닥불 앞에서 쉬어요</li>
+        <li>💥 사용량이 줄면 한 대 맞고, 0%면 GAME OVER</li>
+        <li>🧪 한도가 리셋되면 포션을 마시고 부활해요</li>
+      </ul>
+    </section>
+
+    <!-- 2. 무엇을 읽나요 -->
+    <section data-step="1" hidden>
+      <h2>무엇을 읽고, 어디로 보내나요?</h2>
+      <p class="sub">Token Slayer에는 <b>따로 운영하는 서버가 없어요.</b> 아무것도 수집하지 않고, 모든 처리는 이 컴퓨터 안에서 끝나요.</p>
+      <table class="read">
+        <tr><th>Claude</th><td>Claude Code 로그인(키체인) 또는 이 앱 안에서 한 claude.ai 로그인으로 <code>api.anthropic.com</code> · <code>claude.ai</code>에 사용량만 물어봐요</td></tr>
+        <tr><th>Codex</th><td><code>~/.codex/sessions</code> 기록 파일의 사용 한도 줄을 읽고, 로그인 토큰으로 <code>chatgpt.com</code>에 사용량만 물어봐요 (트레이 메뉴에서 끌 수 있어요)</td></tr>
+        <tr><th>Cursor</th><td>Cursor 설정 DB의 로그인 토큰으로 <code>cursor.com</code>에 사용량만 물어봐요</td></tr>
+        <tr><th>작업 감지</th><td>용사 움직임을 위해 위 앱들이 파일을 쓰는 <b>시각</b>만 봐요 (내용은 읽지 않아요)</td></tr>
+      </table>
+      <p class="note">로그인 토큰은 읽기만 하고, Claude Code 토큰이 만료되면 새 토큰을 원래 자리에 다시 저장해요. 대화 내용은 읽지 않아요. 각 서비스의 공식 공개 API가 아니라서, 서비스가 바뀌면 일부가 멈출 수 있어요.</p>
+    </section>
+
+    <!-- 3. 서비스 선택 -->
+    <section data-step="2" hidden>
+      <h2>어떤 용사를 데려갈까요?</h2>
+      <p class="sub">이 컴퓨터에서 찾은 에이전트예요. 켜 둔 것만 화면에 나와요. 나중에 트레이 메뉴 <b>표시할 서비스</b>에서 바꿀 수 있어요.</p>
+      <div id="svcs"></div>
+    </section>
+
+    <!-- 4. 마무리 -->
+    <section data-step="3" hidden>
+      <h2>거의 다 됐어요</h2>
+      <label class="opt"><input type="checkbox" id="notify" checked /> <span><b>알림 받기</b><br><small>HP 20%·10% 경고, 🔥 BURNING TIME, 레벨업, 업적, 드래곤 출현</small></span></label>
+      <label class="opt"><input type="checkbox" id="autostart" checked /> <span><b>컴퓨터를 켤 때 자동 실행</b><br><small>메뉴바(트레이) 아이콘에서 언제든 끌 수 있어요</small></span></label>
+      <div class="tips">
+        <p>💡 용사를 누르면 반응하고, 마우스를 올리면 남은 양과 리셋 시간이 나와요.</p>
+        <p>💡 드래그로 옮기고, <b>용사를 오른쪽 클릭</b>하거나 메뉴바 아이콘을 누르면 크기·꾸미기·업적·주간 기록 카드 메뉴가 나와요.</p>
+      </div>
+    </section>
+
+    <footer>
+      <button id="back" class="ghost">이전</button>
+      <button id="next">다음</button>
+    </footer>
+  </main>
+  <script src="i18n-en.js"></script>
+  <script src="i18n.js"></script>
+  <script src="dom-i18n.js"></script>
+  <script src="builtin-packs.js"></script>
+  <script src="scene.js"></script>
+  <script src="onboarding.js"></script>
+</body>
+</html>

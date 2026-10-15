@@ -1,0 +1,27 @@
+{
+ "id": "types",
+ "type": "enemies",
+ "name": "타입 에러",
+ "tier": "free",
+ "texts": [
+  "ANY",
+  "VOID",
+  "<T>",
+  "T[]",
+  "NEVER",
+  "?.",
+  "!",
+  "UNKNOWN"
+ ],
+ "colors": [
+  "#6C8CFF",
+  "#8FD6FF",
+  "#C9A7FF",
+  "#B8F28D"
+ ],
+ "fatal": [
+  "TS2345",
+  "TS2322",
+  "NAN"
+ ]
+}

@@ -1,0 +1,78 @@
+{
+ "id": "dungeon",
+ "type": "backdrop",
+ "name": "던전",
+ "tier": "premium",
+ "unlockLevel": 10,
+ "sky": [
+  "#1B1A28",
+  "#242238"
+ ],
+ "tile": {
+  "grid": [
+   "mmmmmmmm",
+   "bbbmbbbb",
+   "bbbmbbbb",
+   "bbbmbbbb",
+   "mmmmmmmm",
+   "bbbbbbbm",
+   "bbbbbbbm",
+   "bbbbbbbm"
+  ],
+  "palette": {
+   "b": "#2A2840",
+   "m": "#191826"
+  },
+  "s": 2
+ },
+ "floor": {
+  "color": "#37334F",
+  "edge": "#5A5580"
+ },
+ "props": [
+  {
+   "grid": [
+    "..y..",
+    ".yoy.",
+    ".yoy.",
+    ".ooo.",
+    "..k..",
+    ".kkk.",
+    "..k..",
+    "..k..",
+    "..k.."
+   ],
+   "palette": {
+    "y": "#FFE066",
+    "o": "#FF9F1C",
+    "k": "#6B4A2A"
+   },
+   "x": -54,
+   "dy": -10,
+   "s": 3
+  }
+ ],
+ "glows": [
+  {
+   "x": -62,
+   "dy": -32,
+   "color": "#FF9F1C",
+   "r": 40,
+   "a": 0.34,
+   "speed": 9
+  }
+ ],
+ "particles": {
+  "kind": "rise",
+  "count": 6,
+  "colors": [
+   "#FFB347",
+   "#FFE066"
+  ],
+  "size": 1,
+  "speed": 14,
+  "drift": 4
+ },
+ "veil": 0.1,
+ "series": "던전"
+}

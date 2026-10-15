@@ -1,0 +1,47 @@
+{
+ "id": "nightdesk",
+ "type": "rest",
+ "name": "야간 코딩 책상",
+ "tier": "premium",
+ "unlockLevel": 37,
+ "series": "사이버",
+ "glow": "#22E6FF",
+ "embers": false,
+ "frames": [
+  [
+   "mmmmmmmmm",
+   "mccgbbbbm",
+   "mbpppbbbm",
+   "mccbbbbbm",
+   "mmmmmmmmm",
+   "....m....",
+   "ddddddddd"
+  ],
+  [
+   "mmmmmmmmm",
+   "mccgcgbbm",
+   "mbpppgbbm",
+   "mccbbbbbm",
+   "mmmmmmmmm",
+   "....m....",
+   "ddddddddd"
+  ],
+  [
+   "mmmmmmmmm",
+   "mccgcgpbm",
+   "mbpppgbbm",
+   "mcccgbbbm",
+   "mmmmmmmmm",
+   "....m....",
+   "ddddddddd"
+  ]
+ ],
+ "palette": {
+  "m": "#2A2E4A",
+  "b": "#0B1424",
+  "c": "#22E6FF",
+  "g": "#3DFF7A",
+  "p": "#FF2BD6",
+  "d": "#3A2A5A"
+ }
+}

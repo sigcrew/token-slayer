@@ -1,0 +1,27 @@
+{
+ "id": "commits",
+ "type": "enemies",
+ "name": "커밋 로그",
+ "tier": "free",
+ "texts": [
+  "WIP",
+  "FIX",
+  "TODO",
+  "FIXME",
+  "TYPO",
+  "OOPS",
+  "TEST",
+  "HOTFIX"
+ ],
+ "colors": [
+  "#7CC7FF",
+  "#B8F28D",
+  "#FFD166",
+  "#C9A7FF"
+ ],
+ "fatal": [
+  "REVERT",
+  "CONFLICT",
+  "-F"
+ ]
+}

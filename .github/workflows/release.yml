@@ -1,0 +1,200 @@
+# package.json의 version을 올려 main에 푸시하면(또는 v태그를 올리면) 맥·윈도우 설치 파일을 만들어
+# GitHub Releases에 올린다. 이미 같은 버전의 릴리스가 있으면 건너뛴다.
+# 앱의 자동 업데이트는 여기 올라간 최신 릴리스를 본다.
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths: ['package.json', '.github/workflows/release.yml']
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: '릴리스로 만들 태그 (비우면 빌드만 하고 올리지 않음)'
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.v.outputs.tag }}
+      release: ${{ steps.v.outputs.release }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: v
+        env:
+          GH_TOKEN: ${{ secrets.RELEASES_TOKEN || github.token }}
+          INPUT_TAG: ${{ github.event.inputs.tag }}
+          # 설치 파일은 배포 전용 공개 저장소에 올린다 (토큰이 없으면 이 저장소에)
+          TARGET_REPO: ${{ secrets.RELEASES_TOKEN != '' && 'sigcrew/token-slayer-releases' || github.repository }}
+        run: |
+          # 배포 저장소에 쓸 수 있는지 먼저 확인 (빌드 10분 기다렸다가 실패하지 않게)
+          if [ "$TARGET_REPO" != "$GITHUB_REPOSITORY" ]; then
+            if ! out="$(gh api "repos/$TARGET_REPO" --jq '.permissions.push, .size, .visibility' 2>&1)"; then
+              echo "::error title=배포 저장소 확인 실패::$TARGET_REPO 에 접근하지 못했어요: $(echo "$out" | tr '\n' ' ')"; exit 1
+            fi
+            echo "$TARGET_REPO → push:$(echo "$out" | sed -n 1p) size:$(echo "$out" | sed -n 2p) $(echo "$out" | sed -n 3p)"
+            if [ "$(echo "$out" | sed -n 1p)" != "true" ]; then echo "::error title=배포 저장소 권한 없음::토큰에 $TARGET_REPO 쓰기 권한(Contents: Read and write)이 없어요"; exit 1; fi
+            if ! gh api "repos/$TARGET_REPO/commits?per_page=1" >/dev/null 2>&1; then echo "::error title=배포 저장소가 비어 있음::$TARGET_REPO 에 커밋이 하나도 없어요. README를 하나 추가해 주세요"; exit 1; fi
+          fi
+          tag="v$(node -p "require('./package.json').version")"
+          if [ -n "$INPUT_TAG" ]; then tag="$INPUT_TAG"; fi
+          release=true
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -z "$INPUT_TAG" ]; then release=false; fi
+          if [ "$release" = true ] && [ "${{ github.ref_type }}" != "tag" ] && gh release view "$tag" -R "$TARGET_REPO" >/dev/null 2>&1; then
+            echo "$TARGET_REPO 에 $tag 릴리스가 이미 있어요 → 건너뜀"; release=skip
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "release=$release" >> "$GITHUB_OUTPUT"
+
+  test:
+    needs: prepare
+    if: needs.prepare.outputs.release != 'skip'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - run: node test/run.js
+
+  build:
+    needs: [prepare, test]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            script: release:mac
+          - os: windows-latest
+            script: release:win
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - name: 태그와 package.json 버전이 같은지 확인
+        if: needs.prepare.outputs.release == 'true'
+        shell: bash
+        run: |
+          want="${{ needs.prepare.outputs.tag }}"; want="${want#v}"
+          have="$(node -p "require('./package.json').version")"
+          if [ "$want" != "$have" ]; then echo "태그 $want 와 package.json $have 가 달라요"; exit 1; fi
+      - run: npm install --no-audit --no-fund
+      # 맥 공증용 API 키(.p8)는 파일 경로로 넘겨야 해서 임시 파일로 저장
+      - name: 공증 키 준비
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          APPLE_API_KEY_P8: ${{ secrets.APPLE_API_KEY }}
+        run: |
+          if [ -n "$APPLE_API_KEY_P8" ]; then
+            f="$RUNNER_TEMP/AuthKey.p8"; printf '%s' "$APPLE_API_KEY_P8" > "$f"
+            echo "APPLE_API_KEY=$f" >> "$GITHUB_ENV"
+          fi
+      # 서명 인증서를 직접 만든 임시 키체인에 넣는다 (electron-builder가 만드는 키체인은 새 macOS에서 잠금 해제가 실패함)
+      - name: 서명 키체인 준비
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          P12_B64: ${{ secrets.CSC_LINK }}
+          P12_PW: ${{ secrets.CSC_KEY_PASSWORD }}
+        run: |
+          if [ -z "$P12_B64" ]; then echo "인증서 없음 → ad-hoc 서명"; exit 0; fi
+          KC="$RUNNER_TEMP/signing.keychain-db"
+          KCPW="$(openssl rand -hex 24)"; echo "::add-mask::$KCPW"
+          printf '%s' "$P12_B64" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          security create-keychain -p "$KCPW" "$KC"
+          security set-keychain-settings -lut 21600 "$KC"
+          security unlock-keychain -p "$KCPW" "$KC"
+          security import "$RUNNER_TEMP/cert.p12" -P "$P12_PW" -A -t cert -f pkcs12 -k "$KC"
+          rm -f "$RUNNER_TEMP/cert.p12"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KCPW" "$KC" > /dev/null
+          security list-keychains -d user -s "$KC" $(security list-keychains -d user | tr -d '"')
+          security find-identity -v -p codesigning "$KC"
+          echo "CSC_KEYCHAIN=$KC" >> "$GITHUB_ENV"
+          echo "MAC_SIGN=1" >> "$GITHUB_ENV"
+      - name: 빌드
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! npm run ${{ matrix.script }} 2>&1 | tee build.log; then
+            # 실패 원인을 주석(annotation)으로 남겨서 로그 권한 없이도 볼 수 있게
+            msg="$(grep -v '^\s*$' build.log | tail -40 | sed 's/%/%25/g' | awk 'BEGIN{ORS="%0A"}{print}')"
+            echo "::error title=빌드 실패::$msg"
+            exit 1
+          fi
+        env:
+          CSC_NAME: 'SIG Inc. (867RGMZD7Y)'
+          CSC_IDENTITY_AUTO_DISCOVERY: ${{ runner.os == 'macOS' && secrets.CSC_LINK != '' && 'true' || 'false' }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          APPLE_ID: ${{ secrets.APPLE_ID || 'yong@sigcrew.com' }}  # SIG Inc. 팀 Apple 계정
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID || '867RGMZD7Y' }}  # SIG Inc. 팀 ID (공개 정보)
+      - name: 맥 서명·공증 확인
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          HAS_CERT: ${{ secrets.CSC_LINK != '' }}
+        run: |
+          for app in dist/mac*/*.app; do
+            echo "== $app"
+            codesign -dv --verbose=2 "$app" 2>&1 | grep -E "Authority|TeamIdentifier|flags" || true
+            if [ "$HAS_CERT" = "true" ]; then
+              codesign --verify --deep --strict "$app"
+              xcrun stapler validate "$app"
+              spctl -a -vv -t exec "$app"
+            fi
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.os }}
+          if-no-files-found: error
+          path: |
+            dist/*.dmg
+            dist/*.zip
+            dist/*.exe
+
+  publish:
+    needs: [prepare, build]
+    if: needs.prepare.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with: { path: out, merge-multiple: true }
+      # 버전 없는 이름도 같이 올려서 releases/latest/download/<이름> 링크가 항상 최신을 가리키게
+      - name: 고정 다운로드 이름 만들기
+        run: |
+          cd out
+          for f in TokenSlayer-Setup-*.exe; do case "$f" in *x64*|*arm64*) ;; *) rm -f "$f";; esac; done   # 두 CPU를 합친 큰 설치 파일은 올리지 않음
+          for f in TokenSlayer-*-mac-*.dmg; do cp "$f" "TokenSlayer-mac-${f##*-mac-}"; done
+          for f in TokenSlayer-Setup-*-*.exe; do cp "$f" "TokenSlayer-Setup-${f##*-}"; done
+          for f in TokenSlayer-Portable-*-*.exe; do cp "$f" "TokenSlayer-Portable-${f##*-}"; done
+          ls -la
+      - name: 확인값 파일 만들기
+        run: cd out && sha256sum * > SHA256SUMS.txt && cat SHA256SUMS.txt
+      - name: 릴리스 올리기
+        env:
+          GH_TOKEN: ${{ secrets.RELEASES_TOKEN || github.token }}
+          TAG: ${{ needs.prepare.outputs.tag }}
+          TARGET_REPO: ${{ secrets.RELEASES_TOKEN != '' && 'sigcrew/token-slayer-releases' || github.repository }}
+        run: |
+          echo "→ $TARGET_REPO"
+          notes="Token Slayer $TAG
+          
+          설치: 맥은 \`TokenSlayer-mac-arm64.dmg\`(애플 실리콘) 또는 \`TokenSlayer-mac-x64.dmg\`(인텔), 윈도우는 \`TokenSlayer-Setup-x64.exe\`.
+          이미 설치했다면 앱이 알아서 업데이트해요."
+          fail() { echo "::error title=릴리스 올리기 실패::$(tr '\n' ' ' < gh.log)"; exit 1; }
+          if gh release view "$TAG" -R "$TARGET_REPO" >/dev/null 2>&1; then
+            gh release upload "$TAG" out/* -R "$TARGET_REPO" --clobber 2> gh.log || fail
+          elif [ "$TARGET_REPO" = "$GITHUB_REPOSITORY" ]; then
+            gh release create "$TAG" out/* -R "$TARGET_REPO" --target "$GITHUB_SHA" --title "Token Slayer $TAG" --generate-notes 2> gh.log || fail
+          else
+            # 배포 저장소엔 코드가 없으니 커밋 기록 대신 짧은 안내만
+            gh release create "$TAG" out/* -R "$TARGET_REPO" --title "Token Slayer $TAG" --notes "$notes" 2> gh.log || fail
+          fi

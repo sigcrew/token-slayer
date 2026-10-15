@@ -1,0 +1,121 @@
+{
+ "id": "gyeongbok",
+ "type": "backdrop",
+ "name": "경복궁 야경",
+ "tier": "premium",
+ "unlockLevel": 25,
+ "series": "한국풍",
+ "sky": [
+  "#070B24",
+  "#17204A",
+  "#3B2E6B"
+ ],
+ "floor": {
+  "color": "#2B2B3E",
+  "edge": "#6A6A8E"
+ },
+ "props": [
+  {
+   "grid": [
+    "....mm....",
+    "..mmmddd..",
+    ".mmmddddd.",
+    ".mmmddddd.",
+    "mmmmdddddd",
+    "mmmmdddddm",
+    ".mmmmdddm.",
+    ".mmmmmmmm.",
+    "..mmmmmm..",
+    "....mm...."
+   ],
+   "palette": {
+    "m": "#FFF4D0",
+    "d": "#F0DCA0"
+   },
+   "x": -96,
+   "dy": -26,
+   "s": 2,
+   "lanes": [
+    0
+   ]
+  },
+  {
+   "grid": [
+    ".....gg.....",
+    "...gggGgg...",
+    "..gGgggggg..",
+    ".ggggGggggg.",
+    "..gggggggg..",
+    ".gGgggGgggg.",
+    "gggggggggggg",
+    "...ggbbggg..",
+    ".....bb.....",
+    ".....bb....."
+   ],
+   "palette": {
+    "g": "#1F5A44",
+    "G": "#2C7A5A",
+    "b": "#4A2F20"
+   },
+   "x": -76,
+   "dy": 0,
+   "s": 2,
+   "lanes": [
+    1,
+    2
+   ]
+  },
+  {
+   "grid": [
+    ".......kkkkkkkk.......",
+    "......kTTTTTTTTk......",
+    ".....kTtTtTTtTtTk.....",
+    "...kkkTtTtTTtTtTkkk...",
+    ".kkTTttttttttttttTTkk.",
+    "k.kkbgbgbgbbgbgbgbkk.k",
+    "...kdrdrdrddrdrdrdk...",
+    "...kdrdrdrddrdrdrdk...",
+    ".....kkTTTTTTTTkk.....",
+    "..kkTTtTtTttTtTtTTkk..",
+    "kkTTttttttttttttttTTkk",
+    "k.kkbgbgbgbbgbgbgbkk.k",
+    "..kkdrdrdrddrdrdrdkk..",
+    "wwwwwwwwwwwwwwwwwwwwww"
+   ],
+   "palette": {
+    "k": "#10121F",
+    "T": "#7C8CC4",
+    "t": "#4A5784",
+    "r": "#C23B33",
+    "d": "#2A1A22",
+    "b": "#2F7AC9",
+    "g": "#3FAE7A",
+    "w": "#7C7C98"
+   },
+   "x": -16,
+   "dy": 0,
+   "s": 2
+  }
+ ],
+ "glows": [
+  {
+   "x": -40,
+   "dy": -12,
+   "color": "#FFB347",
+   "r": 26,
+   "a": 0.18,
+   "speed": 7
+  }
+ ],
+ "particles": {
+  "kind": "twinkle",
+  "count": 22,
+  "colors": [
+   "#FFFFFF",
+   "#FFE9A8",
+   "#CFE0FF"
+  ],
+  "size": 1
+ },
+ "veil": 0.1
+}

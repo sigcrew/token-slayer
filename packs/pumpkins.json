@@ -1,0 +1,206 @@
+{
+ "id": "pumpkins",
+ "type": "backdrop",
+ "name": "호박밭",
+ "tier": "premium",
+ "unlockLevel": 23,
+ "series": "할로윈",
+ "sky": [
+  "#2A0F1E",
+  "#8A2E1A",
+  "#E8741F"
+ ],
+ "floor": {
+  "color": "#2A1408",
+  "edge": "#8A4A1F"
+ },
+ "props": [
+  {
+   "grid": [
+    "...ss...",
+    ".oooooo.",
+    "oOOoOOOo",
+    "oOOoOOOo",
+    "oOOoOOOo",
+    ".oooooo."
+   ],
+   "palette": {
+    "o": "#4A2008",
+    "O": "#FF8A1F",
+    "s": "#4FA84A"
+   },
+   "x": -24,
+   "dy": 0,
+   "s": 3,
+   "lanes": [
+    0
+   ]
+  },
+  {
+   "grid": [
+    "...ss...",
+    ".oooooo.",
+    "oOOoOOOo",
+    "oOOoOOOo",
+    "oOOoOOOo",
+    ".oooooo."
+   ],
+   "palette": {
+    "o": "#4A2008",
+    "O": "#FFA23A",
+    "s": "#4FA84A"
+   },
+   "x": -62,
+   "dy": 0,
+   "s": 2,
+   "lanes": [
+    0
+   ]
+  },
+  {
+   "grid": [
+    "...ss...",
+    ".oooooo.",
+    "oOOoOOOo",
+    "oOOoOOOo",
+    "oOOoOOOo",
+    ".oooooo."
+   ],
+   "palette": {
+    "o": "#4A2008",
+    "O": "#FF9F3A",
+    "s": "#4FA84A"
+   },
+   "x": -58,
+   "dy": 0,
+   "s": 3,
+   "lanes": [
+    1
+   ]
+  },
+  {
+   "grid": [
+    "...ss...",
+    ".oooooo.",
+    "oOOoOOOo",
+    "oOOoOOOo",
+    "oOOoOOOo",
+    ".oooooo."
+   ],
+   "palette": {
+    "o": "#4A2008",
+    "O": "#FF8A1F",
+    "s": "#4FA84A"
+   },
+   "x": -22,
+   "dy": 0,
+   "s": 2,
+   "lanes": [
+    1
+   ]
+  },
+  {
+   "grid": [
+    "o.o.o.o.o",
+    "ooooooooo",
+    "o.o.o.o.o",
+    "o.o.o.o.o"
+   ],
+   "palette": {
+    "o": "#3A1A08"
+   },
+   "x": -104,
+   "dy": 0,
+   "s": 2,
+   "lanes": [
+    1
+   ]
+  },
+  {
+   "grid": [
+    "...ss...",
+    ".oooooo.",
+    "oOOoOOOo",
+    "oOOoOOOo",
+    "oOOoOOOo",
+    ".oooooo."
+   ],
+   "palette": {
+    "o": "#4A2008",
+    "O": "#FFA23A",
+    "s": "#4FA84A"
+   },
+   "x": -34,
+   "dy": 0,
+   "s": 3,
+   "lanes": [
+    2
+   ]
+  },
+  {
+   "grid": [
+    "...ss...",
+    ".oooooo.",
+    "oOOoOOOo",
+    "oOOoOOOo",
+    "oOOoOOOo",
+    ".oooooo."
+   ],
+   "palette": {
+    "o": "#4A2008",
+    "O": "#FF8A1F",
+    "s": "#4FA84A"
+   },
+   "x": -82,
+   "dy": 0,
+   "s": 2,
+   "lanes": [
+    2
+   ]
+  },
+  {
+   "grid": [
+    "...ss...",
+    ".oooooo.",
+    "oOOoOOOo",
+    "oOOoOOOo",
+    "oOOoOOOo",
+    ".oooooo."
+   ],
+   "palette": {
+    "o": "#4A2008",
+    "O": "#FF9F3A",
+    "s": "#4FA84A"
+   },
+   "x": -108,
+   "dy": 0,
+   "s": 2,
+   "lanes": [
+    0,
+    2
+   ]
+  }
+ ],
+ "glows": [
+  {
+   "x": -30,
+   "dy": -8,
+   "color": "#FFB347",
+   "r": 20,
+   "a": 0.18,
+   "speed": 6
+  }
+ ],
+ "particles": {
+  "kind": "rise",
+  "count": 14,
+  "colors": [
+   "#FFB347",
+   "#FFE066"
+  ],
+  "size": 1,
+  "speed": 14,
+  "drift": 8
+ },
+ "veil": 0.08
+}

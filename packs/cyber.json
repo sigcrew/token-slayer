@@ -1,0 +1,79 @@
+{
+ "id": "cyber",
+ "type": "backdrop",
+ "name": "사이버펑크",
+ "tier": "premium",
+ "unlockLevel": 24,
+ "series": "사이버",
+ "sky": [
+  "#0A0620",
+  "#1C0B3D",
+  "#4A1259"
+ ],
+ "floor": {
+  "color": "#150C2B",
+  "edge": "#22E6FF"
+ },
+ "props": [
+  {
+   "grid": [
+    "............................................",
+    "bbbbbbb..........................b..........",
+    "bbbbbmb.......................bbbbbbb.......",
+    "bbbbbbb.......................bybbcbb.......",
+    "bbbcybbbbbbbb.................bbbbbbb.......",
+    "bbbbbbbbbbmbb.....bbbbbbbbbbb.bbbybcb.......",
+    "bbbbcbbbbbbbbbbbbbbbymbbbbbyb.bbbbbbb.......",
+    "bbbbbbbbcybybbbcbbbbbbbbbbbbb.bbymbcb...b...",
+    "bbybyybbbbbbbbbbbbbycmcbbmbcb.bbbbbbbbbbbbbb",
+    "bbbbbbbbbcbybbmmmbbbbbbbbbbbb.bcbbbbbbbymybb",
+    "bbbmbbbbbbbbbbbbbbbymbcbbbbbb.bbbbbbbbbbbbbb",
+    "bbbbbbbbbmyybbbccbbbbbbbbbbbb.bybbcbbbbbbbmb",
+    "bbbbbmbbbbbbbbbbbbbcmbbbbybmb.bbbbbbbbbbbbbb",
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbb.bbbbbbbbbbbbbb"
+   ],
+   "palette": {
+    "b": "#1B1046",
+    "y": "#FFD166",
+    "c": "#22E6FF",
+    "m": "#FF2BD6"
+   },
+   "x": 96,
+   "dy": 0,
+   "s": 2
+  }
+ ],
+ "glows": [
+  {
+   "x": 150,
+   "dy": -30,
+   "color": "#FF2BD6",
+   "r": 30,
+   "a": 0.26,
+   "speed": 11
+  },
+  {
+   "x": 196,
+   "dy": -22,
+   "color": "#22E6FF",
+   "r": 26,
+   "a": 0.24,
+   "speed": 7
+  }
+ ],
+ "particles": {
+  "kind": "fall",
+  "count": 30,
+  "colors": [
+   "#7FE7FF",
+   "#B9F3FF"
+  ],
+  "w": 1,
+  "h": 4,
+  "speed": 95,
+  "drift": 0.6,
+  "sway": 1.0,
+  "alpha": 0.55
+ },
+ "veil": 0.16
+}

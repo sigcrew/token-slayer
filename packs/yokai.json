@@ -1,0 +1,29 @@
+{
+ "id": "yokai",
+ "type": "enemies",
+ "name": "요괴",
+ "tier": "premium",
+ "unlockLevel": 16,
+ "series": "일본풍",
+ "texts": [
+  "ONI",
+  "KAPPA",
+  "TENGU",
+  "KITSUNE",
+  "TANUKI",
+  "YUREI",
+  "NUE",
+  "BAKENEKO"
+ ],
+ "colors": [
+  "#FF5C6A",
+  "#FFB347",
+  "#C9A7FF",
+  "#F4E3C1"
+ ],
+ "fatal": [
+  "YAMATA",
+  "ONI-KING",
+  "CURSE"
+ ]
+}

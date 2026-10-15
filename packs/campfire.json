@@ -1,0 +1,41 @@
+{
+ "id": "campfire",
+ "type": "rest",
+ "name": "모닥불",
+ "tier": "free",
+ "glow": "#FF9F1C",
+ "embers": true,
+ "frames": [
+  [
+   "..y..",
+   ".yfy.",
+   ".fff.",
+   "frrrf",
+   "BbbbB",
+   ".BbB."
+  ],
+  [
+   ".y...",
+   ".fy..",
+   ".ffy.",
+   "frrrf",
+   "BbbbB",
+   ".BbB."
+  ],
+  [
+   "...y.",
+   "..yf.",
+   ".yff.",
+   "frrrf",
+   "BbbbB",
+   ".BbB."
+  ]
+ ],
+ "palette": {
+  "y": "#FFE066",
+  "f": "#FF9F1C",
+  "r": "#FF4D2E",
+  "b": "#8B5A2B",
+  "B": "#5E3A1A"
+ }
+}

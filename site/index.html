@@ -1,0 +1,473 @@
+<title>Token Slayer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500;700&family=Silkscreen:wght@400;700&display=swap">
+<style>
+/* 레이아웃: 밤의 야영지. 왼쪽은 문구, 오른쪽은 실제로 돌아가는 용사 화면. 아래로 규칙 → 기능 → 받기 */
+:root {
+  --night: #11121D;
+  --panel: #1A1C2C;
+  --line: #2C2F4A;
+  --ink: #ECEAF6;
+  --muted: #9D9CB9;
+  --ember: #FFB547;
+  --ember-ink: #231704;
+  --hp: #4ADE80;
+  --hit: #FF5A5F;
+  --mana: #7C9BFF;
+  --display: "Black Han Sans", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --pixel: "Silkscreen", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { background: var(--night); }
+body {
+  margin: 0;
+  background: var(--night);
+  color: var(--ink);
+  font: 16px/1.7 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--ember); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--ember); outline-offset: 3px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 20px; }
+
+/* 상단 */
+.top { display: flex; justify-content: space-between; align-items: center; padding-block: 20px; gap: 16px; }
+.brand { font: 700 14px var(--pixel); letter-spacing: 0.06em; color: var(--ink); text-decoration: none; display: flex; gap: 10px; align-items: center; }
+.brand i { width: 10px; height: 10px; background: var(--ember); box-shadow: 0 0 12px var(--ember); display: block; }
+.top nav { display: flex; gap: 20px; font-size: 14px; }
+.top nav a { color: var(--muted); text-decoration: none; }
+.top nav a:hover { color: var(--ink); }
+.top nav a.lang { border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+
+/* 첫 화면 */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 48px; align-items: center; padding-block: 40px 56px; }
+.eyebrow { font: 12px var(--pixel); letter-spacing: 0.12em; color: var(--ember); margin: 0 0 14px; }
+h1 { font: 400 clamp(38px, 6vw, 64px)/1.12 var(--display); margin: 0 0 18px; letter-spacing: -0.01em; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--hp); }
+.lead { font-size: 18px; color: #CFCDE3; max-width: 30em; margin: 0 0 28px; }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--ember); color: var(--ember-ink);
+  font: 700 16px var(--body); text-decoration: none;
+  padding: 14px 22px; border: 0; cursor: pointer;
+  box-shadow: 4px 4px 0 #8A5A10;
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+.btn:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 #8A5A10; }
+.btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 #8A5A10; }
+.btn small { font: 11px var(--pixel); opacity: 0.75; }
+.alt { font-size: 14px; color: var(--muted); }
+.alt a { color: var(--ink); }
+.ver { font: 11px var(--pixel); color: var(--muted); margin-top: 16px; letter-spacing: 0.04em; }
+
+/* 용사 화면 */
+.screen { max-width: 100%; background: var(--panel); border: 2px solid var(--line); padding: 18px 18px 14px; box-shadow: 0 0 0 6px var(--night), 0 0 0 8px var(--line), 0 30px 80px -30px rgba(255, 181, 71, 0.25); }
+.stage { position: relative; overflow: hidden; }
+.stage canvas { position: absolute; left: 0; top: 0; width: 232px; transform-origin: 0 0; image-rendering: pixelated; cursor: pointer; }
+.controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+.controls button {
+  font: 13px var(--body); color: var(--ink); background: #232640; border: 1px solid var(--line);
+  padding: 9px 10px; cursor: pointer; text-align: left;
+}
+.controls button:hover { border-color: var(--ember); }
+.controls button b { font: 700 11px var(--pixel); color: var(--ember); margin-right: 6px; }
+.hint { font-size: 12px; color: var(--muted); margin: 10px 0 0; }
+
+/* 규칙 */
+section { padding-block: 56px; border-top: 1px solid var(--line); }
+h2 { font: 400 clamp(26px, 3.4vw, 36px)/1.25 var(--display); margin: 0 0 10px; text-wrap: balance; }
+.sub { color: var(--muted); margin: 0 0 32px; max-width: 40em; }
+.rules { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; background: var(--line); border: 2px solid var(--line); }
+.rule { background: var(--panel); padding: 20px 18px; min-width: 0; }
+.rule .k { font: 700 12px var(--pixel); letter-spacing: 0.06em; margin-bottom: 10px; display: block; }
+.rule p { margin: 0; font-size: 14px; color: #CFCDE3; }
+.rule .when { display: block; font-size: 12px; color: var(--muted); margin-top: 8px; }
+.k.fight { color: var(--ember); } .k.rest { color: var(--mana); } .k.hit { color: var(--hit); } .k.over { color: #C9C7DA; } .k.heal { color: var(--hp); }
+
+/* 기능 */
+.feats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 56px; }
+.feat { min-width: 0; }
+.feat h3 { font: 700 18px var(--body); margin: 0 0 6px; display: flex; gap: 10px; align-items: baseline; }
+.feat h3 .tag { font: 700 10px var(--pixel); letter-spacing: 0.08em; padding: 3px 6px; background: #2A2340; color: var(--ember); }
+.feat p { margin: 0; color: #CFCDE3; font-size: 15px; }
+.num { font-family: var(--pixel); font-size: 13px; color: var(--ink); }
+
+/* 무엇을 읽나 */
+.reads { width: 100%; border-collapse: collapse; font-size: 15px; }
+.reads th, .reads td { text-align: left; vertical-align: top; padding: 14px 16px 14px 0; border-bottom: 1px solid var(--line); }
+.reads th { font: 700 13px var(--pixel); color: var(--ember); width: 110px; letter-spacing: 0.04em; }
+.reads td { color: #CFCDE3; }
+.reads td:last-child { color: var(--muted); font-size: 13px; width: 30%; }
+code { font: 13px ui-monospace, Menlo, monospace; background: #232640; padding: 1px 5px; color: #C8D3FF; }
+.scroll { overflow-x: auto; }
+.noserver { margin-top: 24px; font-size: 15px; color: #CFCDE3; display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.noserver b { font: 700 12px var(--pixel); color: var(--night); background: var(--hp); padding: 3px 8px; letter-spacing: 0.06em; }
+
+/* 받기 */
+.dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.os { background: var(--panel); border: 2px solid var(--line); padding: 24px; min-width: 0; }
+.os h3 { font: 400 24px var(--display); margin: 0 0 14px; }
+.os ul { list-style: none; padding: 0; margin: 0 0 16px; display: grid; gap: 8px; }
+.os li a { display: flex; justify-content: space-between; gap: 12px; padding: 12px 14px; background: #232640; color: var(--ink); text-decoration: none; border: 1px solid var(--line); }
+.os li a:hover { border-color: var(--ember); }
+.os li a span:last-child { font: 11px var(--pixel); color: var(--muted); align-self: center; white-space: nowrap; }
+.os li a.mine { border-color: var(--ember); }
+.os .note { font-size: 13px; color: var(--muted); margin: 0; }
+.os .note b { color: var(--ink); font-weight: 500; }
+
+/* 프리미엄 */
+.buy { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.packs { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; background: var(--line); border: 2px solid var(--line); }
+.packs li { background: var(--panel); padding: 14px 18px; display: flex; gap: 14px; align-items: baseline; min-width: 0; }
+.packs .t { font: 700 10px var(--pixel); letter-spacing: 0.08em; color: var(--ember); width: 64px; flex: none; }
+.packs b { font-weight: 700; }
+.packs span.d { color: var(--muted); font-size: 13px; }
+.price { background: var(--panel); border: 2px solid var(--ember); padding: 24px; box-shadow: 6px 6px 0 #8A5A10; }
+.price .amt { font: 400 44px/1 var(--display); margin: 0 0 4px; }
+.price .amt small { font: 12px var(--pixel); color: var(--muted); margin-left: 8px; letter-spacing: 0.04em; }
+.price ul { list-style: none; margin: 16px 0 20px; padding: 0; display: grid; gap: 6px; font-size: 14px; color: #CFCDE3; }
+.price li::before { content: "+ "; color: var(--hp); font: 700 12px var(--pixel); }
+.price .btn { width: 100%; justify-content: center; }
+.btn[aria-disabled="true"] { background: #3A3D5C; color: var(--muted); box-shadow: none; cursor: default; pointer-events: none; }
+.price .fine { font-size: 12px; color: var(--muted); margin: 14px 0 0; }
+.price .fine a { color: var(--muted); }
+.faq { margin-top: 28px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; font-size: 14px; color: #CFCDE3; }
+.faq h3 { font: 700 15px var(--body); margin: 0 0 4px; color: var(--ink); }
+.faq p { margin: 0; }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px 40px; color: var(--muted); font-size: 13px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+footer a { color: var(--muted); }
+footer .vis-note { flex-basis: 100%; font-size: 12px; opacity: 0.8; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .screen { justify-self: start; }
+  .rules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rule:last-child { grid-column: 1 / -1; }
+  .buy { grid-template-columns: minmax(0, 1fr); }
+  .faq { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 620px) {
+  .top nav { display: none; }
+  .feats, .dl, .buy, .faq { grid-template-columns: minmax(0, 1fr); }
+  .rules { grid-template-columns: minmax(0, 1fr); }
+  .reads td:last-child { display: none; }
+  .screen { padding: 18px; }
+}
+.demo { margin-top: 16px; display: flex; justify-content: center; }
+.demo video { width: 100%; max-width: 600px; height: auto; border: 2px solid var(--line, #2A2E4A); border-radius: 12px; background: #141626; image-rendering: pixelated; }
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top"><i></i>TOKEN SLAYER</a>
+    <nav>
+      <a href="#rules">규칙</a>
+      <a href="#features">기능</a>
+      <a href="#faq">질문</a>
+      <a href="#premium">프리미엄</a>
+      <a href="#privacy">읽는 것</a>
+      <a href="#download">받기</a>
+      <a href="https://github.com/sigcrew/token-slayer-releases/releases">모든 버전</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <div>
+        <p class="eyebrow">CLAUDE · CODEX · CURSOR</p>
+        <h1>남은 토큰이 곧<br><em>용사의 HP</em></h1>
+        <p class="lead">AI 에이전트가 일하면 용사가 날아오는 코드를 베고, 쉬면 모닥불 앞에 앉아요. 사용량이 1% 줄 때마다 한 대씩 맞아요. 한도를 확인하러 사이트를 열 필요가 없어요.</p>
+        <div class="cta">
+          <a class="btn" id="primary" href="https://github.com/sigcrew/token-slayer-releases/releases/latest">
+            <span id="primaryText">무료로 받기</span><small id="primaryArch"></small>
+          </a>
+          <span class="alt" id="altLinks">맥 · 윈도우 · <a href="#download">다른 버전</a></span>
+        </div>
+        <p class="ver" id="ver">FREE · MAC &amp; WINDOWS · 자동 업데이트</p>
+      </div>
+
+      <div class="screen" aria-label="Token Slayer 화면 미리보기">
+        <div class="stage" id="stage"><canvas id="scene"></canvas></div>
+        <div class="controls">
+          <button type="button" id="cWork"><b>FIGHT</b>Claude 일 시키기</button>
+          <button type="button" id="cHit"><b>-5%</b>사용량 쓰기</button>
+          <button type="button" id="cHeal"><b>RESET</b>한도 리셋</button>
+          <button type="button" id="cDragon"><b>RARE</b>드래곤 소환</button>
+        </div>
+        <p class="hint">용사를 누르면 반응해요. 다섯 번 연속으로 누르면 화내요.</p>
+      </div>
+    </div>
+
+    <section id="demo">
+      <h2>실제 앱 화면</h2>
+      <p class="sub">설치하면 이렇게 화면 구석에 떠 있어요. 영상은 프리미엄 한국풍 시리즈예요. 갓 쓴 무사와 방망이 든 도깨비가 오방색 잡귀들과 싸워요.</p>
+      <div class="demo"><video src="demo-korea.mp4" poster="demo-korea-poster.png" autoplay muted loop playsinline preload="metadata" aria-label="Token Slayer 실제 화면 영상"></video></div>
+    </section>
+
+    <section id="rules">
+      <h2>사용량을 읽는 법</h2>
+      <p class="sub">서비스마다 용사가 한 명씩 나와요. 5시간 · 주간 · 월간 한도 중 가장 적게 남은 한도가 그 용사의 HP예요.</p>
+      <div class="rules">
+        <div class="rule"><span class="k fight">FIGHT</span><p>에이전트가 일하는 동안 코드와 싸워요.</p><span class="when">작업 기록이 쓰이는 순간 반응</span></div>
+        <div class="rule"><span class="k rest">REST</span><p>일이 끝나면 모닥불 앞에서 쉬어요.</p><span class="when">Claude 45초, Codex 30초 뒤</span></div>
+        <div class="rule"><span class="k hit">HIT</span><p>사용량이 1% 줄 때마다 한 대씩 맞아요.</p><span class="when">HP 20% · 10%에 경고 알림</span></div>
+        <div class="rule"><span class="k over">GAME OVER</span><p>0%가 되면 쓰러지고 비석이 서요.</p><span class="when">리셋까지 남은 시간 표시</span></div>
+        <div class="rule"><span class="k heal">POTION</span><p>한도가 리셋되면 포션을 마시고 부활해요.</p><span class="when">레벨과 경험치는 그대로</span></div>
+      </div>
+    </section>
+
+    <section id="features">
+      <h2>쓰는 만큼 자라는 용사</h2>
+      <p class="sub">아껴 쓰라는 앱이 아니에요. 한도는 리셋 전에 쓰는 게 이득이라, 쓸수록 레벨이 올라요.</p>
+      <div class="feats">
+        <div class="feat"><h3>BURNING TIME <span class="tag">XP ×2</span></h3><p>주간 · 월간 한도의 리셋이 가까운데 많이 남았으면 경험치가 두 배가 돼요. 주간은 리셋 12시간 전에 20% 이상, 월간은 3일 전에 20% 이상 남았을 때예요.</p></div>
+        <div class="feat"><h3>바닥 예측</h3><p>최근 30분 속도로 언제 0%가 되는지 계산해요. 리셋보다 먼저 바닥나면 <span class="num">OUT 1H20</span>처럼 미리 알려 줘요.</p></div>
+        <div class="feat"><h3>레벨 · 업적 <span class="tag">64</span></h3><p>서비스마다 공평하게 경험치를 받아요. 새벽 작업, 연속 BURNING, 게임 오버 뒤 부활 같은 업적이 있고 몇 개는 숨겨져 있어요. 용사를 오른쪽 클릭하거나 메뉴바(트레이) 아이콘을 눌러 <b>업적</b>에서 달성 목록을 볼 수 있어요.</p></div>
+        <div class="feat"><h3>전설의 드래곤 <span class="tag">1 / 60000</span></h3><p>아주 드물게 드래곤이 날아와요. 한 번 나오면 7일 동안은 안 나와요. 나오면 알림이 가니까 놓치지 마세요.</p></div>
+        <div class="feat"><h3>꾸미기 <span class="tag">FREE 17</span></h3><p>해적, 요리사, 우주인, 고양이, 바이킹 같은 용사 직업과 날아오는 적(커밋 로그, 알림 폭탄, 타입 에러), 쉬는 장면(야식 라면, 휴대용 게임기)을 서비스마다 골라요. 몇 개는 레벨을 올려야 열려요. 용사를 오른쪽 클릭하거나 메뉴바(트레이) 아이콘을 눌러 <b>꾸미기</b>에서 용사 · 적 · 쉬는 장면 · 배경을 바꿔요.</p></div>
+        <div class="feat"><h3>주간 기록 카드</h3><p>이번 주에 서비스별로 얼마나 썼는지 이미지 한 장으로 만들어 줘요. 바로 붙여 넣을 수 있게 클립보드에도 복사돼요.</p></div>
+      </div>
+    </section>
+
+    %%FAQ%%
+
+    <section id="premium">
+      <h2>프리미엄 꾸미기 팩</h2>
+      <p class="sub">앱은 계속 무료예요. 꾸미기를 더 즐기고 싶다면 여섯 가지 세계관 시리즈, 프리미엄 팩 31종을 한 번에 열 수 있어요. 결제하면 개발을 응원하는 셈이 돼요.</p>
+      <div class="buy">
+        <ul class="packs">
+          <li><span class="t">🎌 일본풍</span><span><b>사무라이 · 닌자</b> <span class="d">검광과 벚꽃 · 스카프와 연막 · 신사 야경 · 요괴 · 별밤 랜턴</span></span></li>
+          <li><span class="t">🐯 한국풍</span><span><b>무사 · 도깨비</b> <span class="d">갓과 환도 · 방망이와 호피 머리띠 · 경복궁 야경 · 단풍 산사 · 한양의 잡귀들 · 정자 달밤</span></span></li>
+          <li><span class="t">🔥 야근 지옥</span><span><b>악마</b> <span class="d">꼬리와 불꽃 뿔 · 용암 · 용암 온천 · 레거시 코드 · 회의 지옥</span></span></li>
+          <li><span class="t">🏰 던전</span><span><b>성기사</b> <span class="d">후광과 전투 망치 · 던전 · 횃불 야영 · 던전 몬스터</span></span></li>
+          <li><span class="t">🎃 할로윈</span><span><b>마녀 · 흡혈귀</b> <span class="d">초록 눈빛 마법과 박쥐 망토 · 달밤 묘지 · 호박밭 · 유령과 친구들 · 호박 랜턴</span></span></li>
+          <li><span class="t">🌃 사이버</span><span><b>해커</b> <span class="d">RGB 키보드와 키캡 탄 · 사이버펑크 · 서버실 · 야간 코딩 책상 · 사이버 공격</span></span></li>
+        </ul>
+        <div class="price">
+          <p class="amt">₩6,900<small>ONE-TIME</small></p>
+          <ul>
+            <li>구독 없이 한 번만 결제</li>
+            <li>프리미엄 팩 31종 전부, 앞으로 추가되는 프리미엄 팩도 포함</li>
+            <li>고해상도 도트 용사 (꾸미기 → 도트 해상도에서 켜기)</li>
+            <li>컴퓨터 2대까지 사용 (맥 · 윈도우 모두)</li>
+            <li>결제하면 라이선스 키를 이메일로 보내 드려요</li>
+          </ul>
+          <a class="btn" id="buy" href="%%CHECKOUT_URL%%">프리미엄 팩 구매하기</a>
+          <p class="fine">결제는 Lemon Squeezy가 처리하고 부가세도 여기서 계산돼요. 카드 정보는 이 앱과 사이트에 저장되지 않아요.</p>
+        </div>
+      </div>
+      <div class="faq">
+        <div><h3>레벨을 올려도 열리나요?</h3><p>네. 던전은 Lv.10, 사무라이는 Lv.34, 닌자는 Lv.40처럼 팩마다 정해진 레벨이 되면 어느 용사든 무료로 열려요. 레벨은 한도를 꾸준히 채워 쓸수록 올라가고, 닌자까지는 한도를 매주 다 써도 4~5개월쯤 걸려요. 결제는 기다리지 않고 바로 쓰고 싶은 분을 위한 지름길이에요.</p></div>
+        <div><h3>어떻게 적용하나요?</h3><p>앱의 <b>꾸미기 → 프리미엄 팩 구매하기</b>에서 결제하고, 받은 키를 복사한 뒤 <b>복사한 라이선스 키로 잠금 해제</b>를 누르면 끝이에요.</p></div>
+        <div><h3>환불되나요?</h3><p>구매 후 14일 안에는 이유를 묻지 않고 환불해 드려요. 환불하면 키는 자동으로 비활성화돼요. 결제 · 환불 문의는 <a href="mailto:yong@sigcrew.com">yong@sigcrew.com</a>로 메일을 보내 주세요.</p></div>
+      </div>
+    </section>
+
+    <section id="privacy">
+      <h2>무엇을 읽나요</h2>
+      <p class="sub">이미 로그인해 둔 앱의 정보로 사용량만 물어봐요. 대화 내용은 읽지 않아요.</p>
+      <div class="scroll">
+        <table class="reads">
+          <tr><th>CLAUDE</th><td>Claude Code 로그인, 또는 앱 안에서 한 claude.ai 로그인으로 사용량을 물어봐요</td><td>api.anthropic.com · claude.ai</td></tr>
+          <tr><th>CODEX</th><td><code>~/.codex/sessions</code> 기록 파일의 사용 한도 줄을 읽고, Codex 로그인으로 사용량만 물어봐요 (끌 수 있어요)</td><td>chatgpt.com</td></tr>
+          <tr><th>CURSOR</th><td>Cursor 로그인 토큰으로 사용량을 물어봐요</td><td>cursor.com</td></tr>
+          <tr><th>작업 감지</th><td>위 앱들이 파일을 쓰는 <b>시각</b>만 봐요</td><td>내용은 열지 않음</td></tr>
+        </table>
+      </div>
+      <p class="noserver"><b>NO SERVER</b>Token Slayer 앱은 따로 운영하는 서버가 없고 아무것도 수집하지 않아요. 모든 처리는 내 컴퓨터 안에서 끝나요.</p>
+    </section>
+
+    <section id="download">
+      <h2>받기</h2>
+      <p class="sub">한 번 설치하면 새 버전은 앱이 알아서 받아서 설치해요.</p>
+      <div class="dl">
+        <div class="os">
+          <h3>macOS</h3>
+          <ul>
+            <li><a id="dMacArm" href="https://github.com/sigcrew/token-slayer-releases/releases/latest/download/TokenSlayer-mac-arm64.dmg"><span>Apple 실리콘 (M1 이후)</span><span>ARM64 · DMG</span></a></li>
+            <li><a id="dMacX64" href="https://github.com/sigcrew/token-slayer-releases/releases/latest/download/TokenSlayer-mac-x64.dmg"><span>Intel 맥</span><span>X64 · DMG</span></a></li>
+          </ul>
+          <p class="note">dmg를 열고 앱을 <b>응용 프로그램</b> 폴더로 옮긴 다음 열어요. Apple 공증을 받아서 경고 없이 열려요.</p>
+        </div>
+        <div class="os">
+          <h3>Windows</h3>
+          <ul>
+            <li><a id="dWinX64" href="https://github.com/sigcrew/token-slayer-releases/releases/latest/download/TokenSlayer-Setup-x64.exe"><span>설치 파일</span><span>X64 · EXE</span></a></li>
+            <li><a id="dWinArm" href="https://github.com/sigcrew/token-slayer-releases/releases/latest/download/TokenSlayer-Setup-arm64.exe"><span>설치 파일 (ARM 노트북)</span><span>ARM64 · EXE</span></a></li>
+            <li><a href="https://github.com/sigcrew/token-slayer-releases/releases/latest/download/TokenSlayer-Portable-x64.exe"><span>설치 없이 실행 (자동 업데이트 없음)</span><span>PORTABLE</span></a></li>
+          </ul>
+          <p class="note">아직 코드 서명이 없어서 처음에 <b>Windows의 PC 보호</b> 창이 떠요. 설치 파일을 연 뒤 <b>① 추가 정보</b>를 누르고 <b>② 실행</b>을 누르면 돼요.</p>
+          <p class="note">받은 파일이 맞는지 확인하고 싶다면, 릴리스의 <a href="https://github.com/sigcrew/token-slayer-releases/releases/latest">SHA256SUMS.txt</a>에 있는 값과 비교해 보세요. (PowerShell: <b>Get-FileHash 파일이름</b>)</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Token Slayer · SIG Inc.</span>
+    <span>%%LANG_FOOTER%% · <a href="https://github.com/sigcrew/token-slayer-releases/releases">모든 버전 · 변경 내역</a></span>
+    <span>문의 <a href="mailto:yong@sigcrew.com">yong@sigcrew.com</a> · 버그 제보 <a href="https://github.com/sigcrew/token-slayer-releases/issues">GitHub 이슈</a></span>
+    <span class="vis-note">이 소개 사이트는 쿠키 없이 방문자 수만 집계해요 (Vercel Web Analytics). 앱은 아무것도 수집하지 않아요.</span>
+  </footer>
+</div>
+
+<script defer src="/_vercel/insights/script.js"></script>
+<script src="builtin-packs.js"></script>
+<script src="scene.js"></script>
+<script>
+(function () {
+  // ── 구매 링크가 아직 없으면 버튼을 잠근다 ──
+  const buy = document.getElementById('buy');
+  if (buy && buy.getAttribute('href').indexOf('%%') === 0) {
+    buy.removeAttribute('href');
+    buy.setAttribute('aria-disabled', 'true');
+    buy.textContent = '곧 열려요';
+  }
+})();
+(function () {
+  // ── 내 컴퓨터에 맞는 받기 버튼 ──
+  const REL = 'https://github.com/sigcrew/token-slayer-releases/releases/latest/download/';
+  const ua = navigator.userAgent;
+  const isMac = /Mac/.test(navigator.platform || ua) && !/iPhone|iPad/.test(ua);
+  const isWin = /Win/.test(navigator.platform || ua);
+  const primary = document.getElementById('primary');
+  const setPrimary = (text, arch, file, id) => {
+    document.getElementById('primaryText').textContent = text;
+    document.getElementById('primaryArch').textContent = arch;
+    primary.href = REL + file;
+    document.querySelectorAll('.os li a.mine').forEach((a) => a.classList.remove('mine'));
+    const el = document.getElementById(id);
+    if (el) el.classList.add('mine');
+  };
+  if (isMac) {
+    setPrimary('맥용 받기', 'APPLE SILICON', 'TokenSlayer-mac-arm64.dmg', 'dMacArm');
+    document.getElementById('altLinks').innerHTML = 'Intel 맥이라면 <a href="' + REL + 'TokenSlayer-mac-x64.dmg">여기</a> · <a href="#download">윈도우</a>';
+    // 크롬 계열은 CPU 종류를 알려 줌
+    if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+      navigator.userAgentData.getHighEntropyValues(['architecture']).then((v) => {
+        if (v.architecture === 'x86') {
+          setPrimary('맥용 받기', 'INTEL', 'TokenSlayer-mac-x64.dmg', 'dMacX64');
+          document.getElementById('altLinks').innerHTML = 'Apple 실리콘이라면 <a href="' + REL + 'TokenSlayer-mac-arm64.dmg">여기</a> · <a href="#download">윈도우</a>';
+        }
+      }).catch(() => {});
+    }
+  } else if (isWin) {
+    setPrimary('윈도우용 받기', 'X64', 'TokenSlayer-Setup-x64.exe', 'dWinX64');
+    document.getElementById('altLinks').innerHTML = '<a href="' + REL + 'TokenSlayer-Setup-arm64.exe">ARM 노트북</a> · <a href="#download">맥</a>';
+    if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+      navigator.userAgentData.getHighEntropyValues(['architecture']).then((v) => {
+        if (v.architecture === 'arm') setPrimary('윈도우용 받기', 'ARM64', 'TokenSlayer-Setup-arm64.exe', 'dWinArm');
+      }).catch(() => {});
+    }
+  } else {
+    document.getElementById('primaryText').textContent = '맥 · 윈도우용 받기';
+    primary.href = '#download';
+  }
+
+  // 최신 버전 번호 (못 가져오면 그대로 둠)
+  fetch('https://api.github.com/repos/sigcrew/token-slayer-releases/releases/latest')
+    .then((r) => (r.ok ? r.json() : null))
+    .then((d) => { if (d && d.tag_name) document.getElementById('ver').textContent = d.tag_name.toUpperCase() + ' · FREE · MAC & WINDOWS · 자동 업데이트'; })
+    .catch(() => {});
+
+  // ── 살아 있는 용사 화면 ──
+  const canvas = document.getElementById('scene');
+  const stage = document.getElementById('stage');
+  if (!window.Scene) { stage.textContent = ''; return; }
+  const scene = new window.Scene(canvas);
+  const packs = window.BUILTIN_PACKS || [];
+  const skin = (id) => packs.find((p) => p.type === 'hero' && p.id === id);
+  scene.setHeroes([
+    { id: 'claude', name: 'Claude', color: '#E07A5F' },
+    { id: 'codex', name: 'Codex', color: '#6C8CFF' },
+    { id: 'cursor', name: 'Cursor', color: '#B98CFF' },
+  ]);
+  scene.setTheme({ skins: { claude: skin('knight'), codex: skin('wizard'), cursor: skin('archer') } });
+  const now = Date.now();
+  const hp = { claude: 72, codex: 41, cursor: 88 };
+  const lv = { claude: 7, codex: 4, cursor: 12 };
+  const busy = { claude: true, codex: true, cursor: false };
+  scene.setState('claude', { hp: hp.claude, busy: true, level: lv.claude, levelProgress: 0.55, resetAt: now + 3.2 * 3600e3 });
+  scene.setState('codex', { hp: hp.codex, busy: true, level: lv.codex, levelProgress: 0.3, resetAt: now + 1.4 * 3600e3 });
+  scene.setState('cursor', { hp: hp.cursor, busy: false, level: lv.cursor, levelProgress: 0.8, resetAt: now + 12 * 86400e3 });
+
+  // 크기: 화면 폭에 맞춰 도트가 깨지지 않는 배율로
+  let S = 2;
+  function fit() {
+    const wrapW = document.querySelector('.wrap').clientWidth - 40; // 좌우 여백 제외
+    const avail = window.innerWidth > 900 ? 232 * 2 : wrapW - 32;
+    const choices = [2, 1.5, 1.25, 1];
+    S = choices.find((c) => 232 * c <= avail) || 1;
+    canvas.style.transform = 'scale(' + S + ')';
+    stage.style.width = 232 * S + 'px';
+    stage.style.height = scene.height() * S + 'px';
+    stage.parentElement.style.width = (232 * S + 36) + 'px';
+  }
+  fit();
+  window.addEventListener('resize', fit);
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let last = performance.now();
+  (function loop(t) {
+    const dt = Math.min(0.05, (t - last) / 1000); last = t;
+    scene.frame(reduce ? dt * 0.5 : dt);
+    requestAnimationFrame(loop);
+  })(last);
+
+  function use(id, pct) {
+    if (hp[id] <= 0) return;
+    const d = Math.min(pct, hp[id]);
+    hp[id] = Math.max(0, hp[id] - d);
+    scene.setState(id, { hp: hp[id] });
+    scene.hit(id, d);
+  }
+  function reset(id) {
+    const d = 100 - hp[id];
+    hp[id] = 100;
+    scene.setState(id, { hp: 100 });
+    scene.heal(id, d);
+  }
+
+  // 조작 버튼 (Claude 줄)
+  const bWork = document.getElementById('cWork');
+  bWork.onclick = () => {
+    busy.claude = !busy.claude;
+    scene.setState('claude', { busy: busy.claude });
+    bWork.innerHTML = busy.claude ? '<b>REST</b>Claude 쉬게 하기' : '<b>FIGHT</b>Claude 일 시키기';
+  };
+  bWork.innerHTML = '<b>REST</b>Claude 쉬게 하기';
+  document.getElementById('cHit').onclick = () => use('claude', 5);
+  document.getElementById('cHeal').onclick = () => reset('claude');
+  document.getElementById('cDragon').onclick = () => {
+    const h = scene.get('claude');
+    if (!busy.claude) bWork.click();
+    if (h && !h.enemies.some((e) => e.dragon)) h.enemies.push({ x: scene.w - 20, text: 'DRAGON', color: '#FF4D2E', speed: 22, bob: 0, dragon: true });
+  };
+
+  // 용사 쓰다듬기
+  canvas.addEventListener('click', (e) => {
+    const r = canvas.getBoundingClientRect();
+    const h = scene.heroAt((e.clientX - r.left) / S, (e.clientY - r.top) / S);
+    if (h) scene.poke(h);
+  });
+
+  // Codex · Cursor는 알아서 일하고 쉬고 맞고 부활
+  let tick = 0;
+  setInterval(() => {
+    tick++;
+    if (tick % 3 === 0) use('codex', 2 + Math.round(Math.random() * 4));
+    if (hp.codex <= 0 && tick % 5 === 0) reset('codex');
+    if (tick % 7 === 0) { busy.cursor = !busy.cursor; scene.setState('cursor', { busy: busy.cursor }); }
+    if (busy.cursor && tick % 4 === 0) use('cursor', 1 + Math.round(Math.random() * 2));
+    if (hp.cursor < 30) reset('cursor');
+    if (busy.claude && tick % 4 === 0) use('claude', 1);
+    if (hp.claude <= 0 && tick % 8 === 0) reset('claude');
+  }, 1500);
+})();
+</script>

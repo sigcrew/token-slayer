@@ -1,0 +1,29 @@
+{
+ "id": "monsters",
+ "type": "enemies",
+ "name": "던전 몬스터",
+ "tier": "premium",
+ "unlockLevel": 14,
+ "series": "던전",
+ "texts": [
+  "SLIME",
+  "GOBLIN",
+  "BAT",
+  "RAT",
+  "SPIDER",
+  "MIMIC",
+  "ORC",
+  "TROLL"
+ ],
+ "colors": [
+  "#8FD694",
+  "#B8F28D",
+  "#C9C4D6",
+  "#FFCB6B"
+ ],
+ "fatal": [
+  "DRAKE",
+  "LICH",
+  "BOSS"
+ ]
+}

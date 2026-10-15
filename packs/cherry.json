@@ -1,0 +1,62 @@
+{
+ "id": "cherry",
+ "type": "backdrop",
+ "name": "벚꽃",
+ "tier": "free",
+ "sky": [
+  "#2A2145",
+  "#5E3A6E",
+  "#C9789C"
+ ],
+ "floor": {
+  "color": "#4A2C4E",
+  "edge": "#E58FB0"
+ },
+ "props": [
+  {
+   "grid": [
+    "....pphpp.....",
+    "..ppPpppPpp...",
+    ".pppPppphppp..",
+    "ppPpppPppPppp.",
+    "pppphpppPpppp.",
+    ".pPpppPppppP..",
+    "..pppPppphp...",
+    "....ppptpp....",
+    "......tt......",
+    "......tt......",
+    ".....tttt....."
+   ],
+   "palette": {
+    "t": "#3A2236",
+    "p": "#F6B8CF",
+    "P": "#E88AB0",
+    "h": "#FFE1EC"
+   },
+   "x": -16,
+   "dy": 0,
+   "s": 2,
+   "lanes": [
+    0,
+    1,
+    2
+   ]
+  }
+ ],
+ "particles": {
+  "kind": "fall",
+  "count": 22,
+  "colors": [
+   "#FFD1E1",
+   "#F7A8C4",
+   "#FFFFFF"
+  ],
+  "size": 2,
+  "wide": true,
+  "speed": 13,
+  "drift": 11,
+  "sway": 1.6
+ },
+ "veil": 0.12,
+ "series": "일본풍"
+}

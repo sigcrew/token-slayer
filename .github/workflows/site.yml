@@ -1,0 +1,46 @@
+# 소개 페이지를 만들어 배포 전용 공개 저장소(sigcrew/token-slayer-releases)의 web/ 폴더에 올린다.
+# Vercel은 그 공개 저장소의 web/ 폴더를 배포한다 (비공개 코드 저장소는 Vercel에 연결하지 않음).
+name: Site
+
+on:
+  push:
+    branches: [main]
+    paths: ['site/**', 'renderer/scene.js', 'packs/**', 'assets/icon.png', 'scripts/build-site.js', 'scripts/build-packs.js', 'scripts/og-shot.js', 'src/license-config.js', '.github/workflows/site.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - run: node scripts/build-site.js
+      - name: 링크 미리보기 이미지(og.png) 만들기
+        run: |
+          mkdir -p "$RUNNER_TEMP/pw" && cd "$RUNNER_TEMP/pw" && npm init -y >/dev/null && npm i --no-audit --no-fund playwright@1.49.1 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+          cd "$GITHUB_WORKSPACE" && NODE_PATH="$RUNNER_TEMP/pw/node_modules" node scripts/og-shot.js
+          rm -f _site/og.html
+      - uses: actions/checkout@v5
+        with:
+          repository: sigcrew/token-slayer-releases
+          token: ${{ secrets.RELEASES_TOKEN }}
+          path: rel
+      - name: 공개 저장소 web/ 에 복사
+        run: |
+          rm -rf rel/web && mkdir -p rel/web && cp -R _site/. rel/web/
+          cat > rel/web/vercel.json <<'EOF'
+          { "cleanUrls": true, "headers": [ { "source": "/(.*)", "headers": [ { "key": "X-Content-Type-Options", "value": "nosniff" } ] } ] }
+          EOF
+          cp "$GITHUB_WORKSPACE/site/releases-README.md" rel/README.md   # 공개 저장소 첫 화면(README)도 같이 최신으로
+          cd rel
+          git config user.name "token-slayer-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A web README.md
+          if git diff --cached --quiet; then echo "변경 없음"; exit 0; fi
+          git commit -m "소개 페이지 업데이트 (${GITHUB_SHA::7})"
+          git push

@@ -1,0 +1,26 @@
+{
+ "id": "ramen",
+ "type": "rest",
+ "name": "야식 라면",
+ "tier": "free",
+ "glow": null,
+ "steam": true,
+ "frames": [
+  [
+   "......k.",
+   ".....k..",
+   "....k.k.",
+   "oooooooo",
+   "oyynnyyo",
+   "orrrrrro",
+   ".orrrro.",
+   "..oooo.."
+  ]
+ ],
+ "palette": {
+  "y": "#FFE08A",
+  "n": "#FF9EB5",
+  "r": "#D94B3D",
+  "k": "#D9A45B"
+ }
+}

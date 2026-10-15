@@ -1,0 +1,39 @@
+{
+ "id": "hotspring",
+ "type": "rest",
+ "name": "용암 온천",
+ "tier": "premium",
+ "unlockLevel": 26,
+ "series": "야근 지옥",
+ "glow": "#FF6A1F",
+ "embers": true,
+ "steam": true,
+ "frames": [
+  [
+   "...y....",
+   ".rllllr.",
+   "rllllllr",
+   "rlllyllr",
+   ".rrrrrr."
+  ],
+  [
+   "....y...",
+   ".rllllr.",
+   "rllyllyr",
+   "rlllllll",
+   ".rrrrrr."
+  ],
+  [
+   "..y.....",
+   ".rllllr.",
+   "rlllllyr",
+   "rllyllll",
+   ".rrrrrr."
+  ]
+ ],
+ "palette": {
+  "r": "#3A2224",
+  "l": "#FF5A1F",
+  "y": "#FFD166"
+ }
+}

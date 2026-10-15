@@ -1,0 +1,34 @@
+{
+ "id": "console",
+ "type": "rest",
+ "name": "휴대용 게임기",
+ "tier": "free",
+ "glow": "#8FD694",
+ "frames": [
+  [
+   "ooooooo",
+   "ogggggo",
+   "oghgggo",
+   "ogggggo",
+   "obbbbbo",
+   "obrbybo",
+   "ooooooo"
+  ],
+  [
+   "ooooooo",
+   "ogggggo",
+   "ogggggo",
+   "oggghgo",
+   "obbbbbo",
+   "obrbybo",
+   "ooooooo"
+  ]
+ ],
+ "palette": {
+  "g": "#8FD694",
+  "h": "#2E6B3F",
+  "b": "#C9C4D6",
+  "r": "#FF5C8A",
+  "y": "#FFD166"
+ }
+}

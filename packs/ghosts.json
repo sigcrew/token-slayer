@@ -1,0 +1,29 @@
+{
+ "id": "ghosts",
+ "type": "enemies",
+ "name": "유령과 친구들",
+ "tier": "premium",
+ "unlockLevel": 15,
+ "series": "할로윈",
+ "texts": [
+  "BOO",
+  "BAT",
+  "GHOST",
+  "WEB",
+  "SKULL",
+  "CURSE",
+  "ZOMBIE",
+  "CANDY"
+ ],
+ "colors": [
+  "#F4F0FF",
+  "#FFB347",
+  "#B58CFF",
+  "#8CFF6B",
+  "#FF7A3D"
+ ],
+ "fatal": [
+  "VAMPIRE",
+  "WEREWOLF"
+ ]
+}

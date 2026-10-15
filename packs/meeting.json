@@ -1,0 +1,27 @@
+{
+ "id": "meeting",
+ "type": "enemies",
+ "name": "회의 지옥",
+ "tier": "premium",
+ "texts": [
+  "MTG",
+  "SYNC",
+  "JIRA",
+  "ASAP",
+  "EOD",
+  "1:1",
+  "FYI",
+  "PING"
+ ],
+ "colors": [
+  "#7CC7FF",
+  "#D29BFF",
+  "#FFCB6B"
+ ],
+ "fatal": [
+  "URGENT",
+  "ALL-HANDS"
+ ],
+ "unlockLevel": 38,
+ "series": "야근 지옥"
+}

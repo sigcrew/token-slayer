@@ -1,0 +1,59 @@
+{
+ "id": "jacklantern",
+ "type": "rest",
+ "name": "호박 랜턴",
+ "tier": "premium",
+ "unlockLevel": 19,
+ "series": "할로윈",
+ "glow": "#FF9F3A",
+ "embers": false,
+ "frames": [
+  [
+   "....s....",
+   "..ooooo..",
+   ".oOOOOOo.",
+   "oOyOOOyOo",
+   "oOOOyOOOo",
+   "oOyyyyyOo",
+   ".oOOOOOo.",
+   "..ooooo.."
+  ],
+  [
+   "....s....",
+   "..ooooo..",
+   ".oOOOOOo.",
+   "oOfOOOfOo",
+   "oOOOfOOOo",
+   "oOfffffOo",
+   ".oOOOOOo.",
+   "..ooooo.."
+  ],
+  [
+   "....s....",
+   "..ooooo..",
+   ".oOOOOOo.",
+   "oOyOOOyOo",
+   "oOOOyOOOo",
+   "oOyyyyyOo",
+   ".oOOOOOo.",
+   "..ooooo.."
+  ],
+  [
+   "....s....",
+   "..ooooo..",
+   ".oOOOOOo.",
+   "oOfOOOfOo",
+   "oOOOfOOOo",
+   "oOfffffOo",
+   ".oOOOOOo.",
+   "..ooooo.."
+  ]
+ ],
+ "palette": {
+  "o": "#4A2008",
+  "O": "#FF8A1F",
+  "s": "#4FA84A",
+  "y": "#FFE066",
+  "f": "#FF9F1C"
+ }
+}

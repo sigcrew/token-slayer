@@ -1,0 +1,83 @@
+{
+ "id": "shrine",
+ "type": "backdrop",
+ "name": "신사 야경",
+ "tier": "premium",
+ "unlockLevel": 12,
+ "series": "일본풍",
+ "sky": [
+  "#0E0F2E",
+  "#2B2452",
+  "#6A3D6F"
+ ],
+ "floor": {
+  "color": "#2A2244",
+  "edge": "#7A62B4"
+ },
+ "props": [
+  {
+   "grid": [
+    "....mm....",
+    "..mmmddd..",
+    ".mmmddddd.",
+    ".mmmddddd.",
+    "mmmmdddddd",
+    "mmmmdddddm",
+    ".mmmmdddm.",
+    ".mmmmmmmm.",
+    "..mmmmmm..",
+    "....mm...."
+   ],
+   "palette": {
+    "m": "#FFF1C4",
+    "d": "#F0D9A0"
+   },
+   "x": -84,
+   "dy": -28,
+   "s": 2,
+   "lanes": [
+    0
+   ]
+  },
+  {
+   "grid": [
+    "kkkkkkkkkkkkkk",
+    ".rrrrrrrrrrrr.",
+    "..r........r..",
+    ".rrrrrrrrrrrr.",
+    "..r........r..",
+    "..r........r..",
+    "..r........r..",
+    "..r........r.."
+   ],
+   "palette": {
+    "r": "#D8433A",
+    "k": "#1B1220"
+   },
+   "x": -38,
+   "dy": 0,
+   "s": 2
+  }
+ ],
+ "glows": [
+  {
+   "x": -52,
+   "dy": -14,
+   "color": "#FF8A4A",
+   "r": 24,
+   "a": 0.2,
+   "speed": 6
+  }
+ ],
+ "particles": {
+  "kind": "twinkle",
+  "count": 22,
+  "colors": [
+   "#FFFFFF",
+   "#FFE9A8",
+   "#CFE0FF"
+  ],
+  "size": 1
+ },
+ "veil": 0.1
+}

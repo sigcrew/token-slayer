@@ -1,0 +1,27 @@
+{
+ "id": "slack",
+ "type": "enemies",
+ "name": "알림 폭탄",
+ "tier": "free",
+ "texts": [
+  "HERE?",
+  "PING",
+  "DM",
+  "LGTM?",
+  "ASAP",
+  "EOD",
+  "1:1",
+  "+1"
+ ],
+ "colors": [
+  "#FFB547",
+  "#FF7AA8",
+  "#7CC7FF",
+  "#E8E6F5"
+ ],
+ "fatal": [
+  "URGENT",
+  "MTG",
+  "CALL"
+ ]
+}

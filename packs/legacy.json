@@ -1,0 +1,28 @@
+{
+ "id": "legacy",
+ "type": "enemies",
+ "name": "레거시 코드",
+ "tier": "premium",
+ "texts": [
+  "TODO",
+  "FIXME",
+  "HACK",
+  "XXX",
+  "GOTO",
+  "EVAL",
+  "VAR",
+  "JQUERY"
+ ],
+ "colors": [
+  "#C8B68A",
+  "#A59F8A",
+  "#D6C58E",
+  "#9FB0A0"
+ ],
+ "fatal": [
+  "LEGACY",
+  "SPAGHETTI"
+ ],
+ "unlockLevel": 30,
+ "series": "야근 지옥"
+}

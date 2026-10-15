@@ -1,0 +1,507 @@
+{
+ "id": "serverroom",
+ "type": "backdrop",
+ "name": "서버실",
+ "tier": "premium",
+ "unlockLevel": 32,
+ "series": "사이버",
+ "sky": [
+  "#07130F",
+  "#0B1E19"
+ ],
+ "tile": {
+  "grid": [
+   "a",
+   "b"
+  ],
+  "palette": {
+   "a": "#0B1E19",
+   "b": "#091813"
+  },
+  "s": 1
+ },
+ "floor": {
+  "color": "#0E2420",
+  "edge": "#2A8F72"
+ },
+ "props": [
+  {
+   "grid": [
+    "kkkkkkkkkk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kkkkkkkkkk"
+   ],
+   "palette": {
+    "k": "#1B2E29",
+    "s": "#12201D",
+    "d": "#0C1613"
+   },
+   "x": 96,
+   "dy": 0,
+   "s": 2
+  },
+  {
+   "grid": [
+    "kkkkkkkkkk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kkkkkkkkkk"
+   ],
+   "palette": {
+    "k": "#1B2E29",
+    "s": "#12201D",
+    "d": "#0C1613"
+   },
+   "x": 120,
+   "dy": 0,
+   "s": 2
+  },
+  {
+   "grid": [
+    "kkkkkkkkkk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kkkkkkkkkk"
+   ],
+   "palette": {
+    "k": "#1B2E29",
+    "s": "#12201D",
+    "d": "#0C1613"
+   },
+   "x": 144,
+   "dy": 0,
+   "s": 2
+  },
+  {
+   "grid": [
+    "kkkkkkkkkk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kkkkkkkkkk"
+   ],
+   "palette": {
+    "k": "#1B2E29",
+    "s": "#12201D",
+    "d": "#0C1613"
+   },
+   "x": 168,
+   "dy": 0,
+   "s": 2
+  },
+  {
+   "grid": [
+    "kkkkkkkkkk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kdddddddsk",
+    "kssssssssk",
+    "kkkkkkkkkk"
+   ],
+   "palette": {
+    "k": "#1B2E29",
+    "s": "#12201D",
+    "d": "#0C1613"
+   },
+   "x": 192,
+   "dy": 0,
+   "s": 2
+  }
+ ],
+ "blinkers": [
+  {
+   "x": 99,
+   "dy": -23,
+   "color": "#FFB347",
+   "speed": 4.8,
+   "phase": 4.99
+  },
+  {
+   "x": 102,
+   "dy": -23,
+   "color": "#3DFF7A",
+   "speed": 5.3,
+   "phase": 4.87
+  },
+  {
+   "x": 99,
+   "dy": -19,
+   "color": "#3DFF7A",
+   "speed": 4.4,
+   "phase": 5.66
+  },
+  {
+   "x": 102,
+   "dy": -19,
+   "color": "#3DFF7A",
+   "speed": 3.2,
+   "phase": 5.45
+  },
+  {
+   "x": 99,
+   "dy": -15,
+   "color": "#FF5C6A",
+   "speed": 3.9,
+   "phase": 3.6
+  },
+  {
+   "x": 102,
+   "dy": -15,
+   "color": "#3DFF7A",
+   "speed": 4.8,
+   "phase": 2.56
+  },
+  {
+   "x": 99,
+   "dy": -11,
+   "color": "#3DFF7A",
+   "speed": 5.6,
+   "phase": 4.81
+  },
+  {
+   "x": 102,
+   "dy": -11,
+   "color": "#3DFF7A",
+   "speed": 4.9,
+   "phase": 0.45
+  },
+  {
+   "x": 99,
+   "dy": -7,
+   "color": "#FF5C6A",
+   "speed": 2.1,
+   "phase": 0.01
+  },
+  {
+   "x": 102,
+   "dy": -7,
+   "color": "#3DFF7A",
+   "speed": 2.4,
+   "phase": 1.35
+  },
+  {
+   "x": 123,
+   "dy": -23,
+   "color": "#3DFF7A",
+   "speed": 5.4,
+   "phase": 1.82
+  },
+  {
+   "x": 126,
+   "dy": -23,
+   "color": "#3DFF7A",
+   "speed": 3.9,
+   "phase": 4.26
+  },
+  {
+   "x": 123,
+   "dy": -19,
+   "color": "#3DFF7A",
+   "speed": 2.3,
+   "phase": 6.08
+  },
+  {
+   "x": 126,
+   "dy": -19,
+   "color": "#3DFF7A",
+   "speed": 5.8,
+   "phase": 5.61
+  },
+  {
+   "x": 123,
+   "dy": -15,
+   "color": "#FFB347",
+   "speed": 1.6,
+   "phase": 2.61
+  },
+  {
+   "x": 126,
+   "dy": -15,
+   "color": "#3DFF7A",
+   "speed": 2.7,
+   "phase": 2.08
+  },
+  {
+   "x": 123,
+   "dy": -11,
+   "color": "#3DFF7A",
+   "speed": 4.2,
+   "phase": 4.44
+  },
+  {
+   "x": 126,
+   "dy": -11,
+   "color": "#3DFF7A",
+   "speed": 2.9,
+   "phase": 5.14
+  },
+  {
+   "x": 123,
+   "dy": -7,
+   "color": "#FF5C6A",
+   "speed": 4.6,
+   "phase": 1.16
+  },
+  {
+   "x": 126,
+   "dy": -7,
+   "color": "#FF5C6A",
+   "speed": 4.7,
+   "phase": 0.36
+  },
+  {
+   "x": 147,
+   "dy": -23,
+   "color": "#3DFF7A",
+   "speed": 5.8,
+   "phase": 2.25
+  },
+  {
+   "x": 150,
+   "dy": -23,
+   "color": "#FF5C6A",
+   "speed": 1.6,
+   "phase": 4.95
+  },
+  {
+   "x": 147,
+   "dy": -19,
+   "color": "#FFB347",
+   "speed": 3.2,
+   "phase": 5.28
+  },
+  {
+   "x": 150,
+   "dy": -19,
+   "color": "#FF5C6A",
+   "speed": 1.7,
+   "phase": 1.14
+  },
+  {
+   "x": 147,
+   "dy": -15,
+   "color": "#3DFF7A",
+   "speed": 2.0,
+   "phase": 1.55
+  },
+  {
+   "x": 150,
+   "dy": -15,
+   "color": "#FF5C6A",
+   "speed": 3.0,
+   "phase": 2.23
+  },
+  {
+   "x": 147,
+   "dy": -11,
+   "color": "#FFB347",
+   "speed": 5.0,
+   "phase": 0.68
+  },
+  {
+   "x": 150,
+   "dy": -11,
+   "color": "#FFB347",
+   "speed": 5.4,
+   "phase": 0.23
+  },
+  {
+   "x": 147,
+   "dy": -7,
+   "color": "#3DFF7A",
+   "speed": 2.4,
+   "phase": 3.22
+  },
+  {
+   "x": 150,
+   "dy": -7,
+   "color": "#FFB347",
+   "speed": 5.6,
+   "phase": 2.13
+  },
+  {
+   "x": 171,
+   "dy": -23,
+   "color": "#3DFF7A",
+   "speed": 2.9,
+   "phase": 1.99
+  },
+  {
+   "x": 174,
+   "dy": -23,
+   "color": "#3DFF7A",
+   "speed": 5.1,
+   "phase": 3.94
+  },
+  {
+   "x": 171,
+   "dy": -19,
+   "color": "#FFB347",
+   "speed": 6.0,
+   "phase": 1.01
+  },
+  {
+   "x": 174,
+   "dy": -19,
+   "color": "#3DFF7A",
+   "speed": 1.9,
+   "phase": 3.77
+  },
+  {
+   "x": 171,
+   "dy": -15,
+   "color": "#FF5C6A",
+   "speed": 1.6,
+   "phase": 4.65
+  },
+  {
+   "x": 174,
+   "dy": -15,
+   "color": "#FFB347",
+   "speed": 5.2,
+   "phase": 2.86
+  },
+  {
+   "x": 171,
+   "dy": -11,
+   "color": "#FF5C6A",
+   "speed": 2.2,
+   "phase": 6.15
+  },
+  {
+   "x": 174,
+   "dy": -11,
+   "color": "#3DFF7A",
+   "speed": 5.1,
+   "phase": 2.1
+  },
+  {
+   "x": 171,
+   "dy": -7,
+   "color": "#3DFF7A",
+   "speed": 2.1,
+   "phase": 4.59
+  },
+  {
+   "x": 174,
+   "dy": -7,
+   "color": "#3DFF7A",
+   "speed": 4.3,
+   "phase": 4.95
+  },
+  {
+   "x": 195,
+   "dy": -23,
+   "color": "#3DFF7A",
+   "speed": 2.3,
+   "phase": 2.34
+  },
+  {
+   "x": 198,
+   "dy": -23,
+   "color": "#3DFF7A",
+   "speed": 5.3,
+   "phase": 1.85
+  },
+  {
+   "x": 195,
+   "dy": -19,
+   "color": "#FF5C6A",
+   "speed": 5.6,
+   "phase": 3.9
+  },
+  {
+   "x": 198,
+   "dy": -19,
+   "color": "#3DFF7A",
+   "speed": 5.9,
+   "phase": 2.85
+  },
+  {
+   "x": 195,
+   "dy": -15,
+   "color": "#FF5C6A",
+   "speed": 4.6,
+   "phase": 2.0
+  },
+  {
+   "x": 198,
+   "dy": -15,
+   "color": "#FFB347",
+   "speed": 2.8,
+   "phase": 2.54
+  },
+  {
+   "x": 195,
+   "dy": -11,
+   "color": "#3DFF7A",
+   "speed": 2.0,
+   "phase": 5.16
+  },
+  {
+   "x": 198,
+   "dy": -11,
+   "color": "#3DFF7A",
+   "speed": 4.3,
+   "phase": 3.14
+  },
+  {
+   "x": 195,
+   "dy": -7,
+   "color": "#FFB347",
+   "speed": 2.3,
+   "phase": 3.09
+  },
+  {
+   "x": 198,
+   "dy": -7,
+   "color": "#FFB347",
+   "speed": 1.8,
+   "phase": 4.99
+  }
+ ],
+ "glows": [
+  {
+   "x": 150,
+   "dy": -16,
+   "color": "#3DFF7A",
+   "r": 44,
+   "a": 0.1,
+   "speed": 4
+  }
+ ],
+ "veil": 0.1
+}

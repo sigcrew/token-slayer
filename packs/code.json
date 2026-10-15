@@ -1,0 +1,33 @@
+{
+ "id": "code",
+ "type": "enemies",
+ "name": "코드 조각",
+ "tier": "free",
+ "texts": [
+  "{}",
+  "</>",
+  "IF",
+  "=>",
+  ";;",
+  "0X1F",
+  "NULL",
+  "NPM",
+  "[]",
+  "&&",
+  "FN()",
+  "!=="
+ ],
+ "colors": [
+  "#FF7AA8",
+  "#7CC7FF",
+  "#B8F28D",
+  "#FFCB6B",
+  "#D29BFF",
+  "#89DDFF"
+ ],
+ "fatal": [
+  "BUG",
+  "429",
+  "ERR"
+ ]
+}

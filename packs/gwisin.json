@@ -1,0 +1,30 @@
+{
+ "id": "gwisin",
+ "type": "enemies",
+ "name": "한양의 잡귀들",
+ "tier": "premium",
+ "unlockLevel": 17,
+ "series": "한국풍",
+ "texts": [
+  "GWISIN",
+  "DALGYAL",
+  "CHEONYEO",
+  "DUEOKSINI",
+  "BULGASARI",
+  "JANGSEUNG",
+  "DOKKAEBI",
+  "HAETAE"
+ ],
+ "colors": [
+  "#3B7DD8",
+  "#F4F0E6",
+  "#E5483A",
+  "#F4C542",
+  "#B8B6D0"
+ ],
+ "fatal": [
+  "GUMIHO",
+  "JEOSEUNG",
+  "CURSE"
+ ]
+}

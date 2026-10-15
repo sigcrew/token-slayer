@@ -1,0 +1,37 @@
+{
+ "id": "terminal",
+ "type": "backdrop",
+ "name": "터미널",
+ "tier": "free",
+ "sky": [
+  "#040A06",
+  "#07130B"
+ ],
+ "tile": {
+  "grid": [
+   "a",
+   "b"
+  ],
+  "palette": {
+   "a": "#07130B",
+   "b": "#050E08"
+  },
+  "s": 1
+ },
+ "floor": {
+  "color": "#0B2214",
+  "edge": "#23A455"
+ },
+ "particles": {
+  "kind": "code",
+  "colors": [
+   "#1B8A45",
+   "#57FF8E"
+  ],
+  "size": 3,
+  "gap": 13,
+  "speed": 20
+ },
+ "veil": 0.0,
+ "series": "사이버"
+}

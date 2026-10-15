@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Token Slayer OG</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@500&family=Silkscreen:wght@400;700&display=swap">
+<style>
+  /* 링크 미리보기 이미지 (1200x630). CI에서 스크린샷으로 og.png를 만든다 */
+  :root { --night: #11121D; --panel: #1A1C2C; --line: #2C2F4A; --ink: #ECEAF6; --muted: #A9A8C4; --ember: #FFB547; --hp: #4ADE80; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; background: var(--night); color: var(--ink); }
+  body {
+    display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 40px; padding: 0 64px 0 76px;
+    background: radial-gradient(ellipse 60% 70% at 78% 60%, rgba(255, 181, 71, 0.16), transparent 70%), var(--night);
+    font-family: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Noto Sans CJK KR", sans-serif;
+  }
+  .brand { font: 700 22px "Silkscreen", monospace; letter-spacing: 0.08em; display: flex; align-items: center; gap: 14px; margin-bottom: 34px; }
+  .brand i { width: 16px; height: 16px; background: var(--ember); box-shadow: 0 0 18px var(--ember); display: block; }
+  h1 { white-space: nowrap; font: 400 80px/1.12 "Black Han Sans", "Noto Sans CJK KR", sans-serif; letter-spacing: -0.01em; }
+  h1 em { font-style: normal; color: var(--hp); }
+  p { margin-top: 28px; font-size: 27px; color: var(--muted); line-height: 1.5; }
+  .tags { margin-top: 30px; font: 18px "Silkscreen", monospace; color: var(--ember); letter-spacing: 0.1em; }
+  .screen { background: var(--panel); border: 3px solid var(--line); padding: 20px; box-shadow: 0 0 0 8px var(--night), 0 0 0 11px var(--line); }
+  .stage { position: relative; overflow: hidden; }
+  .stage canvas { position: absolute; left: 0; top: 0; width: 232px; transform-origin: 0 0; image-rendering: pixelated; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="brand"><i></i>TOKEN SLAYER</div>
+    <h1>남은 토큰이 곧<br><em>용사의 HP</em></h1>
+    <p>Claude · Codex · Cursor 남은 사용량을<br>화면 위 용사로 보여주는 데스크톱 앱</p>
+    <div class="tags">FREE · MAC &amp; WINDOWS</div>
+  </div>
+  <div class="screen"><div class="stage" id="stage"><canvas id="scene"></canvas></div></div>
+<script src="builtin-packs.js"></script>
+<script src="scene.js"></script>
+<script>
+  const S = 2;
+  const canvas = document.getElementById('scene'), stage = document.getElementById('stage');
+  const scene = new Scene(canvas);
+  const P = window.BUILTIN_PACKS || [], skin = (id) => P.find((p) => p.type === 'hero' && p.id === id);
+  scene.setHeroes([{ id: 'claude', name: 'Claude', color: '#E07A5F' }, { id: 'codex', name: 'Codex', color: '#6C8CFF' }, { id: 'cursor', name: 'Cursor', color: '#B98CFF' }]);
+  scene.setTheme({ skins: { claude: skin('knight'), codex: skin('wizard'), cursor: skin('archer') } });
+  scene.setState('claude', { hp: 72, busy: true, level: 7, levelProgress: 0.55 });
+  scene.setState('codex', { hp: 41, busy: true, level: 4, levelProgress: 0.3 });
+  scene.setState('cursor', { hp: 88, busy: false, level: 12, levelProgress: 0.8 });
+  canvas.style.transform = 'scale(' + S + ')';
+  stage.style.width = 232 * S + 'px';
+  stage.style.height = scene.height() * S + 'px';
+  let last = performance.now();
+  (function loop(t) { scene.frame(Math.min(0.05, (t - last) / 1000)); last = t; requestAnimationFrame(loop); })(last);
+  document.fonts.ready.then(() => setTimeout(() => { document.body.dataset.ready = '1'; }, 2200));
+</script>
+</body>
+</html>

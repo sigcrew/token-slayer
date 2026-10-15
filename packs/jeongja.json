@@ -1,0 +1,62 @@
+{
+ "id": "jeongja",
+ "type": "rest",
+ "name": "정자 달밤",
+ "tier": "premium",
+ "unlockLevel": 21,
+ "series": "한국풍",
+ "glow": "#FFE9A8",
+ "embers": false,
+ "frames": [
+  [
+   "oo..oooooo..oo",
+   ".oTtTtTtTtTto.",
+   "oottttttttttoo",
+   "...p..yy..p...",
+   "...p..YY..p...",
+   "...p......p...",
+   "...p.obbo.p...",
+   "ffffffffffffff"
+  ],
+  [
+   "oo..oooooo..oo",
+   ".oTtTtTtTtTto.",
+   "oottttttttttoo",
+   "...p..YY..p...",
+   "...p..yy..p...",
+   "...p......p...",
+   "...p.obbo.p...",
+   "ffffffffffffff"
+  ],
+  [
+   "oo..oooooo..oo",
+   ".oTtTtTtTtTto.",
+   "oottttttttttoo",
+   "...p..yy..p...",
+   "...p..YY..p...",
+   "...p......p...",
+   "...p.obbo.p...",
+   "ffffffffffffff"
+  ],
+  [
+   "oo..oooooo..oo",
+   ".oTtTtTtTtTto.",
+   "oottttttttttoo",
+   "...p...yy.p...",
+   "...p...YY.p...",
+   "...p......p...",
+   "...p.obbo.p...",
+   "ffffffffffffff"
+  ]
+ ],
+ "palette": {
+  "o": "#171522",
+  "T": "#6E7DB0",
+  "t": "#46527F",
+  "p": "#B8352B",
+  "f": "#8B5A2B",
+  "y": "#FFE066",
+  "Y": "#FFF6C0",
+  "b": "#F4F0E6"
+ }
+}

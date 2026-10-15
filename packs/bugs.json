@@ -1,0 +1,27 @@
+{
+ "id": "bugs",
+ "type": "enemies",
+ "name": "버그 떼",
+ "tier": "free",
+ "texts": [
+  "BUG",
+  "NAN",
+  "SEGV",
+  "OOM",
+  "UNDEF",
+  "404",
+  "CORS",
+  "NULL"
+ ],
+ "colors": [
+  "#FF9A3C",
+  "#FF5C8A",
+  "#FFD23F",
+  "#B8F28D"
+ ],
+ "fatal": [
+  "CRASH",
+  "PANIC",
+  "500"
+ ]
+}
