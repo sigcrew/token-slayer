@@ -176,6 +176,7 @@
       this.busy = false;
       this.alert = false;
       this.question = false;
+      this.offDuty = false;
       this.resetAt = null;
       this.enemies = [];
       this.spawnIn = 0.5;
@@ -222,7 +223,7 @@
     }
 
     get dead() { return this.hp != null && this.hp <= 0.5 && !this.enemies.some((e) => e.fatal); }
-    get resting() { return !this.busy && !this.dead && this.hp != null && !this.alert && !this.enemies.some((e) => e.fatal); }
+    get resting() { return !this.busy && !this.dead && (this.hp != null || this.offDuty) && !this.alert && !this.enemies.some((e) => e.fatal); }
   }
 
   class Scene {
@@ -301,6 +302,7 @@
       }
       if (s.alert !== undefined) h.alert = s.alert;
       if (s.question !== undefined) h.question = s.question;
+      if (s.offDuty !== undefined) h.offDuty = s.offDuty;
       if (s.resetAt !== undefined) h.resetAt = s.resetAt;
       if (s.hpTag !== undefined) h.hpTag = s.hpTag;
       if (s.burning !== undefined) h.burning = s.burning;
@@ -531,8 +533,8 @@
         if (h.sweatIn <= 0) { h.sweatIn = 0.8; h.parts.push({ x: heroX + 4, y: ground - 30, vx: -30, vy: -40, life: 0.7, max: 0.7, color: '#7CC7FF', drop: true }); }
       }
       const rt = this.restTheme;
-      if (h.resting && rt.embers && Math.random() < dt * 3) h.parts.push({ x: heroX + 20 * PX + rand(2, 12), y: ground - 12, vx: rand(-6, 6), vy: rand(-30, -18), life: 1, max: 1, color: '#FFB347', ember: true });
-      if (h.resting && rt.steam && Math.random() < dt * 2.5) h.parts.push({ x: heroX + 20 * PX + rand(3, 9), y: ground - 6 * PX, vx: rand(-3, 3), vy: rand(-14, -9), life: 1.4, max: 1.4, color: 'rgba(255,255,255,0.7)', ember: true });
+      if (h.resting && !h.offDuty && rt.embers && Math.random() < dt * 3) h.parts.push({ x: heroX + 20 * PX + rand(2, 12), y: ground - 12, vx: rand(-6, 6), vy: rand(-30, -18), life: 1, max: 1, color: '#FFB347', ember: true });
+      if (h.resting && !h.offDuty && rt.steam && Math.random() < dt * 2.5) h.parts.push({ x: heroX + 20 * PX + rand(3, 9), y: ground - 6 * PX, vx: rand(-3, 3), vy: rand(-14, -9), life: 1.4, max: 1.4, color: 'rgba(255,255,255,0.7)', ember: true });
 
       for (const p of h.parts) { p.x += p.vx * dt; p.y += p.vy * dt; if (!p.ember) p.vy += (p.grav != null ? p.grav : 220) * dt; p.life -= dt; }
       h.parts = h.parts.filter((p) => p.life > 0);
@@ -686,8 +688,10 @@
       // 이름 · HP
       const lx = 70; // 용사·무기와 겹치지 않게 충분히 떨어뜨림
       this.text(hr.name, lx, top + 6, lighten(hr.color, 0.2));
-      const hpTxt = hr.hp == null ? '--' : `${Math.round(hr.hpTarget != null ? hr.hpTarget : hr.hp)}%`;
+      const hpTxt = hr.offDuty ? 'OFF' : hr.hp == null ? '--' : `${Math.round(hr.hpTarget != null ? hr.hpTarget : hr.hp)}%`;
       this.text(hpTxt, w - 10, top + 6, hr.hp == null ? '#6B6F86' : hr.dead ? '#FF4D5A' : '#F4F4F8', { align: 'right' });
+      // 휴무(플랜에 포함된 사용량 없음): 숫자 대신 OFF, 왼쪽에 NO PLAN
+      if (hr.offDuty) this.text('NO PLAN', w - 10 - this.textWidth(hpTxt) - 6, top + 6, '#8A8FA8', { align: 'right', s: 1 });
       // HP가 어느 한도 기준인지 (5H 5시간 · WK 주간 · MO 월간): 숫자 왼쪽. BURN·OUT 표시는 그만큼 더 왼쪽으로
       const tagW = hr.hpTag && hr.hp != null ? this.textWidth(hr.hpTag, 1) + 4 : 0;
       if (tagW) this.text(hr.hpTag, w - 10 - this.textWidth(hpTxt) - 3, top + 11, '#8A8FA8', { align: 'right', s: 1 });
@@ -705,11 +709,11 @@
       }
       // 하트 + HP바 (테두리 있는 칸 바)
       // 이름 줄과 HP바 사이를 띄움 (글자 높이 10 + 여백 5)
-      this.blit(HEART, lx, top + 21, { '#': hr.dead ? '#5A5E75' : '#FF4D6D' }, 1);
+      this.blit(HEART, lx, top + 21, { '#': hr.dead || hr.offDuty ? '#5A5E75' : '#FF4D6D' }, 1);
       const bx = lx + 8, bw = w - bx - 10, by = top + 21, bh = 5;
       this.px(bx - 1, by - 1, bw + 2, bh + 2, '#0B0C16');
       this.px(bx, by, bw, bh, '#262A40');
-      if (hr.hpShown != null) {
+      if (hr.hpShown != null && hr.hp != null) {
         if (hr.hpGhost != null && hr.hpGhost > hr.hpShown) this.px(bx, by, Math.round((bw * hr.hpGhost) / 100), bh, '#FF5A5F');
         const fw = Math.round((bw * hr.hpShown) / 100);
         this.px(bx, by, fw, bh, hpColor(hr.hpShown));
@@ -745,7 +749,12 @@
       if (hr.level != null) this.text(`LV${hr.level}`, heroX + 6 * PX, ground + 2, hr.levelUpT > 0 && Math.floor(this.time * 10) % 2 ? '#FFFFFF' : GOLD, { align: 'center', s: 1 });
 
       if (hr.dead) this.drawDead(hr, heroX, ground, top);
-      else if (hr.resting && hr.potionT <= 0) this.drawResting(hr, heroX, ground);
+      else if (hr.resting && hr.potionT <= 0) {
+        // 휴무(플랜 없음)면 흐릿하게: 쉬는 게 아니라 잠시 빠져 있는 느낌
+        if (hr.offDuty) this.ctx.globalAlpha = 0.45;
+        this.drawResting(hr, heroX, ground);
+        this.ctx.globalAlpha = 1;
+      }
       else this.drawFighting(hr, heroX, ground);
 
       for (const p of hr.parts) {

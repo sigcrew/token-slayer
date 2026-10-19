@@ -125,7 +125,9 @@
         hp,
         busy: !!x.busy || (!x.watched && lastDrop[id] && now - lastDrop[id] < (settings.demo ? 9000 : BUSY_MS)),
         alert: !!x.needsLogin,
-        question: !x.ok && !x.needsLogin && x.error !== 'loading',
+        question: !x.ok && !x.needsLogin && x.error !== 'loading' && x.error !== 'no-plan',
+        // 플랜에 포함된 사용량이 없음(구독 종료 · 무료): 고장(?)이 아니라 휴무로 보여 준다
+        offDuty: !x.ok && x.error === 'no-plan',
         resetAt,
         hpTag,
         level: x.level,
