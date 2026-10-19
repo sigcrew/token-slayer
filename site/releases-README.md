@@ -15,6 +15,8 @@ Claude Code · Codex · Cursor의 남은 사용량(5시간·주간·월간 한�
 
 All versions and changelogs: [Releases](https://github.com/sigcrew/token-slayer-releases/releases). The app updates itself.
 
+Source code · 소스 코드: [sigcrew/token-slayer](https://github.com/sigcrew/token-slayer) (PolyForm Noncommercial 1.0.0)
+
 ## What it does
 
 - One pixel hero per service. **Remaining usage = the hero's HP.** The hero fights while your agent works and rests by a campfire when idle.
@@ -24,7 +26,7 @@ All versions and changelogs: [Releases](https://github.com/sigcrew/token-slayer-
 
 ## Privacy
 
-There is **no server** and the app collects nothing. It uses the logins you already have to ask each service for usage only, and never reads your conversations. Details: [what it reads](https://token-slayer.vercel.app/en/#privacy).
+There is **no server** and the app collects nothing. It uses the logins you already have to ask each service for usage only, and never reads your conversations. Details: [what it reads](https://token-slayer.vercel.app/en/#privacy). Every address it connects to, with the code that does it: [source README](https://github.com/sigcrew/token-slayer/blob/main/README.en.md#what-does-it-connect-to-where-do-tokens-go).
 
 Claude and Cursor usage lookups are not official public APIs, so the display may stop temporarily if those services change; app updates fix that.
 

@@ -63,7 +63,7 @@ module.exports = [
   ['Cursor 로그인 토큰으로 사용량을 물어봐요', 'Asks for usage using your Cursor login token'],
   ['<th>작업 감지</th>', '<th>ACTIVITY</th>'], ['위 앱들이 파일을 쓰는 <b>시각</b>만 봐요', 'Only watches the <b>time</b> the apps above write files'], ['내용은 열지 않음', 'Contents never opened'],
   ['Token Slayer 앱은 따로 운영하는 서버가 없고 아무것도 수집하지 않아요. 모든 처리는 내 컴퓨터 안에서 끝나요.', 'The Token Slayer app has no server of its own and collects nothing. Everything is processed on your computer.'],
-  ['이 소개 사이트는 쿠키 없이 방문자 수만 집계해요 (Vercel Web Analytics). 앱은 아무것도 수집하지 않아요.', 'This website counts visitors without cookies (Vercel Web Analytics). The app collects nothing.'],
+  ['이 소개 사이트는 쿠키 없이 방문자 수만 집계해요 (Vercel Web Analytics). 앱은 아무것도 수집하지 않아요. 토큰이 어디로 가는지는 <a href="https://github.com/sigcrew/token-slayer#어디에-접속하나요--토큰은-어디로-가나요">소스 코드</a>에서 확인할 수 있어요.', 'This website counts visitors without cookies (Vercel Web Analytics). The app collects nothing. See where tokens go in the <a href="https://github.com/sigcrew/token-slayer/blob/main/README.en.md#what-does-it-connect-to-where-do-tokens-go">source code</a>.'],
   ['<h2>받기</h2>', '<h2>Download</h2>'], ['한 번 설치하면 새 버전은 앱이 알아서 받아서 설치해요.', 'Install once; the app downloads and installs new versions by itself.'],
   ['Apple 실리콘 (M1 이후)', 'Apple silicon (M1 and later)'], ['<span>Intel 맥</span>', '<span>Intel Mac</span>'],
   ['dmg를 열고 앱을 <b>응용 프로그램</b> 폴더로 옮긴 다음 열어요. Apple 공증을 받아서 경고 없이 열려요.', 'Open the dmg, move the app to your <b>Applications</b> folder, then launch it. It\'s notarized by Apple, so it opens without warnings.'],
@@ -72,6 +72,7 @@ module.exports = [
   ['아직 코드 서명이 없어서 처음에 <b>Windows의 PC 보호</b> 창이 떠요. 설치 파일을 연 뒤 <b>① 추가 정보</b>를 누르고 <b>② 실행</b>을 누르면 돼요.', 'The app isn\'t code-signed yet, so Windows shows a <b>SmartScreen</b> window at first. After opening the installer, click <b>① More info</b>, then <b>② Run anyway</b>.'],
   ['받은 파일이 맞는지 확인하고 싶다면, 릴리스의 <a href="https://github.com/sigcrew/token-slayer-releases/releases/latest">SHA256SUMS.txt</a>에 있는 값과 비교해 보세요. (PowerShell: <b>Get-FileHash 파일이름</b>)', 'To check that your download is intact, compare it with the value in <a href="https://github.com/sigcrew/token-slayer-releases/releases/latest">SHA256SUMS.txt</a> on the release. (PowerShell: <b>Get-FileHash filename</b>)'],
   ['모든 버전 · 변경 내역', 'All versions · changelog'],
+  ['소스 코드', 'Source code'],
   // 스크립트
   ["'곧 열려요'", "'Coming soon'"],
   ["'맥용 받기'", "'Download for Mac'"], ["'윈도우용 받기'", "'Download for Windows'"], ["'맥 · 윈도우용 받기'", "'Download for Mac · Windows'"],

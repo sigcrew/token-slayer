@@ -213,6 +213,31 @@ const t = async (name, fn) => { await fn(); pass++; console.log('ok -', name); }
     assert.strictEqual(cursor.parseUsage({}), null);
   });
 
+  await t('Cursor: 구독이 끝나 포함 사용량이 0이면 HP 100%가 아니라 "플랜 없음"으로 알린다', async () => {
+    // 실제 응답 모양 (구독 종료 후): free, limit 0, 사용률 0%
+    const ended = { billingCycleEnd: '2026-11-16T12:23:52.066Z', membershipType: 'free', isUnlimited: false,
+      individualUsage: { plan: { enabled: true, used: 0, limit: 0, remaining: 0, autoPercentUsed: 0, apiPercentUsed: 0, totalPercentUsed: 0 }, onDemand: { enabled: false, used: 0, limit: null } }, teamUsage: {} };
+    assert.deepStrictEqual(cursor.parseUsage(ended), { noPlan: true, plan: 'free' });
+    // 유료 플랜의 새 주기 첫날(아직 0 사용)은 그대로 0% 사용 = HP 100%
+    const fresh = { membershipType: 'pro', individualUsage: { plan: { used: 0, limit: 2000, totalPercentUsed: 0 } } };
+    assert.strictEqual(cursor.parseUsage(fresh).windows[0].usedPercent, 0);
+    // 무제한은 그대로
+    assert.strictEqual(cursor.parseUsage({ isUnlimited: true, individualUsage: { plan: { used: 0, limit: 0 } } }).windows[0].usedPercent, 0);
+    // 팀 풀 한도가 있으면 개인 한도가 0이어도 팀 한도로 보여 준다
+    assert.strictEqual(cursor.parseUsage({ individualUsage: { plan: { used: 0, limit: 0 } }, teamUsage: { pooled: { used: 10, limit: 40 } } }).windows[0].usedPercent, 25);
+    // read(): ok:false, error 'no-plan' (로그인하라고 하지 않음)
+    const fs2 = require('fs'), os2 = require('os'), path2 = require('path');
+    const d = fs2.mkdtempSync(path2.join(os2.tmpdir(), 'curnp-'));
+    const db = path2.join(d, 'state.vscdb');
+    const payload = Buffer.from(JSON.stringify({ sub: 'auth0|user_abc', exp: Math.floor(Date.now() / 1000) + 86400 })).toString('base64url');
+    fs2.writeFileSync(db, Buffer.from(`xxcursorAuth/accessTokeneyJhbGciOiJIUzI1NiJ9.${payload}.c2lnyy`));
+    const prev = process.env.CURSOR_STATE_DB; process.env.CURSOR_STATE_DB = db;
+    try {
+      const r = await new cursor.CursorReader(async () => ({ ok: true, status: 200, json: async () => ended })).read();
+      assert.strictEqual(r.ok, false); assert.strictEqual(r.error, 'no-plan'); assert.ok(!r.needsLogin);
+    } finally { if (prev === undefined) delete process.env.CURSOR_STATE_DB; else process.env.CURSOR_STATE_DB = prev; }
+  });
+
   await t('Cursor 세션 쿠키: sub에서 userId 추출, 만료 감지', () => {
     const now = Date.now();
     const tok = mkJwt({ sub: 'auth0|user_01ABC', exp: Math.floor(now / 1000) + 3600 });

@@ -176,6 +176,12 @@ function parseUsage(j) {
   const overall = j && j.individualUsage && j.individualUsage.overall;
   const pooled = j && j.teamUsage && j.teamUsage.pooled;
   const teamOD = j && j.teamUsage && j.teamUsage.onDemand;
+  // 구독이 끝나 무료 플랜이 되면 포함 사용량이 0($0 중 $0 사용)으로 오고 사용률도 0%로 온다.
+  // 이걸 "하나도 안 썼다"로 읽으면 HP가 100%로 차 보이므로, 표시할 한도가 없는 것으로 따로 알린다
+  const noIncluded = plan && plan.limit === 0 && !(plan.used > 0) && !(j && j.isUnlimited === true)
+    && !(pooled && pooled.limit > 0) && !(teamOD && teamOD.enabled !== false && teamOD.limit > 0)
+    && !(overall && overall.limit > 0);
+  if (noIncluded) return { noPlan: true, plan: (j && j.membershipType) || null };
   const auto = pct(plan && plan.autoPercentUsed);
   const api = pct(plan && plan.apiPercentUsed);
   let monthly = pct(plan && plan.totalPercentUsed);
@@ -262,6 +268,7 @@ class CursorReader {
     try { j = await res.json(); } catch { return { ok: false, error: 'parse', message: '응답을 읽지 못했어요' }; }
     const u = parseUsage(j);
     if (!u) return { ok: false, error: 'no-data', message: '이 계정은 사용량 한도 정보가 없어요' };
+    if (u.noPlan) return { ok: false, error: 'no-plan', plan: u.plan, message: 'Cursor 플랜에 포함된 사용량이 없어요 (구독이 끝났거나 무료 플랜)' };
     return { ok: true, windows: u.windows, plan: u.plan, fetchedAt: Date.now() };
   }
 }

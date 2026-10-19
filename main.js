@@ -786,6 +786,7 @@ function buildMenu() {
       label: '도움말 · 문의',
       submenu: [
         { label: '문의 · 버그 제보 (GitHub)', click: () => shell.openExternal('https://github.com/sigcrew/token-slayer-releases/issues') },
+        { label: tr('이메일로 문의 ({mail})', { mail: 'yong@sigcrew.com' }), click: () => shell.openExternal('mailto:yong@sigcrew.com?subject=' + encodeURIComponent('Token Slayer ' + tr('문의'))) },
         { label: '구매 내역 · 라이선스 키 다시 받기', click: () => shell.openExternal('https://app.lemonsqueezy.com/my-orders') },
         { label: '진단 정보 복사 (문의할 때 붙여 넣기)', click: async () => { try { clipboard.writeText(await supportReport()); notify('진단 정보를 복사했어요', '문의할 때 붙여 넣어 주세요. 토큰이나 개인 정보는 들어 있지 않아요.'); } catch (e) { notify('진단 정보를 만들지 못했어요', String((e && e.message) || e)); } } },
         { type: 'separator' },
