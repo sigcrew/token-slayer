@@ -1,0 +1,263 @@
+{
+ "id": "rogue",
+ "type": "hero",
+ "name": "도적",
+ "tier": "premium",
+ "unlockLevel": 48,
+ "series": "던전",
+ "weapon": "dagger",
+ "grid": [
+  "....oooo....",
+  "...ohhhho...",
+  "..ohhhhhho..",
+  ".ohhhhhhhho.",
+  "ohhhhhhhhhho",
+  "ohhwwwwwwhho",
+  "ohwwwwwwwwho",
+  "ohwwwwwwwwho",
+  "occcccccccoo",
+  "osccccccccso",
+  ".osssssssso.",
+  "..oooooooo.."
+ ],
+ "palette": {
+  "h": "#2F4A3A"
+ },
+ "face": {
+  "eyes": "slant",
+  "cheeks": false
+ },
+ "faceNoMouth": true,
+ "fx": {
+  "afterimage": true,
+  "kill": {
+   "kind": "smoke",
+   "colors": [
+    "#DDE3F0",
+    "#7A8398",
+    "#2F4A3A"
+   ]
+  }
+ },
+ "hd": {
+  "grid": [
+   "........oooooooo........",
+   ".......ooÀÀÀÀÀhoo.......",
+   ".......oÀhhhhhhho.......",
+   ".....ooÀhhhhhhhhhoo.....",
+   ".....oÀhhhhhhhhhhho.....",
+   "...ooÀhhhhhhhhhhhhhoo...",
+   "...oÀhhhhhhhhhhhhhhho...",
+   ".ooÀhhhhhhhhhhhhhhhhhoo.",
+   "ooÀhhhhhhhhhhhhhhhhhhhoo",
+   "oÀhhhhhhhhhhhhhhhhhhhÁoo",
+   "oÀhhhhhwwwwwwwwwwhhhhÁoo",
+   "oÀhhhwwwwwwwwwwwwwwhhÁoo",
+   "oÀhhhwwwwwwwwwwwwwwhhÁoo",
+   "oÀhhwwwwwwwwwwwwwwwwhÁoo",
+   "oÀhhwwwwwwwwwwwwwwwwhÁoo",
+   "oÀhhwwwwwwwwwwwwwwwwÁooo",
+   "oĉcccccccccccccccccċoooo",
+   "oĉccccccccccccccccccssoo",
+   "osscccccccccccccccccssoo",
+   "oosssccccccccccccccsssoo",
+   ".oossssssssssssssssssoo.",
+   "...osssssssssssssssoo...",
+   "...oooooooooooooooooo...",
+   "....oooooooooooooooo...."
+  ],
+  "faces": {
+   "fight": [
+    [
+     12,
+     14,
+     "o"
+    ],
+    [
+     13,
+     15,
+     "o"
+    ],
+    [
+     18,
+     15,
+     "o"
+    ],
+    [
+     19,
+     14,
+     "o"
+    ]
+   ],
+   "rest": [
+    [
+     12,
+     16,
+     "o"
+    ],
+    [
+     13,
+     16,
+     "o"
+    ],
+    [
+     18,
+     16,
+     "o"
+    ],
+    [
+     19,
+     16,
+     "o"
+    ]
+   ],
+   "hit": [
+    [
+     12,
+     14,
+     "o"
+    ],
+    [
+     14,
+     14,
+     "o"
+    ],
+    [
+     13,
+     15,
+     "o"
+    ],
+    [
+     12,
+     16,
+     "o"
+    ],
+    [
+     14,
+     16,
+     "o"
+    ],
+    [
+     18,
+     14,
+     "o"
+    ],
+    [
+     20,
+     14,
+     "o"
+    ],
+    [
+     19,
+     15,
+     "o"
+    ],
+    [
+     18,
+     16,
+     "o"
+    ],
+    [
+     20,
+     16,
+     "o"
+    ]
+   ],
+   "happy": [
+    [
+     12,
+     16,
+     "o"
+    ],
+    [
+     18,
+     16,
+     "o"
+    ],
+    [
+     13,
+     15,
+     "o"
+    ],
+    [
+     19,
+     15,
+     "o"
+    ],
+    [
+     14,
+     16,
+     "o"
+    ],
+    [
+     20,
+     16,
+     "o"
+    ]
+   ],
+   "tired": [
+    [
+     12,
+     15,
+     "o"
+    ],
+    [
+     13,
+     15,
+     "o"
+    ],
+    [
+     18,
+     15,
+     "o"
+    ],
+    [
+     19,
+     15,
+     "o"
+    ],
+    [
+     12,
+     16,
+     "o"
+    ],
+    [
+     18,
+     16,
+     "o"
+    ]
+   ],
+   "blink": [
+    [
+     12,
+     16,
+     "o"
+    ],
+    [
+     13,
+     16,
+     "o"
+    ],
+    [
+     18,
+     16,
+     "o"
+    ],
+    [
+     19,
+     16,
+     "o"
+    ]
+   ]
+  },
+  "palette": {
+   "À": "#697d71",
+   "Á": "#284032",
+   "W": "#FFFFFF",
+   "H": "#FF9DA7",
+   "T": "#FF6F86",
+   "R": "#B03A2E",
+   "V": "#0E7A8A"
+  }
+ }
+}

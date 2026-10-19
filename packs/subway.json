@@ -1,0 +1,63 @@
+{
+ "id": "subway",
+ "type": "rest",
+ "name": "퇴근길 지하철",
+ "tier": "premium",
+ "unlockLevel": 43,
+ "series": "개발자 일상",
+ "glow": "#FFE9A8",
+ "embers": false,
+ "frames": [
+  [
+   "oooooooooooooo",
+   "owwwlwwwlwwwlo",
+   "owwLwwwwLwwwwo",
+   "oggggggggggggo",
+   "p.............",
+   "p.ssssssssss..",
+   "p.SSSSSSSSSS..",
+   "ffffffffffffff"
+  ],
+  [
+   "oooooooooooooo",
+   "owwlwwwlwwwlwo",
+   "owLwwwwLwwwwLo",
+   "oggggggggggggo",
+   "p.............",
+   "p.ssssssssss..",
+   "p.SSSSSSSSSS..",
+   "ffffffffffffff"
+  ],
+  [
+   "oooooooooooooo",
+   "owlwwwlwwwlwwo",
+   "oLwwwwLwwwwLwo",
+   "oggggggggggggo",
+   "p.............",
+   "p.ssssssssss..",
+   "p.SSSSSSSSSS..",
+   "ffffffffffffff"
+  ],
+  [
+   "oooooooooooooo",
+   "olwwwlwwwlwwwo",
+   "owwwwLwwwwLwwo",
+   "oggggggggggggo",
+   "p.............",
+   "p.ssssssssss..",
+   "p.SSSSSSSSSS..",
+   "ffffffffffffff"
+  ]
+ ],
+ "palette": {
+  "o": "#171522",
+  "w": "#1B2240",
+  "l": "#FFE9A8",
+  "L": "#9FB4FF",
+  "g": "#3E9E5A",
+  "p": "#C9D2E3",
+  "s": "#4A6FA5",
+  "S": "#34507F",
+  "f": "#5A5E75"
+ }
+}

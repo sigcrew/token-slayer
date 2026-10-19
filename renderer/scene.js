@@ -126,7 +126,7 @@
     fatal: ['BUG', '429', 'ERR'],
   };
   const DEFAULT_REST = { id: 'campfire', frames: FLAME.map((f) => [...f, 'BbbbB', '.BbB.']), palette: FIRE, glow: '#FF9F1C', embers: true };
-  const RANGED = { staff: true, bow: true, shuriken: true, terminal: true, raygun: true, claw: true, keyboard: true, pistol: true, bone: true, bats: true, flask: true };
+  const RANGED = { staff: true, bow: true, shuriken: true, terminal: true, raygun: true, claw: true, keyboard: true, pistol: true, bone: true, bats: true, flask: true, foxfire: true, duck: true };
   // 뼈다귀: 양 끝에 둥근 마디가 두 개씩 달린 하얀 뼈. 방향 4가지(가로 · \ · 세로 · /)로 돌려 가며 던진다
   const BW = '#FFFFFF', BS = '#C9CFE0';
   const boneCells = (pts) => pts.map(([x, y, shade]) => [x, y, shade ? BS : BW]);
@@ -155,7 +155,25 @@
       cells(['KC..', '.CGG', '.GGg', '.Ggg']),
     ];
   })();
-  const SHOT_SPEED = { staff: 220, raygun: 520, pistol: 420, bone: 150, bats: 240, flask: 190 }; // 그 밖의 원거리 탄은 300
+  // 여우불 구슬(구미호): 푸른 불꽃 두 장면 (끝이 좌우로 일렁임)
+  const FOXFIRE = (() => {
+    const W = '#FFFFFF', L = '#C9EBFF', B = '#8FD3FF', D = '#5BA8FF';
+    const cells = (rows) => { const out = []; rows.forEach((r, y) => [...r].forEach((ch, x) => { const m = { W, L, B, D }[ch]; if (m) out.push([x, y, m]); })); return out; };
+    return [
+      cells(['.L.', 'BWB', 'DLD', '.D.']),
+      cells(['L..', 'BWB', 'DLD', '.D.']),
+    ];
+  })();
+  // 고무 오리(개발자): 러버덕 디버깅. 0: 서 있는 모습, 1: 고개를 숙인 모습(날아갈 때 번갈아)
+  const DUCK = (() => {
+    const Y = '#FFD43B', y = '#E0A800', K = '#171522', O = '#FF8A3D', W = '#FFFFFF';
+    const cells = (rows) => { const out = []; rows.forEach((r, yy) => [...r].forEach((ch, x) => { const m = { Y, y, K, O, W }[ch]; if (m) out.push([x, yy, m]); })); return out; };
+    return [
+      cells(['..YY.', '..YKO', 'YYYY.', 'yYYy.']),
+      cells(['.....', '.YYYK', 'YYYYO', 'yYYy.']),
+    ];
+  })();
+  const SHOT_SPEED = { staff: 220, raygun: 520, pistol: 420, bone: 150, bats: 240, flask: 190, foxfire: 230, duck: 170 }; // 그 밖의 원거리 탄은 300
 
   function hex2rgb(hex) { const n = parseInt(hex.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
   const darken = (hex, f) => { const [r, g, b] = hex2rgb(hex); return `rgb(${Math.round(r * f)},${Math.round(g * f)},${Math.round(b * f)})`; };
@@ -691,7 +709,7 @@
       const hpTxt = hr.offDuty ? 'OFF' : hr.hp == null ? '--' : `${Math.round(hr.hpTarget != null ? hr.hpTarget : hr.hp)}%`;
       this.text(hpTxt, w - 10, top + 6, hr.hp == null ? '#6B6F86' : hr.dead ? '#FF4D5A' : '#F4F4F8', { align: 'right' });
       // 휴무(플랜에 포함된 사용량 없음): 숫자 대신 OFF, 왼쪽에 NO PLAN
-      if (hr.offDuty) this.text('NO PLAN', w - 10 - this.textWidth(hpTxt) - 6, top + 6, '#8A8FA8', { align: 'right', s: 1 });
+      if (hr.offDuty) this.text('NO PLAN', w - 10 - this.textWidth(hpTxt) - 12, top + 6, '#8A8FA8', { align: 'right', s: 1 });
       // HP가 어느 한도 기준인지 (5H 5시간 · WK 주간 · MO 월간): 숫자 왼쪽. BURN·OUT 표시는 그만큼 더 왼쪽으로
       const tagW = hr.hpTag && hr.hp != null ? this.textWidth(hr.hpTag, 1) + 4 : 0;
       if (tagW) this.text(hr.hpTag, w - 10 - this.textWidth(hpTxt) - 3, top + 11, '#8A8FA8', { align: 'right', s: 1 });
@@ -822,7 +840,7 @@
       }
       if ((fc.eyes === 'closed' || fc.eyes === 'slant') && awake && mode !== 'hit') {
         // closed: 온화하게 감은 눈 / slant: 눈꼬리가 올라간 가는 눈매
-        out = out.filter(([, y, c]) => !(c === 'o' && y <= 8)).concat(fc.eyes === 'closed' ? [[5, 8, 'o'], [6, 8, 'o'], [8, 8, 'o'], [9, 8, 'o']] : [[5, 7, 'o'], [6, 8, 'o'], [8, 8, 'o'], [9, 7, 'o']]);
+        out = out.filter(([, y, c]) => !(c === 'o' && y <= 8)).concat(fc.eyes === 'closed' ? [[5, 8, 'o'], [6, 8, 'o'], [8, 8, 'o'], [9, 8, 'o']] : [[5, 7, fc.eyeColor || 'o'], [6, 8, fc.eyeColor || 'o'], [8, 8, fc.eyeColor || 'o'], [9, 7, fc.eyeColor || 'o']]);
       }
       if (fc.mouthColor && (awake || fc.colorAlways)) out = out.map(([x, y, c]) => (c === 'o' && y === 9 ? [x, y, fc.mouthColor] : [x, y, c]));
       if (fc.cheeks === false) out = out.filter(([, , c]) => c !== CHEEK);
@@ -877,6 +895,19 @@
         const y2 = 5 + step(wave), y3 = y2 + step(wave * 1.3);
         this.dots([[-1, 5, '#F4F6FF'], [-2, y2, '#DDE3F0'], [-3, y3 + 1, '#F4F6FF']], ox, oy, {});
       }
+      if (ex.includes('foxtails')) {
+        // 구미호 꼬리: 몸 뒤에서 위로 부풀어 오른 탐스러운 꼬리 다발. 끝이 여러 갈래(아홉 꼬리)로 갈라져 여우불처럼 푸르고, 위쪽이 살랑인다
+        const rate = hr.busy ? 6 : 2;
+        const F = '#F4F0FF', S = '#B9B2D6', T = '#8FD3FF', L = '#E8F7FF';
+        const sw = Math.round(Math.sin(hr.time * rate));
+        const sw2 = Math.round(Math.sin(hr.time * rate + 1.4));
+        this.dots([
+          [-1, 10, S], [-2, 9, S], [-1, 9, F], [-3, 8, S], [-2, 8, F], [-1, 8, F],
+          [-3, 7, F], [-2, 7, F], [-1, 7, F],
+          [-3, 6 + sw2, L], [-2, 6 + sw, F], [-1, 6 + sw2, L],
+          [-3, 5 + sw2, T], [-2, 5 + sw, L], [-1, 5 + sw2, T], [-2, 4 + sw, T],
+        ], ox, oy, {});
+      }
       if (ex.includes('tail')) {
         const rate = hr.busy ? 7 : 2.4;
         const pts = [];
@@ -892,6 +923,23 @@
     extrasFront(hr, ox, oy, ex) {
       const t = hr.time;
       if (ex.includes('hook')) this.dots([[-1, 9, '#C9D2E3'], [-2, 9, '#C9D2E3'], [-2, 10, '#C9D2E3'], [-1, 11, '#E8EEF8']], ox, oy, {});
+      if (ex.includes('tie')) {
+        // 넥타이(서비스 색): 목에서 늘어진 매듭과 끝
+        const c = hr.color, d = darken(hr.color, 0.7);
+        this.dots([[5, 9, d], [6, 9, d], [5, 10, c], [6, 10, c], [5, 11, c], [6, 11, d]], ox, oy, {});
+      }
+      if (ex.includes('collar')) {
+        // 목줄(서비스 색) + 금빛 이름표
+        this.dots([[3, 10, hr.color], [4, 10, hr.color], [5, 10, hr.color], [6, 10, hr.color], [7, 10, hr.color], [8, 10, hr.color], [5, 11, '#FFD166'], [6, 11, '#FFE9A8']], ox, oy, {});
+      }
+      if (ex.includes('glasses')) {
+        // 안경: 두 눈에 옅은 푸른 렌즈 + 윗테와 바깥 테, 렌즈에 가끔 반짝
+        this.ctx.globalAlpha = 0.28;
+        this.dots([[5, 7, '#CFE9FF'], [6, 7, '#CFE9FF'], [7, 7, '#CFE9FF'], [5, 8, '#CFE9FF'], [7, 8, '#CFE9FF'], [8, 7, '#CFE9FF'], [9, 7, '#CFE9FF'], [10, 7, '#CFE9FF'], [8, 8, '#CFE9FF'], [10, 8, '#CFE9FF']], ox, oy, {});
+        this.ctx.globalAlpha = 1;
+        this.dots([[5, 6, '#3A4066'], [6, 6, '#3A4066'], [7, 6, '#3A4066'], [8, 6, '#3A4066'], [9, 6, '#3A4066'], [10, 6, '#3A4066'], [4, 7, '#3A4066'], [11, 7, '#3A4066']], ox, oy, {});
+        if (Math.floor(t * 0.7) % 4 === 0) { this.ctx.globalAlpha = 0.8; this.dots([[5, 7, '#FFFFFF'], [8, 7, '#FFFFFF']], ox, oy, {}); this.ctx.globalAlpha = 1; }
+      }
       if (ex.includes('drawstrings')) this.dots([[4, 10, '#F4F6FF'], [4, 11, '#F4F6FF'], [7, 10, '#F4F6FF'], [7, 11, '#F4F6FF']], ox, oy, {});
       if (ex.includes('halo')) {
         this.ctx.globalAlpha = 0.55 + 0.45 * Math.sin(t * 2.5);
@@ -1042,6 +1090,8 @@
       if (w === 'hammer') return this.hammer(hx, hy, a);
       if (w === 'ladle') return this.ladle(hx, hy, a);
       if (w === 'axe') return this.axe(hx, hy, a);
+      if (w === 'scythe') return this.scythe(hx, hy, a);
+      if (w === 'dagger') return this.dagger(hx, hy, a);
       if (w === 'raygun') {
         // 외계인 광선총: 초록 금속 몸통과 발광 총구 (쏠 때 총구가 번쩍)
         const y0 = hy - 2 * PX;
@@ -1061,6 +1111,26 @@
         const k = Math.min(1, Math.max(0, 1 - hr.swingT / 0.3));
         if (k < 0.4) this.dots(FLASK[1], hx - PX, y0 - 4 * PX, {});
         else if (k < 0.75) this.dots(FLASK[0], hx + 2 * PX, y0 - 3 * PX, {});
+        return;
+      }
+      if (w === 'duck') {
+        // 고무 오리: 평소엔 손에 올려 두고 까딱이다가, 던질 때 높이 들어 올렸다 앞으로 던진다 (날아간 오리는 투사체가 그림)
+        const y0 = hy - 4 * PX;
+        if (!casting) { this.dots(DUCK[0], hx - PX, y0 + (Math.floor(hr.time * 3) % 2 ? 0 : -1), {}); return; }
+        const k = Math.min(1, Math.max(0, 1 - hr.swingT / 0.3));
+        if (k < 0.45) this.dots(DUCK[0], hx - 2 * PX, y0 - 3 * PX, {});
+        return;
+      }
+      if (w === 'foxfire') {
+        // 여우불: 손 위에 푸른 불꽃 구슬이 떠서 일렁이고, 던질 때 높이 치켜들어 크게 타오른다 (그 뒤 구슬은 투사체가 그림)
+        const y0 = hy - 5 * PX + (Math.floor(hr.time * 3) % 2 ? 0 : -PX);
+        const f = Math.floor(hr.time * 6) % 2;
+        if (!casting) { this.dots(FOXFIRE[f], hx - PX, y0, {}); return; }
+        const k = Math.min(1, Math.max(0, 1 - hr.swingT / 0.3));
+        if (k < 0.45) {
+          this.ctx.globalAlpha = 0.35; this.dots(FOXFIRE[f], hx - 3 * PX, y0 - 5 * PX, {}, 2); this.ctx.globalAlpha = 1;
+          this.dots(FOXFIRE[f], hx - PX, y0 - 3 * PX, {});
+        }
         return;
       }
       if (w === 'bats') {
@@ -1147,6 +1217,23 @@
       for (let i = len - 1; i <= len + 1; i++) for (const k of [1, 2]) this.px(hx + cx * i * PX + gx * k * PX, hy + sy * i * PX + gy * k * PX, PX, PX, k === 2 ? '#F2F6FF' : '#B8C2D8');
     }
 
+    // 낫(해골 기사): 검은 자루 끝에서 뒤로 휘어진 달빛 칼날
+    scythe(hx, hy, a, len = 8) {
+      const cx = Math.cos(a), sy = Math.sin(a), gx = -sy, gy = cx;
+      for (let i = 1; i <= len; i++) this.px(hx + cx * i * PX, hy + sy * i * PX, PX, PX, i === len ? '#5A5E75' : '#2E2B3A');
+      // 칼날: 자루 끝에서 옆으로 뻗다가 손 쪽으로 휘어 내려옴
+      const blade = [[len, 1], [len, 2], [len - 1, 3], [len - 2, 4], [len - 3, 4]];
+      blade.forEach(([i, k], n) => this.px(hx + cx * i * PX + gx * k * PX, hy + sy * i * PX + gy * k * PX, PX, PX, n === blade.length - 1 ? '#F2F6FF' : '#C9D2E3'));
+      for (const [i, k] of [[len - 1, 2], [len - 2, 3]]) this.px(hx + cx * i * PX + gx * k * PX, hy + sy * i * PX + gy * k * PX, PX, PX, '#8A93A8');
+    }
+
+    // 단검(도적): 짧은 날과 가죽 손잡이
+    dagger(hx, hy, a) {
+      const cx = Math.cos(a), sy = Math.sin(a), gx = -sy, gy = cx;
+      for (const k of [-1, 1]) this.px(hx + gx * k * PX, hy + gy * k * PX, PX, PX, '#8B5A2B');
+      for (let i = 1; i <= 4; i++) this.px(hx + cx * i * PX, hy + sy * i * PX, PX, PX, i === 4 ? '#FFFFFF' : '#C9D2E3');
+    }
+
     // 전투 망치: 자루 끝에 묵직한 머리
     hammer(hx, hy, a, len = 6) {
       const cx = Math.cos(a), sy = Math.sin(a), gx = -sy, gy = cx;
@@ -1202,6 +1289,8 @@
       if (w === 'trident') return this.trident(x, ground - 1, -Math.PI / 2, 9);
       if (w === 'ladle') return this.ladle(x, ground - 1, -Math.PI / 2, 8);
       if (w === 'axe') return this.axe(x, ground - 1, -Math.PI / 2, 7);
+      if (w === 'scythe') return this.scythe(x, ground - 1, -Math.PI / 2, 9);
+      if (w === 'dagger') return this.dagger(x, ground - 1, -Math.PI / 2);
       if (w === 'raygun') { this.dots([[0, 0, '#2C6B5A'], [1, 0, '#3F8F7A'], [2, 0, '#3F8F7A'], [3, 0, '#6EE7B7'], [4, 0, '#6EE7B7'], [0, 1, '#2C6B5A'], [1, 1, '#3F8F7A']], x - PX, ground - 3 * PX, {}); return; }
       if (w === 'claw') return;
       if (w === 'bone') { this.dots(BONE[0], x - 2 * PX, ground - 3 * PX, {}); return; }
@@ -1222,6 +1311,8 @@
         this.dots([[0, -1, orb], [-1, 0, orb], [0, 0, orb], [1, 0, orb], [0, 1, orb]], x, ground - 10 * PX, {});
         return;
       }
+      if (w === 'duck') { this.dots(DUCK[Math.floor(hr.time * 1.5) % 2 ? 0 : 1], x - PX, ground - 4 * PX, {}); return; }
+      if (w === 'foxfire') { this.dots(FOXFIRE[Math.floor(hr.time * 4) % 2], x - PX, ground - (7 + (Math.floor(hr.time * 2) % 2)) * PX, {}); return; }
       if (w === 'bow') {
         for (const [dx, dy] of [[1, -8], [2, -7], [2, -6], [3, -5], [3, -4], [3, -3], [2, -2], [2, -1], [1, 0]]) this.px(x + dx * PX, ground + dy * PX, PX, PX, '#A8703F');
         this.vline(x + PX, ground - 8 * PX, 9 * PX, 'rgba(255,255,255,0.6)');
@@ -1251,6 +1342,20 @@
             this.ctx.globalAlpha = 1;
             this.dots(FLASK[Math.floor(sh.t * 9) % 2], sh.x - 4, sh.y - 6, {}, 2);
           }
+        } else if (sh.kind === 'duck') {
+          // 고무 오리: 통통 튀듯 포물선을 그리며 날아가고, 뒤로 작은 물방울
+          const hop = -Math.abs(Math.sin(sh.t * 9)) * 8;
+          this.ctx.globalAlpha = 0.45;
+          for (let i = 1; i <= 3; i++) this.px(sh.x - i * 7, sh.y + 2 - Math.abs(Math.sin(sh.t * 9 - i * 0.6)) * 8, 2, 2, '#8FD3FF');
+          this.ctx.globalAlpha = 1;
+          this.dots(DUCK[Math.floor(sh.t * 8) % 2], sh.x - 5, sh.y - 6 + hop, {}, 2);
+        } else if (sh.kind === 'foxfire') {
+          // 여우불: 푸른 불꽃이 위아래로 너울거리며 날아가고, 뒤로 옅은 불티가 남음
+          const wob = Math.sin(sh.t * 14) * 3;
+          this.ctx.globalAlpha = 0.4;
+          for (let i = 1; i <= 4; i++) this.px(sh.x - i * 6, sh.y + Math.sin(sh.t * 14 - i * 0.8) * 3, 2, 2, i % 2 ? '#8FD3FF' : '#C9EBFF');
+          this.ctx.globalAlpha = 1;
+          this.dots(FOXFIRE[Math.floor(sh.t * 10) % 2], sh.x - 3, sh.y - 4 + wob, {}, 2);
         } else if (sh.kind === 'bats') {
           const flap = Math.floor(sh.t * 12) % 2;
           for (let i = 0; i < 3; i++) {

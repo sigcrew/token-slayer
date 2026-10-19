@@ -1,0 +1,263 @@
+{
+ "id": "pangyo",
+ "type": "backdrop",
+ "name": "판교 야경",
+ "tier": "premium",
+ "unlockLevel": 44,
+ "series": "개발자 일상",
+ "sky": [
+  "#0A0E24",
+  "#1A2147",
+  "#2B2A55"
+ ],
+ "floor": {
+  "color": "#22263A",
+  "edge": "#4A5070"
+ },
+ "props": [
+  {
+   "grid": [
+    "kkkkkk",
+    "kssssk",
+    "kddydk",
+    "kssssk",
+    "kddddk",
+    "kssssk",
+    "kddddk",
+    "kssssk",
+    "kdyyyk"
+   ],
+   "palette": {
+    "k": "#141829",
+    "s": "#1E2440",
+    "d": "#262E52",
+    "y": "#FFE29A"
+   },
+   "x": -96,
+   "dy": 0,
+   "s": 2
+  },
+  {
+   "grid": [
+    "kkkkkkkkkk",
+    "kssssssssk",
+    "kyydyddydk",
+    "kssssssssk",
+    "kydyyddyyk",
+    "kssssssssk",
+    "kdddddydyk",
+    "kssssssssk",
+    "kyyydydddk",
+    "kssssssssk",
+    "kdyyyddydk",
+    "kssssssssk",
+    "kdyddydddk",
+    "kssssssssk",
+    "kdydyddydk"
+   ],
+   "palette": {
+    "k": "#141829",
+    "s": "#1E2440",
+    "d": "#262E52",
+    "y": "#FFE29A"
+   },
+   "x": -62,
+   "dy": 0,
+   "s": 2
+  },
+  {
+   "grid": [
+    "kkkkkkkk",
+    "kssssssk",
+    "kydddddk",
+    "kssssssk",
+    "kddddddk",
+    "kssssssk",
+    "kddydddk",
+    "kssssssk",
+    "kdyddydk",
+    "kssssssk",
+    "kyyydyyk",
+    "kssssssk"
+   ],
+   "palette": {
+    "k": "#141829",
+    "s": "#1E2440",
+    "d": "#262E52",
+    "y": "#FFE29A"
+   },
+   "x": -36,
+   "dy": 0,
+   "s": 2
+  }
+ ],
+ "blinkers": [
+  {
+   "x": -56,
+   "dy": -26,
+   "color": "#FFE29A",
+   "speed": 0.57,
+   "phase": 3.65
+  },
+  {
+   "x": -52,
+   "dy": -26,
+   "color": "#FFE29A",
+   "speed": 0.25,
+   "phase": 2.6
+  },
+  {
+   "x": -56,
+   "dy": -18,
+   "color": "#FFE29A",
+   "speed": 0.83,
+   "phase": 4.84
+  },
+  {
+   "x": -50,
+   "dy": -14,
+   "color": "#FFE29A",
+   "speed": 0.66,
+   "phase": 0.39
+  },
+  {
+   "x": -48,
+   "dy": -14,
+   "color": "#FFE29A",
+   "speed": 0.39,
+   "phase": 1.01
+  },
+  {
+   "x": -46,
+   "dy": -14,
+   "color": "#FFE29A",
+   "speed": 0.28,
+   "phase": 0.0
+  },
+  {
+   "x": -60,
+   "dy": -10,
+   "color": "#FFE29A",
+   "speed": 0.32,
+   "phase": 2.25
+  },
+  {
+   "x": -52,
+   "dy": -10,
+   "color": "#FFE29A",
+   "speed": 0.82,
+   "phase": 3.81
+  },
+  {
+   "x": -50,
+   "dy": -10,
+   "color": "#FFE29A",
+   "speed": 0.41,
+   "phase": 2.15
+  },
+  {
+   "x": -60,
+   "dy": -6,
+   "color": "#FFE29A",
+   "speed": 0.8,
+   "phase": 6.16
+  },
+  {
+   "x": -50,
+   "dy": -6,
+   "color": "#FFE29A",
+   "speed": 0.32,
+   "phase": 2.12
+  },
+  {
+   "x": -48,
+   "dy": -6,
+   "color": "#FFE29A",
+   "speed": 0.79,
+   "phase": 1.0
+  },
+  {
+   "x": -46,
+   "dy": -6,
+   "color": "#FFE29A",
+   "speed": 0.87,
+   "phase": 3.28
+  },
+  {
+   "x": -60,
+   "dy": -2,
+   "color": "#FFE29A",
+   "speed": 0.6,
+   "phase": 0.17
+  },
+  {
+   "x": -32,
+   "dy": -20,
+   "color": "#FFE29A",
+   "speed": 0.49,
+   "phase": 1.04
+  },
+  {
+   "x": -24,
+   "dy": -20,
+   "color": "#FFE29A",
+   "speed": 0.39,
+   "phase": 5.03
+  },
+  {
+   "x": -24,
+   "dy": -16,
+   "color": "#FFE29A",
+   "speed": 0.59,
+   "phase": 2.2
+  },
+  {
+   "x": -34,
+   "dy": -12,
+   "color": "#FFE29A",
+   "speed": 0.27,
+   "phase": 1.73
+  },
+  {
+   "x": -32,
+   "dy": -12,
+   "color": "#FFE29A",
+   "speed": 0.7,
+   "phase": 5.93
+  },
+  {
+   "x": -28,
+   "dy": -8,
+   "color": "#FFE29A",
+   "speed": 0.4,
+   "phase": 1.22
+  },
+  {
+   "x": -24,
+   "dy": -8,
+   "color": "#FFE29A",
+   "speed": 0.66,
+   "phase": 5.58
+  }
+ ],
+ "glows": [
+  {
+   "x": -53,
+   "dy": -32,
+   "color": "#FF4D5A",
+   "r": 4,
+   "a": 0.55,
+   "speed": 2.2
+  }
+ ],
+ "particles": {
+  "kind": "twinkle",
+  "count": 12,
+  "colors": [
+   "#FFFFFF",
+   "#C9D2FF"
+  ],
+  "size": 1
+ },
+ "veil": 0.1
+}

@@ -1,0 +1,415 @@
+{
+ "id": "skeleton",
+ "type": "hero",
+ "name": "해골 기사",
+ "tier": "premium",
+ "unlockLevel": 46,
+ "series": "할로윈",
+ "weapon": "scythe",
+ "grid": [
+  "...oooooo...",
+  "..ohhhhhho..",
+  ".ohhhhhhhho.",
+  "ohhhhhhhhhho",
+  "occcccccccco",
+  "ohhwwwwwwhho",
+  "ohwwwwwwwwho",
+  "owwwwwwwwwwo",
+  "owwwwwwwwwwo",
+  "oswwwwwwwwso",
+  ".osssssssso.",
+  "..oooooooo.."
+ ],
+ "palette": {
+  "h": "#5A5E75",
+  "w": "#F4F1EA",
+  "s": "#C9C3B5"
+ },
+ "face": {
+  "eyeColor": "#8CFF6B",
+  "cheeks": false,
+  "colorAlways": true
+ },
+ "fx": {
+  "kill": {
+   "kind": "smoke",
+   "colors": [
+    "#8CFF6B",
+    "#F4F1EA",
+    "#5A5E75"
+   ]
+  }
+ },
+ "hd": {
+  "grid": [
+   "......oooooooooooo......",
+   ".....ooÀÀÀÀÀÀÀÀÀhoo.....",
+   ".....oÀhhhhhhhhhhho.....",
+   "...ooÀhhhhhhhhhhhhhoo...",
+   "...oÀhhhhhhhhhhhhhhho...",
+   ".ooÀhhhhhhhhhhhhhhhhhoo.",
+   "ooÀhhhhhhhhhhhhhhhhhhhoo",
+   "oÀhhhhhhhhhhhhhhhhhhhÁoo",
+   "oĉcccccccccccccccccccċoo",
+   "oĉcccccccccccccccccccċoo",
+   "oÀhhhhwwwwwwwwwwwwhhhÁoo",
+   "oÀhhhwwwwwwwwwwwwwwhhÁoo",
+   "oÀhhhwwwwwwwwwwwwwwhhÁoo",
+   "oÀhwwwwwwwwwwwwwwwwwwÁoo",
+   "owwwwwwwwwwwwwwwwwwwwwoo",
+   "owwwwwwwwwwwwwwwwwwwwwoo",
+   "owwwwwwwwwwwwwwwwwwwwwoo",
+   "owwwwwwwwwwwwwwwwwwwwwoo",
+   "osswwwwwwwwwwwwwwwwwwsoo",
+   "oossswwwwwwwwwwwwwwssooo",
+   ".oossssssssssssssssssoo.",
+   "...osssssssssssssssoo...",
+   "...oooooooooooooooooo...",
+   "....oooooooooooooooo...."
+  ],
+  "faces": {
+   "fight": [
+    [
+     12,
+     14,
+     "Â"
+    ],
+    [
+     13,
+     14,
+     "Â"
+    ],
+    [
+     12,
+     15,
+     "Â"
+    ],
+    [
+     13,
+     15,
+     "Â"
+    ],
+    [
+     12,
+     16,
+     "Â"
+    ],
+    [
+     13,
+     16,
+     "Â"
+    ],
+    [
+     12,
+     14,
+     "W"
+    ],
+    [
+     18,
+     14,
+     "Â"
+    ],
+    [
+     19,
+     14,
+     "Â"
+    ],
+    [
+     18,
+     15,
+     "Â"
+    ],
+    [
+     19,
+     15,
+     "Â"
+    ],
+    [
+     18,
+     16,
+     "Â"
+    ],
+    [
+     19,
+     16,
+     "Â"
+    ],
+    [
+     18,
+     14,
+     "W"
+    ],
+    [
+     14,
+     18,
+     "o"
+    ],
+    [
+     15,
+     19,
+     "o"
+    ],
+    [
+     16,
+     19,
+     "o"
+    ],
+    [
+     17,
+     18,
+     "o"
+    ]
+   ],
+   "rest": [
+    [
+     12,
+     16,
+     "Â"
+    ],
+    [
+     13,
+     16,
+     "Â"
+    ],
+    [
+     18,
+     16,
+     "Â"
+    ],
+    [
+     19,
+     16,
+     "Â"
+    ],
+    [
+     14,
+     18,
+     "o"
+    ],
+    [
+     15,
+     19,
+     "o"
+    ],
+    [
+     16,
+     19,
+     "o"
+    ],
+    [
+     17,
+     18,
+     "o"
+    ]
+   ],
+   "hit": [
+    [
+     12,
+     14,
+     "o"
+    ],
+    [
+     14,
+     14,
+     "o"
+    ],
+    [
+     13,
+     15,
+     "o"
+    ],
+    [
+     12,
+     16,
+     "o"
+    ],
+    [
+     14,
+     16,
+     "o"
+    ],
+    [
+     18,
+     14,
+     "o"
+    ],
+    [
+     20,
+     14,
+     "o"
+    ],
+    [
+     19,
+     15,
+     "o"
+    ],
+    [
+     18,
+     16,
+     "o"
+    ],
+    [
+     20,
+     16,
+     "o"
+    ],
+    [
+     15,
+     19,
+     "o"
+    ],
+    [
+     16,
+     19,
+     "o"
+    ]
+   ],
+   "happy": [
+    [
+     12,
+     16,
+     "o"
+    ],
+    [
+     18,
+     16,
+     "o"
+    ],
+    [
+     13,
+     15,
+     "o"
+    ],
+    [
+     19,
+     15,
+     "o"
+    ],
+    [
+     14,
+     16,
+     "o"
+    ],
+    [
+     20,
+     16,
+     "o"
+    ],
+    [
+     14,
+     18,
+     "o"
+    ],
+    [
+     15,
+     19,
+     "o"
+    ],
+    [
+     16,
+     19,
+     "o"
+    ],
+    [
+     17,
+     18,
+     "o"
+    ]
+   ],
+   "tired": [
+    [
+     12,
+     15,
+     "o"
+    ],
+    [
+     13,
+     15,
+     "o"
+    ],
+    [
+     18,
+     15,
+     "o"
+    ],
+    [
+     19,
+     15,
+     "o"
+    ],
+    [
+     12,
+     16,
+     "o"
+    ],
+    [
+     18,
+     16,
+     "o"
+    ],
+    [
+     15,
+     19,
+     "T"
+    ],
+    [
+     16,
+     19,
+     "T"
+    ]
+   ],
+   "blink": [
+    [
+     12,
+     16,
+     "o"
+    ],
+    [
+     13,
+     16,
+     "o"
+    ],
+    [
+     18,
+     16,
+     "o"
+    ],
+    [
+     19,
+     16,
+     "o"
+    ],
+    [
+     14,
+     18,
+     "o"
+    ],
+    [
+     15,
+     19,
+     "o"
+    ],
+    [
+     16,
+     19,
+     "o"
+    ],
+    [
+     17,
+     18,
+     "o"
+    ]
+   ]
+  },
+  "palette": {
+   "À": "#888b9c",
+   "Á": "#4d5165",
+   "Â": "#8CFF6B",
+   "W": "#FFFFFF",
+   "H": "#FF9DA7",
+   "T": "#FF6F86",
+   "R": "#B03A2E",
+   "V": "#0E7A8A"
+  }
+ }
+}

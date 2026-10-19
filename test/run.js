@@ -441,7 +441,7 @@ const t = async (name, fn) => { await fn(); pass++; console.log('ok -', name); }
     const prem = Object.fromEntries(loadPacks(fs.mkdtempSync(path.join(os.tmpdir(), 'ul-'))).filter((p) => p.source === 'builtin' && p.tier === 'premium').map((p) => [p.id, p.unlockLevel]));
     assert.deepStrictEqual(prem, {
       dungeon: 10, graveyard: 11, shrine: 12, autumntemple: 13, monsters: 14, ghosts: 15, yokai: 16, gwisin: 17, lava: 18, jacklantern: 19, lantern: 20, jeongja: 21, torchcamp: 22, pumpkins: 23, cyber: 24, gyeongbok: 25, hotspring: 26, dokkaebi: 27, paladin: 28, musa: 29,
-      legacy: 30, witch: 31, serverroom: 32, vampire: 33, samurai: 34, attacks: 35, demon: 36, nightdesk: 37, meeting: 38, hacker: 39, ninja: 40,
+      legacy: 30, witch: 31, serverroom: 32, vampire: 33, samurai: 34, attacks: 35, demon: 36, nightdesk: 37, meeting: 38, hacker: 39, ninja: 40, gumiho: 41, mergequeue: 42, subway: 43, pangyo: 44, developer: 45, skeleton: 46, zombie: 47, rogue: 48, android: 49,
     });
   });
 
@@ -476,7 +476,7 @@ const t = async (name, fn) => { await fn(); pass++; console.log('ok -', name); }
     assert.ok(!validate({ id: 'e', type: 'enemies', name: 'e', texts: ['A'], memory: {} }), '용사 팩에만 쓸 수 있음');
   });
 
-  await t('꾸미기 팩: 기본 팩 51개 로드, 잘못된 사용자 팩은 무시', () => {
+  await t('꾸미기 팩: 기본 팩 64개 로드, 잘못된 사용자 팩은 무시', () => {
     const { loadPacks, validate } = require('../src/packs');
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pk-'));
     fs.writeFileSync(path.join(dir, 'bad.json'), JSON.stringify({ id: 'x', type: 'hero', name: 'x', grid: ['...'] }));
@@ -487,7 +487,7 @@ const t = async (name, fn) => { await fn(); pass++; console.log('ok -', name); }
     const css = packs.find((p) => p.id === 'css');
     assert.strictEqual(css.tier, 'free', '내 팩은 항상 사용 가능');
     for (const p of packs.filter((p) => p.source === 'builtin')) assert.ok(validate(p), p.id);
-    assert.strictEqual(packs.filter((p) => p.source === 'builtin').length, 51);
+    assert.strictEqual(packs.filter((p) => p.source === 'builtin').length, 64);
     // 적 글자는 도트 글꼴에 있는 문자만 (없는 문자는 빈칸으로 보임)
     const src = fs.readFileSync(path.join(__dirname, '..', 'renderer', 'scene.js'), 'utf8');
     const glyphs = new Set([' ', ...[...src.matchAll(/^\s*'(.)'\s*:/gm)].map((m) => m[1]), ...[...src.matchAll(/^\s*"(.)"\s*:/gm)].map((m) => m[1])]);
@@ -561,8 +561,8 @@ const t = async (name, fn) => { await fn(); pass++; console.log('ok -', name); }
     ['knight', 'wizard', 'archer'].forEach((v) => store.addToSet('skinsTried', v));
     const more = ach.evaluate(store, { deadNow: 3, userPacks: 1 }).map((a) => a.id).sort();
     for (const id of ['allLv5', 'angry', 'boo', 'clutch', 'fashion', 'maker', 'reporter', 'trinity', 'wipeout']) assert.ok(more.includes(id), id);
-    assert.strictEqual(ach.LIST.length, 66);
-    assert.strictEqual(new Set(ach.LIST.map((a) => a.id)).size, 66, '업적 id 중복 없음');
+    assert.strictEqual(ach.LIST.length, 67);
+    assert.strictEqual(new Set(ach.LIST.map((a) => a.id)).size, 67, '업적 id 중복 없음');
   });
 
   await t('업적 3차: 명절·정확히 100·공평·숨은 업적 등', () => {

@@ -1,0 +1,40 @@
+{
+ "id": "rain",
+ "type": "backdrop",
+ "name": "비 오는 밤",
+ "tier": "free",
+ "sky": [
+  "#0B1020",
+  "#151C33",
+  "#222A45"
+ ],
+ "floor": {
+  "color": "#1E2436",
+  "edge": "#3E4A6A"
+ },
+ "particles": {
+  "kind": "fall",
+  "count": 46,
+  "colors": [
+   "#9FB4FF",
+   "#C9D6FF"
+  ],
+  "size": 1,
+  "w": 1,
+  "h": 4,
+  "speed": 120,
+  "drift": -12,
+  "alpha": 0.55
+ },
+ "glows": [
+  {
+   "x": -40,
+   "dy": -14,
+   "color": "#FFD98A",
+   "r": 18,
+   "a": 0.12,
+   "speed": 1.2
+  }
+ ],
+ "veil": 0.12
+}

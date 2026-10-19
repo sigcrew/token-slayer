@@ -2,11 +2,12 @@
 // 종류마다 "먼저 열려 있는 것"을 순서대로 골라 쓴다. 뒤쪽에 무료 팩을 두면 프리미엄이 잠겨 있어도 맛보기로 적용된다.
 const SERIES = [
   { id: 'japan', icon: '🎌', name: '일본풍', backdrop: ['shrine', 'cherry'], enemies: ['yokai'], rest: ['lantern'], heroes: ['samurai', 'ninja'] },
-  { id: 'hell', icon: '🔥', name: '야근 지옥', backdrop: ['lava'], enemies: ['legacy', 'meeting'], rest: ['hotspring'], heroes: ['demon'] },
-  { id: 'dungeon', icon: '🏰', name: '던전', backdrop: ['dungeon'], enemies: ['monsters'], rest: ['torchcamp'], heroes: ['paladin'] },
-  { id: 'halloween', icon: '🎃', name: '할로윈', backdrop: ['graveyard', 'pumpkins'], enemies: ['ghosts'], rest: ['jacklantern'], heroes: ['witch', 'vampire'] },
-  { id: 'korea', icon: '🐯', name: '한국풍', backdrop: ['gyeongbok', 'autumntemple'], enemies: ['gwisin'], rest: ['jeongja'], heroes: ['musa', 'dokkaebi'] },
-  { id: 'cyber', icon: '🌃', name: '사이버', backdrop: ['cyber', 'serverroom', 'terminal'], enemies: ['attacks'], rest: ['nightdesk'], heroes: ['hacker'] },
+  { id: 'hell', icon: '🔥', name: '야근 지옥', backdrop: ['lava'], enemies: ['legacy', 'meeting'], rest: ['hotspring'], heroes: ['demon', 'zombie'] },
+  { id: 'dungeon', icon: '🏰', name: '던전', backdrop: ['dungeon'], enemies: ['monsters'], rest: ['torchcamp'], heroes: ['paladin', 'rogue'] },
+  { id: 'halloween', icon: '🎃', name: '할로윈', backdrop: ['graveyard', 'pumpkins'], enemies: ['ghosts', 'treats'], rest: ['jacklantern'], heroes: ['witch', 'vampire', 'skeleton'] },
+  { id: 'korea', icon: '🐯', name: '한국풍', backdrop: ['gyeongbok', 'autumntemple'], enemies: ['gwisin'], rest: ['jeongja'], heroes: ['musa', 'dokkaebi', 'gumiho'] },
+  { id: 'cyber', icon: '🌃', name: '사이버', backdrop: ['cyber', 'serverroom', 'terminal'], enemies: ['attacks'], rest: ['nightdesk'], heroes: ['hacker', 'android'] },
+  { id: 'devlife', icon: '☕', name: '개발자 일상', backdrop: ['pangyo'], enemies: ['mergequeue', 'commits'], rest: ['subway', 'coffee'], heroes: ['developer'] },
 ];
 
 // 시리즈에 속한 모든 팩 [type, id]

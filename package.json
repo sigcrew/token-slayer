@@ -1,7 +1,7 @@
 {
   "name": "token-slayer",
   "productName": "Token Slayer",
-  "version": "0.30.12",
+  "version": "0.30.13",
   "description": "Claude / Codex 남은 사용량을 화면에 떠 있는 캐릭터로 보여주는 앱",
   "main": "main.js",
   "scripts": {

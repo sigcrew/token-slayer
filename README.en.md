@@ -95,22 +95,22 @@ Only services you **actually used in the last 30 days** get a gauge automaticall
 
 - Heroes grow as you use your limits. Longer windows are worth more XP per 1%: **5-hour 100 · weekly 400 · monthly 1,500**. Cumulative XP to reach level L is `500 × L × (L−1)`.
 - **BURNING TIME 🔥**: near a reset with lots left. Using it then gives **double XP**. Weekly: within 12 h of reset and ≥ 20% left. Monthly (Cursor): within 3 days and ≥ 20% left.
-- **66 achievements** across Growth, Usage, Time & Streaks, GAME OVER, Use It All, Waste Badges, BURNING TIME, Bond, Style & Records, plus hidden ones. See them under **Achievements** in the tray menu.
+- **67 achievements** across Growth, Usage, Time & Streaks, GAME OVER, Use It All, Waste Badges, BURNING TIME, Bond, Style & Records, plus hidden ones. See them under **Achievements** in the tray menu.
 - **Click the hero** for reactions; click five times in two seconds and it gets angry.
 - **Weekly record card**: tray menu → **Make this week's record card** saves a pixel-style PNG to Downloads and copies it to the clipboard.
 
 ## Customization packs
 
-Under **Customize** you can pick a hero class, enemies, rest scene and backdrop for each service. **Apply a series** dresses everything in one of six worlds: 🎌 Japan · 🐯 Korea · 🔥 Overtime Hell · 🏰 Dungeon · 🎃 Halloween · 🌃 Cyber.
+Under **Customize** you can pick a hero class, enemies, rest scene and backdrop for each service. **Apply a series** dresses everything in one of seven worlds: 🎌 Japan · 🐯 Korea · 🔥 Overtime Hell · 🏰 Dungeon · 🎃 Halloween · 🌃 Cyber · ☕ Dev Life.
 
 | Kind | Free | Premium |
 |---|---|---|
-| Heroes | Hero (sword) · Mage (staff) · Archer (bow) · Pirate (pistol) · Chef (ladle) · Astronaut (raygun) · Cat (claw) · Viking (axe) | Samurai · Ninja · Musa · Dokkaebi · Demon · Paladin · Hacker · Witch · Vampire |
-| Enemies | Code fragments · Bug swarm · Commit log · Notification bombs · Type errors | Legacy code · Meeting hell · Yokai · Hanyang spirits · Dungeon monsters · Cyber attacks · Ghosts & friends |
-| Rest scenes | Campfire · Coffee break · Midnight ramen · Handheld console | Starry night lantern · Pavilion moonlit night · Lava hot spring · Torchlit camp · Late-night coding desk · Jack-o'-lantern |
-| Backdrops | Night sky · Cherry blossoms · Terminal | Dungeon · Shrine at night · Gyeongbokgung at night · Autumn temple · Lava · Cyberpunk · Server room · Moonlit graveyard · Pumpkin patch |
+| Heroes | Hero (sword) · Mage (staff) · Archer (bow) · Pirate (pistol) · Chef (ladle) · Astronaut (raygun) · Cat (claw) · Viking (axe) · Puppy (bone) | Samurai · Ninja · Musa · Dokkaebi · Gumiho · Developer · Demon · Zombie Worker · Paladin · Rogue · Hacker · Android · Witch · Vampire · Skeleton Knight |
+| Enemies | Code fragments · Bug swarm · Commit log · Notification bombs · Type errors · Candy Chaos | Legacy code · Meeting hell · Yokai · Hanyang spirits · Dungeon monsters · Cyber attacks · Ghosts & friends · Merge queue |
+| Rest scenes | Campfire · Coffee break · Midnight ramen · Late-night chicken · Handheld console | Starry night lantern · Pavilion moonlit night · Lava hot spring · Torchlit camp · Late-night coding desk · Jack-o'-lantern · Subway home |
+| Backdrops | Night sky · Cherry blossoms · Terminal · Rainy night | Dungeon · Shrine at night · Gyeongbokgung at night · Autumn temple · Lava · Cyberpunk · Server room · Moonlit graveyard · Pumpkin patch · Pangyo at night |
 
-Premium packs also open with levels (highest hero counts): Dungeon Lv.10 … Ninja Lv.40. Premium unlocks **Customize → Pixel resolution → High resolution (24×24)** too.
+Premium packs also open with levels (highest hero counts): Dungeon Lv.10 … Ninja Lv.40 … Android Lv.49. Premium unlocks **Customize → Pixel resolution → High resolution (24×24)** too.
 
 Premium is a one-time purchase via Lemon Squeezy: Customize → **Buy premium packs…** → copy the key → **Unlock with the copied license key**. The key is re-checked daily and re-locks on refund (30 days of grace offline). To move computers, use **Deactivate the license on this computer**. Only the key and `OS-CPU + random id` are sent — never your computer name.
 

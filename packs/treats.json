@@ -1,0 +1,28 @@
+{
+ "id": "treats",
+ "type": "enemies",
+ "name": "사탕 대소동",
+ "tier": "free",
+ "series": "할로윈",
+ "texts": [
+  "CANDY",
+  "TRICK",
+  "TREAT",
+  "LOLLIPOP",
+  "CHOCO",
+  "JELLY",
+  "COOKIE",
+  "GUMMY"
+ ],
+ "colors": [
+  "#FF9EB5",
+  "#FFD166",
+  "#8CFF6B",
+  "#B58CFF",
+  "#FF7A3D"
+ ],
+ "fatal": [
+  "SUGAR RUSH",
+  "NO CANDY"
+ ]
+}

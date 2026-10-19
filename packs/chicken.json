@@ -1,0 +1,26 @@
+{
+ "id": "chicken",
+ "type": "rest",
+ "name": "야식 치킨",
+ "tier": "free",
+ "glow": null,
+ "steam": true,
+ "frames": [
+  [
+   "............",
+   "..oo..oo....",
+   ".obbooobbo..",
+   "obbbbobbbbo.",
+   "oooooooooooo",
+   "oyyyyyyyyyyo",
+   "oyrryyyyrryo",
+   "oooooooooooo"
+  ]
+ ],
+ "palette": {
+  "o": "#171522",
+  "b": "#C7772E",
+  "y": "#F4F0E6",
+  "r": "#D94B3D"
+ }
+}

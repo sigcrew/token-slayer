@@ -1,0 +1,30 @@
+{
+ "id": "mergequeue",
+ "type": "enemies",
+ "name": "머지 대기열",
+ "tier": "premium",
+ "unlockLevel": 42,
+ "series": "개발자 일상",
+ "texts": [
+  "CONFLICT",
+  "REBASE",
+  "CI RED",
+  "FLAKY",
+  "NIT:",
+  "REVIEW?",
+  "BLOCKER",
+  "DEPRECATED"
+ ],
+ "colors": [
+  "#FF6B6B",
+  "#FFD166",
+  "#8FD3FF",
+  "#B98CFF",
+  "#E8EEF8"
+ ],
+ "fatal": [
+  "PROD DOWN",
+  "ROLLBACK",
+  "FRI DEPLOY"
+ ]
+}
