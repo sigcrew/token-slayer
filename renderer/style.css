@@ -30,23 +30,29 @@ html, body {
 }
 #root.flipped { flex-direction: column-reverse; }
 
+/* 상세창 자리: 위젯(용사들) 높이를 뺀 나머지를 채운다. 용사 수가 바뀌어도 상세창이 위젯 바로 위(뒤집히면 바로 아래)에 붙도록 */
 #panelSlot {
-  height: var(--PANEL_H);
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 0 6px 4px;
+  padding: 0 6px 6px;
 }
-#root.flipped #panelSlot { justify-content: flex-start; padding: 4px 6px 0; }
+#root.flipped #panelSlot { justify-content: flex-start; padding: 6px 6px 0; }
 
+/* 위젯 영역: 용사 수만큼만 차지 (2명이면 낮아지고 4명이면 높아짐) */
 #charArea {
-  height: var(--CHAR_H);
+  flex: none;
+  min-height: 0;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
 }
 #root.flipped #charArea { justify-content: flex-start; }
+#root.flipped #toast { bottom: auto; top: calc(100% + 4px); }
 
 #slayer {
   width: 232px;
@@ -121,7 +127,7 @@ html, body {
 /* ── 자세히 보기 패널 ── */
 #panel {
   /* 내용이 길어져도 잘리지 않게: 공간을 넘으면 패널 안에서 스크롤 */
-  max-height: calc(var(--PANEL_H) - 10px);
+  max-height: 100%;
   overflow-y: auto;
   overscroll-behavior: contain;
   background: var(--panel-bg);
@@ -204,6 +210,12 @@ html, body {
 
 /* 업적 토스트 (캐릭터 위) */
 #toast {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  translate: -50% 0;
+  z-index: 5;
+  width: max-content;
   max-width: 228px;
   margin-bottom: 4px;
   padding: 7px 10px;
