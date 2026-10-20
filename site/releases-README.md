@@ -1,7 +1,7 @@
 # Token Slayer ⚔️
 
-**Free desktop widget (macOS · Windows) that shows your remaining Claude Code, Codex and Cursor usage as a pixel hero's HP.**
-Claude Code · Codex · Cursor의 남은 사용량(5시간·주간·월간 한도)을 화면 위 도트 용사의 HP로 보여주는 무료 데스크톱 위젯이에요.
+**Free desktop widget (macOS · Windows) that shows your remaining Claude Code, Codex, Cursor and Antigravity usage as a pixel hero's HP.**
+Claude Code · Codex · Cursor · Antigravity의 남은 사용량(5시간·주간·월간 한도)을 화면 위 도트 용사의 HP로 보여주는 무료 데스크톱 위젯이에요.
 
 <p align="center"><a href="https://token-slayer.vercel.app/en/"><b>Website & live demo</b></a> · <a href="https://token-slayer.vercel.app/"><b>한국어 사이트</b></a></p>
 
@@ -20,7 +20,7 @@ Source code · 소스 코드: [sigcrew/token-slayer](https://github.com/sigcrew/
 ## What it does
 
 - One pixel hero per service. **Remaining usage = the hero's HP.** The hero fights while your agent works and rests by a campfire when idle.
-- Shows your **Claude Code** 5-hour / weekly limits, **Codex** 5-hour / weekly limits and **Cursor** monthly usage in one corner of your screen.
+- Shows your **Claude Code** 5-hour / weekly limits, **Codex** 5-hour / weekly limits, **Cursor** monthly usage and **Antigravity** (Gemini) weekly limits in one corner of your screen.
 - Forecasts when you will run out (based on the last 30 minutes) and warns at 20% / 10% HP.
 - English and Korean. Optional cosmetic packs (one-time purchase); the app and every usage feature stay free.
 

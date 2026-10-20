@@ -7,6 +7,8 @@ const { EventEmitter } = require('events');
 const { ClaudeReader } = require('./claude');
 const { CodexReader } = require('./codex');
 const { CursorReader } = require('./cursor');
+const { AntigravityReader } = require('./antigravity');
+const agMod = require('./antigravity');
 const activity = require('./activity');
 const progress = require('./progress');
 const { Forecaster, HpAlarm } = require('./forecast');
@@ -48,6 +50,13 @@ function watchTargets() {
       // 가장 믿을 만한 신호: 에이전트 대화 기록의 마지막 줄이 turn_ended가 아니고 최근에 바뀌었으면 일하는 중
       stateProbe: { files: async () => cursorMod.recentTranscripts(), state: (files, now, cache) => cursorMod.transcriptState(files, now, cache) },
     },
+    // Antigravity: 일하는 동안 대화 기록(transcript.jsonl)과 대화 DB(WAL)가 몇 초마다 바뀌고, 쉬면 멈춘다
+    antigravity: {
+      paths: [],
+      probe: async () => agMod.activityFiles(), probeEvery: 1500, probeRefreshMs: 10000,
+      idleMs: 30000,
+      minEvents: 1,
+    },
   };
 }
 
@@ -59,6 +68,9 @@ const PROVIDERS = [
     login: { type: 'terminal', cmd: 'codex login', label: '로그인하기', hint: '브라우저가 열리면 ChatGPT 계정으로 로그인하세요.', install: 'Codex CLI를 먼저 설치해 주세요: npm i -g @openai/codex' } },
   { id: 'cursor', name: 'Cursor', color: '#B98CFF', every: 120000, busyEvery: 40000, make: (f) => new CursorReader(f),
     login: { type: 'app', app: 'Cursor', label: 'Cursor 열기' } },
+  // Antigravity(Google): 공식 CLI(agy)의 사용량 보고를 실행해서 읽는다. 프로세스를 띄우는 비용이 있어 조회 간격을 길게
+  { id: 'antigravity', name: 'Antigravity', color: '#3FCF8E', every: 300000, busyEvery: 120000, make: () => new AntigravityReader(),
+    login: { type: 'terminal', cmd: 'agy', label: '로그인하기', hint: 'Google 계정으로 로그인하세요.', install: 'Antigravity CLI를 먼저 설치해 주세요: brew install --cask antigravity-cli' } },
 ];
 
 // HP·GAME OVER·경고·바닥 예측은 서비스 전체 한도(5시간·주간·월간)로만 판단한다.

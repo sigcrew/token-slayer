@@ -2,11 +2,11 @@
 
 **한국어** · [English](README.en.md)
 
-Claude · Codex · Cursor 같은 AI 에이전트의 **남은 사용량을 HP로 가진 도트 용사들**이 화면 구석에서 날아오는 코드를 베며 싸우는 데스크톱 위젯이에요. macOS와 Windows에서 동작해요.
+Claude · Codex · Cursor · Antigravity 같은 AI 에이전트의 **남은 사용량을 HP로 가진 도트 용사들**이 화면 구석에서 날아오는 코드를 베며 싸우는 데스크톱 위젯이에요. macOS와 Windows에서 동작해요.
 
 > 이전 이름: Token Buddy. 처음 실행하면 예전 레벨·업적·설정·claude.ai 로그인을 자동으로 옮겨 와요.
 
-- 에이전트(Claude · Codex · Cursor)마다 **용사**가 한 명씩 나와요. 투구 색으로 구분하고, 남은 사용량이 곧 **HP**예요.
+- 에이전트(Claude · Codex · Cursor · Antigravity)마다 **용사**가 한 명씩 나와요. 투구 색으로 구분하고, 남은 사용량이 곧 **HP**예요.
 - 토큰을 쓰는 중이면 오른쪽에서 코드 조각이 날아오고 용사가 칼로 베어요. 안 쓰는 중이면 칼을 꽂고 **모닥불** 앞에서 쉬어요.
 - 사용량이 줄어드는 순간 코드 하나가 방어를 뚫고 용사를 때려요 (`-5%`). HP바에는 빨간 잔상이 남았다가 따라 줄어요.
 - HP가 0%가 되면 용사가 쓰러지고 **GAME OVER**와 부활(리셋)까지 남은 시간이 떠요.
@@ -28,6 +28,7 @@ Claude · Codex · Cursor 같은 AI 에이전트의 **남은 사용량을 HP로 
 | `claude.ai` | Claude Code가 없을 때 앱 안 claude.ai 로그인 창으로 사용량 조회 | `src/claude-web.js` |
 | `chatgpt.com/backend-api/wham/usage` | Codex 사용량 조회 (`~/.codex/auth.json`, 읽기만 함) | `src/codex.js` |
 | `cursor.com/api/usage-summary` | Cursor 사용량 조회 (Cursor 설정 DB의 토큰, 읽기만 함) | `src/cursor.js` |
+| (네트워크 아님) Antigravity 공식 CLI `agy -p /usage` 실행 | Antigravity 사용량 보고. 접속과 로그인은 agy가 하고 앱은 토큰을 읽지 않음 | `src/antigravity.js` |
 | `api.github.com` (sigcrew/token-slayer-releases) | 업데이트 확인 | `src/updater.js` |
 | `api.lemonsqueezy.com/v1/licenses` | 꾸미기 팩 라이선스 키 확인 (구매한 경우만) | `src/license.js` |
 
@@ -112,6 +113,7 @@ git commit -am "v0.21.0" && git push
 | **Codex** | ① Codex 로그인이 있으면 ChatGPT 사용량 조회(서버 값: 다른 기기·웹·클라우드에서 쓴 것까지 반영), ② 못 쓰면 `~/.codex/sessions/**/rollout-*.jsonl`에 Codex가 기록하는 `rate_limits` (5시간/주간 사용 %) | 5초 (서버는 45초마다) |
 | **Claude** | ① Claude Code 로그인이 있으면 그 토큰으로, ② 없으면 앱 안의 **claude.ai 로그인 창**으로 한 번 로그인한 세션으로 조회 (claude.ai 설정의 사용량과 같은 데이터) | 1분 |
 | **Cursor** | Cursor 앱 설정 DB(`state.vscdb`)의 로그인 토큰으로 조회하는 대시보드 사용량 (`cursor.com/api/usage-summary`) | 2분 |
+| **Antigravity** | 공식 CLI의 사용량 보고 `agy -p /usage --output-format json` (Gemini 모델 · Claude·GPT 모델의 주간 남은 비율). 모델에 질문을 보내지 않아 한도를 쓰지 않음. 개인 Google 계정의 Gemini 한도는 이제 여기서 관리돼요 | 5분 |
 
 **최근 30일 안에 실제로 쓴 서비스만** 자동으로 게이지가 생겨요.
 
@@ -120,6 +122,7 @@ git commit -am "v0.21.0" && git push
 | Claude | Claude Code 기록(`~/.claude`) 또는 Claude 데스크톱 앱 데이터 폴더가 30일 안에 바뀌었거나, 이번 5시간/주간 사용량이 0%보다 큼 |
 | Codex | `~/.codex/sessions`의 최신 세션 파일이 30일 이내 |
 | Cursor | Cursor 설정 DB가 30일 안에 바뀌었거나(= Cursor를 열었음), 이번 달 사용량이 0%보다 큼 |
+| Antigravity | `~/.gemini/antigravity-cli`의 대화 기록이 30일 안에 바뀌었음 (agy가 없으면 표시 안 함) |
 
 트레이 메뉴의 **표시할 서비스**에서 직접 켜거나 끌 수 있고, **자동으로 되돌리기**를 누르면 다시 30일 기준으로 돌아가요.
 
@@ -160,7 +163,8 @@ Codex 로그인 여부는 `~/.codex/auth.json`(또는 설정에 따라 키체인
 |---|---|
 | Codex | `~/.codex/sessions` (세션 기록) |
 | Claude | Claude 데스크톱 앱 대화 저장소, `~/.claude/projects` (Claude Code 대화 기록) |
-| Cursor | Cursor 설정 DB (잡음이 많아서 10초 안에 4번 이상 바뀔 때만 인정) |
+| Cursor | 에이전트 대화 기록(`~/.cursor/projects/*/agent-transcripts`)의 마지막 줄이 `turn_ended`가 아니면 일하는 중 + Cursor 설정 DB (15초 안에 3번 이상 바뀔 때) |
+| Antigravity | `~/.gemini/antigravity-cli`의 대화 기록(`transcript.jsonl`)과 대화 DB |
 
 HP 수치는 서버 값이라 조회 주기(Claude 20초~1분, Cursor 40초~2분)만큼 늦을 수 있어요. 일을 시작하면 곧바로 한 번 조회해요.
 
@@ -239,6 +243,7 @@ preload.js         렌더러와 메인 사이 IPC
 src/codex.js       Codex 세션 로그 파서 (.jsonl / .jsonl.zst)
 src/claude.js      Claude 사용량 조회
 src/cursor.js      Cursor 사용량 조회
+src/antigravity.js Antigravity 사용량 조회 (agy 사용량 보고)
 src/usage.js       주기적 폴링
 renderer/          캐릭터(canvas), 게이지, 패널
 test/run.js        파서 테스트 (npm test)

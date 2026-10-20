@@ -238,6 +238,44 @@ const t = async (name, fn) => { await fn(); pass++; console.log('ok -', name); }
     } finally { if (prev === undefined) delete process.env.CURSOR_STATE_DB; else process.env.CURSOR_STATE_DB = prev; }
   });
 
+  await t('Antigravity: agy 사용량 보고(JSON)를 주간 한도 창으로 읽고, 설치 안 됨 · 로그인 필요 · 이상한 출력을 구분', async () => {
+    const ag = require('../src/antigravity');
+    const report = { status: 'SUCCESS', command: { name: 'usage', data: { groups: [
+      { name: 'Gemini Models', buckets: [{ id: 'gemini-weekly', window: 'weekly', remaining_fraction: 0.75, reset_time: '2026-10-27T01:54:23Z' }] },
+      { name: 'Claude and GPT models', buckets: [{ id: '3p-weekly', window: 'weekly', remaining_fraction: 1, reset_time: '2026-10-27T01:54:23Z' }] },
+    ] } } };
+    const w = ag.parseUsage(report);
+    assert.deepStrictEqual(w.map((x) => [x.key, x.label, x.usedPercent, x.windowMinutes]), [['weekly', 'Gemini 주간', 25, 10080], ['weeklyOther', 'Claude·GPT 주간', 0, 10080]]);
+    assert.strictEqual(w[0].resetsAt, Date.parse('2026-10-27T01:54:23Z'));
+    assert.strictEqual(ag.parseUsage({ status: 'SUCCESS', response: 'hi' }), null, '사용량 보고가 아니면 null');
+    const prev = process.env.ANTIGRAVITY_CLI_PATH;
+    try {
+      process.env.ANTIGRAVITY_CLI_PATH = '';
+      assert.strictEqual((await new ag.AntigravityReader().read()).error, 'not-installed');
+      process.env.ANTIGRAVITY_CLI_PATH = process.execPath; // 존재하는 실행 파일이면 충분 (실행은 가짜 runner가 대신)
+      const ok = await new ag.AntigravityReader(async () => ({ err: null, stdout: JSON.stringify(report) })).read();
+      assert.strictEqual(ok.ok, true); assert.strictEqual(ok.windows.length, 2);
+      const login = await new ag.AntigravityReader(async () => ({ err: null, stdout: JSON.stringify({ status: 'ERROR', response: 'You are not signed in' }) })).read();
+      assert.strictEqual(login.error, 'expired'); assert.strictEqual(login.needsLogin, true);
+      const junk = await new ag.AntigravityReader(async () => ({ err: null, stdout: 'garbage' })).read();
+      assert.strictEqual(junk.error, 'parse');
+      const slow = new ag.AntigravityReader(async () => ({ err: { killed: true }, stdout: '' }));
+      assert.strictEqual((await slow.read()).error, 'network');
+      assert.strictEqual((await slow.read()).error, 'rate-limited', '시간 초과 뒤에는 잠시 쉬었다 조회');
+    } finally { if (prev === undefined) delete process.env.ANTIGRAVITY_CLI_PATH; else process.env.ANTIGRAVITY_CLI_PATH = prev; }
+    // 작업 감지 파일: 최근에 바뀐 대화 기록과 대화 DB WAL만
+    const fs2 = require('fs'), os2 = require('os'), path2 = require('path');
+    const home = fs2.mkdtempSync(path2.join(os2.tmpdir(), 'agh-'));
+    const tr = path2.join(home, 'brain', 'c1', '.system_generated', 'logs'); fs2.mkdirSync(tr, { recursive: true }); fs2.writeFileSync(path2.join(tr, 'transcript.jsonl'), '{}\n');
+    fs2.mkdirSync(path2.join(home, 'conversations')); fs2.writeFileSync(path2.join(home, 'conversations', 'c1.db-wal'), 'x'); fs2.writeFileSync(path2.join(home, 'conversations', 'c1.db'), 'x');
+    const old = path2.join(home, 'conversations', 'c0.db-wal'); fs2.writeFileSync(old, 'x'); const t0 = new Date(Date.now() - 3 * 3600e3); fs2.utimesSync(old, t0, t0);
+    const prevH = process.env.ANTIGRAVITY_HOME; process.env.ANTIGRAVITY_HOME = home;
+    try {
+      const files = ag.activityFiles().map((f) => path2.relative(home, f)).sort();
+      assert.deepStrictEqual(files, ['brain/c1/.system_generated/logs/transcript.jsonl', 'conversations/c1.db-wal']);
+    } finally { if (prevH === undefined) delete process.env.ANTIGRAVITY_HOME; else process.env.ANTIGRAVITY_HOME = prevH; }
+  });
+
   await t('Cursor 세션 쿠키: sub에서 userId 추출, 만료 감지', () => {
     const now = Date.now();
     const tok = mkJwt({ sub: 'auth0|user_01ABC', exp: Math.floor(now / 1000) + 3600 });

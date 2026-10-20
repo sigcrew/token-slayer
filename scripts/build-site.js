@@ -11,18 +11,18 @@ fs.mkdirSync(out, { recursive: true });
 const SITE = (process.env.SITE_URL || 'https://token-slayer.vercel.app').replace(/\/$/, '');
 const title = 'Token Slayer — 남은 토큰이 곧 용사의 HP';
 // 검색 결과에 보이는 페이지 제목(<title>)과 설명: 사람들이 실제로 찾는 말(Claude Code · Codex · Cursor 사용량 한도)을 넣는다
-const seoKo = { title: 'Token Slayer — Claude Code · Codex · Cursor 사용량 한도를 보여주는 무료 데스크톱 위젯', desc: 'Claude Code · Codex · Cursor의 남은 사용량(5시간·주간·월간 한도)을 화면 위 도트 용사의 HP로 보여주는 무료 데스크톱 앱. 맥·윈도우 지원, 서버 없이 내 컴퓨터에서만 동작해요.' };
-const seoEn = { title: 'Token Slayer — Free Claude Code, Codex & Cursor usage limit widget', desc: 'A free Mac & Windows desktop widget that shows your remaining Claude Code, Codex and Cursor usage (5-hour, weekly, monthly limits) as a pixel hero\'s HP. No server, nothing collected.' };
+const seoKo = { title: 'Token Slayer — Claude Code · Codex · Cursor · Antigravity 사용량 한도를 보여주는 무료 데스크톱 위젯', desc: 'Claude Code · Codex · Cursor · Antigravity(Gemini)의 남은 사용량(5시간·주간·월간 한도)을 화면 위 도트 용사의 HP로 보여주는 무료 데스크톱 앱. 맥·윈도우 지원, 서버 없이 내 컴퓨터에서만 동작해요.' };
+const seoEn = { title: 'Token Slayer — Free Claude Code, Codex, Cursor & Antigravity usage limit widget', desc: 'A free Mac & Windows desktop widget that shows your remaining Claude Code, Codex, Cursor and Antigravity (Gemini) usage (5-hour, weekly, monthly limits) as a pixel hero\'s HP. No server, nothing collected.' };
 const titleEn = 'Token Slayer — your remaining tokens are the hero\'s HP';
-const descEn = 'A free desktop app (Mac & Windows) that shows your remaining Claude · Codex · Cursor usage as a hero\'s HP on your screen';
-const desc = 'Claude · Codex · Cursor 남은 사용량을 화면 위 용사의 HP로 보여주는 무료 데스크톱 앱 (맥 · 윈도우)';
+const descEn = 'A free desktop app (Mac & Windows) that shows your remaining Claude · Codex · Cursor · Antigravity usage as a hero\'s HP on your screen';
+const desc = 'Claude · Codex · Cursor · Antigravity 남은 사용량을 화면 위 용사의 HP로 보여주는 무료 데스크톱 앱 (맥 · 윈도우)';
 const esc = (t) => t.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 // 자주 묻는 질문: 화면에 보이는 것과 검색용 구조화 데이터(JSON-LD)가 같은 내용 (site/faq.js)
 const FAQ = require('../site/faq.js');
 const escHtml = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 const faqHtml = (lang) => `<section id="faq">
       <h2>${lang === 'ko' ? '자주 묻는 질문' : 'FAQ'}</h2>
-      <p class="sub">${lang === 'ko' ? 'Claude Code · Codex · Cursor 사용량을 한눈에 보는 방법과, 앱이 무엇을 읽는지 정리했어요.' : 'How to see your Claude Code, Codex and Cursor usage at a glance, and what the app reads.'}</p>
+      <p class="sub">${lang === 'ko' ? 'Claude Code · Codex · Cursor · Antigravity 사용량을 한눈에 보는 방법과, 앱이 무엇을 읽는지 정리했어요.' : 'How to see your Claude Code, Codex, Cursor and Antigravity usage at a glance, and what the app reads.'}</p>
       <div class="faq">
 ${FAQ.map((f) => `        <div><h3>${escHtml(f[lang][0])}</h3><p>${escHtml(f[lang][1])}</p></div>`).join('\n')}
       </div>

@@ -60,6 +60,7 @@ module.exports = [
   ['이미 로그인해 둔 앱의 정보로 사용량만 물어봐요. 대화 내용은 읽지 않아요.', 'It uses the logins you already have to ask for usage only. It never reads your conversations.'],
   ['Claude Code 로그인, 또는 앱 안에서 한 claude.ai 로그인으로 사용량을 물어봐요', 'Asks for usage using your Claude Code login, or a claude.ai login made inside the app'],
   ['<code>~/.codex/sessions</code> 기록 파일의 사용 한도 줄을 읽고, Codex 로그인으로 사용량만 물어봐요 (끌 수 있어요)', 'Reads the usage-limit lines from <code>~/.codex/sessions</code> log files, and asks for usage only with your Codex login (can be turned off)'],
+  ['Google 공식 CLI(<code>agy</code>)의 사용량 보고를 실행해요. 로그인 정보는 앱이 읽지 않아요', 'Runs the usage report of Google\'s official CLI (<code>agy</code>). The app never reads your login'],
   ['Cursor 로그인 토큰으로 사용량을 물어봐요', 'Asks for usage using your Cursor login token'],
   ['<th>작업 감지</th>', '<th>ACTIVITY</th>'], ['위 앱들이 파일을 쓰는 <b>시각</b>만 봐요', 'Only watches the <b>time</b> the apps above write files'], ['내용은 열지 않음', 'Contents never opened'],
   ['Token Slayer 앱은 따로 운영하는 서버가 없고 아무것도 수집하지 않아요. 모든 처리는 내 컴퓨터 안에서 끝나요.', 'The Token Slayer app has no server of its own and collects nothing. Everything is processed on your computer.'],

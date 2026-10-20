@@ -10,7 +10,7 @@ const fs = require('fs');
 const path = require('path');
 
 const TYPES = ['hero', 'enemies', 'rest', 'backdrop'];
-const DEFAULT_SKINS = { claude: 'knight', codex: 'wizard', cursor: 'archer' };
+const DEFAULT_SKINS = { claude: 'knight', codex: 'wizard', cursor: 'archer', antigravity: 'astronaut' };
 
 // 추억(memory): 용사를 여러 번 누르면 사진 카드가 뜨고(photo · captions), 팩을 처음 쓸 때 편지가 한 번 뜬다(welcome)
 function validMemory(m) {

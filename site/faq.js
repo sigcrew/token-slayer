@@ -15,6 +15,10 @@ module.exports = [
     en: ['Does it also track my Cursor monthly usage?', 'Yes. It uses the login saved by the Cursor app to show your monthly usage (including Auto and API) and the reset time. You only need to be logged in to the Cursor app.'],
   },
   {
+    ko: ['Gemini(Antigravity) 한도도 볼 수 있나요?', '네. 이제 개인 Google 계정의 Gemini 한도는 Gemini CLI 대신 Google Antigravity에서 관리돼요. Token Slayer는 Antigravity 공식 CLI(agy)의 사용량 보고를 읽어서 Gemini 모델과 Claude·GPT 모델의 주간 한도를 보여 줘요. agy를 설치하고 한 번 로그인해 두면 돼요. 사용량 보고는 모델에 질문을 보내지 않아서 한도를 쓰지 않아요.'],
+    en: ['Can it show my Gemini (Antigravity) limits?', 'Yes. Gemini limits for personal Google accounts are now managed in Google Antigravity instead of the Gemini CLI. Token Slayer reads the usage report of the official Antigravity CLI (agy) and shows the weekly limits for Gemini models and for Claude/GPT models. Install agy and sign in once. The usage report sends no prompt, so it does not use your quota.'],
+  },
+  {
     ko: ['한도가 바닥나기 전에 알려 주나요?', '네. 최근 30분의 사용 속도로 언제 0%가 되는지 예측해서 보여 주고, 남은 양이 20%와 10%가 되면 알림을 보내요. 리셋이 가까운데 한도가 많이 남았을 때도 알려 줘요.'],
     en: ['Does it warn me before I run out?', 'Yes. It forecasts when you will hit 0% based on your last 30 minutes of usage, and sends a notification at 20% and 10% remaining. It also tells you when a reset is near and plenty of your limit is left.'],
   },

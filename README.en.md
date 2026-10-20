@@ -2,11 +2,11 @@
 
 [한국어](README.md) · **English**
 
-A desktop widget where **pixel heroes whose HP is your remaining AI usage** — Claude · Codex · Cursor — slash incoming code in the corner of your screen. Works on macOS and Windows.
+A desktop widget where **pixel heroes whose HP is your remaining AI usage** — Claude · Codex · Cursor · Antigravity — slash incoming code in the corner of your screen. Works on macOS and Windows.
 
 > Formerly "Token Buddy". On first launch it migrates your old levels, achievements, settings and claude.ai login.
 
-- Each agent (Claude · Codex · Cursor) gets its own **hero**, told apart by helmet color. Remaining usage is its **HP**.
+- Each agent (Claude · Codex · Cursor · Antigravity) gets its own **hero**, told apart by helmet color. Remaining usage is its **HP**.
 - While you're spending tokens, code fragments fly in from the right and the hero slashes them. When idle, the hero plants the sword and rests by the **campfire**.
 - Every time usage drops, one piece of code breaks through and hits the hero (`-5%`). The HP bar leaves a red trail that catches up.
 - At 0% HP the hero falls and **GAME OVER** shows the time until revival (reset).
@@ -27,6 +27,7 @@ To read your usage, Token Slayer **reads each tool's login token on this compute
 | `claude.ai` | Claude usage through the in-app claude.ai login window, when Claude Code isn't installed | `src/claude-web.js` |
 | `chatgpt.com/backend-api/wham/usage` | Codex usage (`~/.codex/auth.json`, read-only) | `src/codex.js` |
 | `cursor.com/api/usage-summary` | Cursor usage (token from Cursor's settings DB, read-only) | `src/cursor.js` |
+| (no network) runs the official Antigravity CLI `agy -p /usage` | Antigravity usage report. agy handles the connection and login; the app never reads its token | `src/antigravity.js` |
 | `api.github.com` (sigcrew/token-slayer-releases) | Update check | `src/updater.js` |
 | `api.lemonsqueezy.com/v1/licenses` | Cosmetic pack license check (only if you bought one) | `src/license.js` |
 
@@ -76,6 +77,7 @@ To see the effects without any data, turn on **Demo mode** from the tray icon. O
 | **Codex** | ① With a Codex login, the ChatGPT usage lookup (server value, including usage from other devices, the web and cloud); ② otherwise `rate_limits` that Codex writes to `~/.codex/sessions/**/rollout-*.jsonl` (5-hour / weekly %) | 5 s (server: every 45 s) |
 | **Claude** | ① your Claude Code login token, or ② a one-time login in the app's **claude.ai login window** (same data as the usage in claude.ai settings) | 1 min |
 | **Cursor** | Dashboard usage via the login token in Cursor's settings DB (`state.vscdb`) (`cursor.com/api/usage-summary`) | 2 min |
+| **Antigravity** | The official CLI usage report `agy -p /usage --output-format json` (weekly remaining for Gemini models and for Claude/GPT models). Sends no prompt, so it uses no quota. Gemini limits for personal Google accounts now live here | 5 min |
 
 Only services you **actually used in the last 30 days** get a gauge automatically. Turn them on or off under **Services to show** in the tray menu; **Reset to automatic** goes back to the 30-day rule.
 
