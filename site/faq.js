@@ -23,8 +23,8 @@ module.exports = [
     en: ['Does it warn me before I run out?', 'Yes. It forecasts when you will hit 0% based on your last 30 minutes of usage, and sends a notification at 20% and 10% remaining. It also tells you when a reset is near and plenty of your limit is left.'],
   },
   {
-    ko: ['대화 내용이나 개인정보를 수집하나요?', '아니요. 앱은 따로 운영하는 서버가 없고 아무것도 수집하지 않아요. 이미 로그인해 둔 정보로 각 서비스에 사용량만 물어보고, 대화 내용은 읽지 않아요. 이 소개 사이트는 쿠키 없이 방문자 수만 집계해요.'],
-    en: ['Does it collect my conversations or personal data?', 'No. The app has no server of its own and collects nothing. It uses the logins you already have to ask each service for usage only, and never reads your conversations. This website counts visitors without cookies.'],
+    ko: ['대화 내용이나 개인정보를 수집하나요?', '아니요. 앱은 따로 운영하는 서버가 없고 아무것도 수집하지 않아요. 이미 로그인해 둔 정보로 각 서비스에 사용량만 물어보고, 대화 내용은 저장하거나 어디로도 보내지 않아요. 사용 통계 창도 기록 파일에서 토큰 수 · 시각 · 모델 · 폴더 이름만 뽑아 내 컴퓨터에 둬요. 이 소개 사이트는 쿠키 없이 방문자 수만 집계해요.'],
+    en: ['Does it collect my conversations or personal data?', 'No. The app has no server of its own and collects nothing. It uses the logins you already have to ask each service for usage only, and never stores or sends your conversations. The usage stats window also pulls only token counts, times, models and folder names from log files and keeps them on your computer. This website counts visitors without cookies.'],
   },
   {
     ko: ['무료인가요? 윈도우에서도 되나요? 깨질 수도 있나요?', '앱은 무료이고 맥과 윈도우에서 동작해요(꾸미기 팩만 선택 결제예요). 다만 Claude와 Cursor의 사용량 조회는 공식 공개 API가 아니라서, 서비스가 바뀌면 일시적으로 표시가 안 될 수 있어요. 그때는 앱 업데이트로 고쳐요.'],

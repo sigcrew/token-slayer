@@ -40,7 +40,7 @@ To read your usage, Token Slayer **reads each tool's login token on this compute
 
 Website: **https://token-slayer.vercel.app/en/** (the download button for your computer comes first)
 
-Installers and updates live in the public release repo [sigcrew/token-slayer-releases](https://github.com/sigcrew/token-slayer-releases/releases). This code repository is private.
+Installers and updates live in the public release repo [sigcrew/token-slayer-releases](https://github.com/sigcrew/token-slayer-releases/releases). The source code is public at [sigcrew/token-slayer](https://github.com/sigcrew/token-slayer) (PolyForm Noncommercial).
 
 | Computer | Direct download (always latest) |
 |---|---|
@@ -81,7 +81,7 @@ To see the effects without any data, turn on **Demo mode** from the tray icon. O
 
 Only services you **actually used in the last 30 days** get a gauge automatically. Turn them on or off under **Services to show** in the tray menu; **Reset to automatic** goes back to the 30-day rule.
 
-- **Privacy:** Token Slayer has **no server of its own** and collects nothing. Tokens are only read (a refreshed Claude Code token is saved back to its original place), and conversations are never read. The hero's fight/rest animation only watches the *time* agents write files.
+- **Privacy:** Token Slayer has **no server of its own** and collects nothing. Tokens are only read (a refreshed Claude Code token is saved back to its original place), and conversations are never read. The hero's fight/rest animation only watches the *time* agents write files. The **Usage stats** window pulls only token counts, times, models and folder names from Claude Code, Codex and Antigravity log files into `stats-cache.json` on this computer; conversations are never stored or sent (`src/stats.js`).
 - **Claude** works without Claude Code: click **Log in** in the speech bubble to open a claude.ai login window; it closes itself when done. If Google sign-in is blocked, log in by email. With Claude Code installed its login is used first (macOS Keychain `Claude Code-credentials`, or `%USERPROFILE%\.claude\.credentials.json` on Windows). If a Keychain prompt appears on macOS, choose **Always Allow**. If the login expires and can't be refreshed, run `claude` in a terminal and use `/login` once.
 - **Cursor** shows monthly usage, Auto/API usage and the billing reset day. If its token expires, open the Cursor app once.
 - **Codex** records in the same folder for the CLI, IDE extension and app, but only when a conversation ends on *this* computer, so usage from the web, cloud or other devices isn't reflected. That's why the app also asks the server for usage with your login token (`~/.codex/auth.json`, read-only). If that fails it falls back to the last recorded value. Turn it off with **Look up Codex usage from the server** in the tray menu (then no network request is made).
@@ -100,6 +100,7 @@ Only services you **actually used in the last 30 days** get a gauge automaticall
 - **67 achievements** across Growth, Usage, Time & Streaks, GAME OVER, Use It All, Waste Badges, BURNING TIME, Bond, Style & Records, plus hidden ones. See them under **Achievements** in the tray menu.
 - **Click the hero** for reactions; click five times in two seconds and it gets angry.
 - **Weekly record card**: tray menu → **Make this week's record card** saves a pixel-style PNG to Downloads and copies it to the clipboard.
+- **Usage stats**: tray menu → **Usage stats…** shows token usage for the last 7 days, 30 days or all time, a 6-month heatmap, usage by agent, model, project, hour and weekday, and your biggest day and longest conversation. Shares leave out cache reads by default (a button includes them). **Share card** saves a pixel-style PNG (no project names) to Downloads and copies it to the clipboard.
 
 ## Customization packs
 
