@@ -618,6 +618,32 @@ ipcMain.handle('stats:get', async (_e, opts = {}) => {
   const days = Number.isFinite(opts.days) ? opts.days : 30;
   return { summary: statsLib.summarize(c, { days }), scannedAt: c.at, files: Object.keys(c.files || {}).length };
 });
+// 통계 공유 카드: 통계 창이 보낸 기간 요약을 위젯 창(도트 글꼴 · 용사 그림이 있는 곳)이 PNG로 그려서 돌려준다
+let statsCardWait = null;
+ipcMain.handle('stats:card', (_e, data) => new Promise((resolve) => {
+  if (!win || win.isDestroyed() || !data) { resolve({ ok: false }); return; }
+  if (statsCardWait) statsCardWait({ ok: false });
+  const skins = { ...DEFAULT_SKINS, ...(cfg().skins || {}) };
+  const top = Array.isArray(data.agents) && data.agents[0];
+  statsCardWait = resolve;
+  win.webContents.send('make-stats-card', { ...data, hero: top ? { skin: skins[top.id] || 'knight', color: top.color } : null, openPacks: packs.filter(packOpen).map((p) => `${p.type}:${p.id}`) });
+  setTimeout(() => { if (statsCardWait === resolve) { statsCardWait = null; resolve({ ok: false }); } }, 15000);
+}));
+ipcMain.on('stats-card-done', (_e, dataUrl) => {
+  const done = statsCardWait; statsCardWait = null;
+  try {
+    const img = nativeImage.createFromDataURL(dataUrl);
+    const file = path.join(app.getPath('downloads'), `token-slayer-stats-${progressStore.dayKey()}.png`);
+    fs.writeFileSync(file, img.toPNG());
+    clipboard.writeImage(img);
+    if (progress) { progress.count('cards'); checkAchievements(); }
+    shell.openPath(file);
+    if (done) done({ ok: true, file });
+  } catch (e) {
+    logErr('stats-card', String((e && e.message) || e));
+    if (done) done({ ok: false });
+  }
+});
 function openStatsWindow() {
   if (statsWin && !statsWin.isDestroyed()) { statsWin.show(); statsWin.focus(); return; }
   statsWin = new BrowserWindow({

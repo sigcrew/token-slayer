@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld('slayerBridge', {
   event: (name) => ipcRenderer.send('event', name),
   scaleBy: (d) => ipcRenderer.send('scale-by', d),
   cardDone: (dataUrl) => ipcRenderer.send('card-done', dataUrl),
+  statsCardDone: (dataUrl) => ipcRenderer.send('stats-card-done', dataUrl),
   ready: () => ipcRenderer.send('ready'),
   onUsage: on('usage'),
   onSettings: on('settings'),
@@ -21,4 +22,5 @@ contextBridge.exposeInMainWorld('slayerBridge', {
   onCommand: on('command'),
   onAchievement: on('achievement'),
   onMakeCard: on('make-card'),
+  onMakeStatsCard: on('make-stats-card'),
 });

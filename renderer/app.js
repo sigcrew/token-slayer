@@ -446,6 +446,10 @@
   if (bridge.onMakeCard) bridge.onMakeCard((payload) => {
     try { bridge.cardDone(window.renderCard(payload, packs.map((p) => (p.type === 'hero' ? resolveHero(p) : p)))); } catch (e) { console.error(e); }
   });
+  // 통계 공유 카드
+  if (bridge.onMakeStatsCard) bridge.onMakeStatsCard((payload) => {
+    try { bridge.statsCardDone(window.renderStatsCard(payload, packs.map((p) => (p.type === 'hero' ? resolveHero(p) : p)))); } catch (e) { console.error(e); }
+  });
 
   // 패널의 "N분 후 리셋" 표시를 주기적으로 갱신
   setInterval(() => {

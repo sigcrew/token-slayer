@@ -30,6 +30,12 @@
   try { const raw = localStorage.getItem('ts.stats.days'); const v = Number(raw); if (raw !== null && [7, 30, 0].includes(v)) days = v; } catch {}
   let hideProjects = false;
   try { hideProjects = localStorage.getItem('ts.stats.hideProjects') === '1'; } catch {}
+  // 비율 · 막대는 기본으로 캐시 읽기를 뺀 값. 캐시 읽기는 응답마다 대화 전체를 다시 읽은 양이라
+  // 대화가 긴 에이전트(Claude Code)일수록 크게 부풀어 체감 사용량과 멀어진다
+  let withCache = false;
+  try { withCache = localStorage.getItem('ts.stats.withCache') === '1'; } catch {}
+  const amt = (x) => (withCache ? x.tokens : x.tokens - x.cr);
+  const byAmt = (list) => list.filter((x) => amt(x) > 0).sort((a, b) => amt(b) - amt(a));
 
   document.title = T('사용 통계');
   $('#title').textContent = T('사용 통계');
@@ -45,11 +51,37 @@
     load(false);
   });
   $('#refresh').addEventListener('click', () => load(true));
+  // 카드로 공유: 프로젝트 이름 · 세션 시간대는 빼고, 기간 요약과 6개월 히트맵만 보낸다
+  $('#share').textContent = T('카드로 공유');
+  if (!bridge.card) $('#share').hidden = true;
+  $('#share').addEventListener('click', async () => {
+    const s = last && last.summary;
+    if (!s || !s.totals.n) return;
+    const agents = byAmt(s.byAgent);
+    const agentTotal = agents.reduce((a, x) => a + amt(x), 0) || 1;
+    const models = byAmt(s.byModel);
+    const data = {
+      days: s.days || 0,
+      from: s.days ? (() => { const d = new Date(s.since); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })() : null,
+      tokens: s.totals.tokens, activeDays: s.activeDays, streak: s.streak.current, longest: s.streak.longest, sessions: s.sessions,
+      agents: agents.slice(0, 3).map((a) => ({ id: a.key, name: NAMES[a.key] || a.key, color: COLORS[a.key] || '#FFD166', share: Math.round((amt(a) / agentTotal) * 100) })),
+      withCache,
+      topModel: models[0] ? prettyModel(models[0].key) : null,
+      heat: s.heat,
+    };
+    $('#share').disabled = true;
+    try {
+      const r = await bridge.card(data);
+      $('#progress').textContent = r && r.ok ? T('카드를 다운로드 폴더에 저장하고 클립보드에 복사했어요') : T('카드를 만들지 못했어요');
+    } catch { $('#progress').textContent = T('카드를 만들지 못했어요'); }
+    $('#share').disabled = false;
+  });
   bridge.onProgress(({ done, total }) => { $('#progress').textContent = T('기록 읽는 중… {n}%', { n: total ? Math.round((done / total) * 100) : 0 }); });
 
   const bars = (list, { color, label, max, dim } = {}) => {
-    const top = max || Math.max(1, ...list.map((x) => x.tokens));
-    return list.map((x) => `<div class="bar${dim && dim(x) ? ' dim' : ''}"><span class="name" title="${esc(label ? label(x) : x.key)}">${label ? label(x) : esc(x.key)}</span><span class="track"><span class="fill" style="display:block;width:${Math.max(1, (x.tokens / top) * 100).toFixed(1)}%;background:${color ? color(x) : 'var(--gold)'}"></span></span><span class="v" title="${full(x.tokens)}">${fmt(x.tokens)}</span></div>`).join('');
+    list = byAmt(list);
+    const top = max || Math.max(1, ...list.map(amt));
+    return list.map((x) => `<div class="bar${dim && dim(x) ? ' dim' : ''}"><span class="name" title="${esc(label ? label(x) : x.key)}">${label ? label(x) : esc(x.key)}</span><span class="track"><span class="fill" style="display:block;width:${Math.max(1, (amt(x) / top) * 100).toFixed(1)}%;background:${color ? color(x) : 'var(--gold)'}"></span></span><span class="v" title="${full(amt(x))}">${fmt(amt(x))}</span></div>`).join('');
   };
 
   function heatmap(h) {
@@ -102,7 +134,9 @@
       return;
     }
     const t = s.totals;
-    const agentTotal = s.byAgent.reduce((a, x) => a + x.tokens, 0) || 1;
+    const agents = byAmt(s.byAgent);
+    const agentTotal = agents.reduce((a, x) => a + amt(x), 0) || 1;
+    const share = (x) => amt(x) / agentTotal;
     const html = [];
     html.push(`<div class="big">
       <div class="card"><small>${esc(T('총 토큰'))}</small><b title="${full(t.tokens)}">${fmt(t.tokens)}</b><small>${esc(T('캐시 읽기 제외 {n}', { n: fmt(t.tokens - t.cr) }))}</small><br><small>${esc(T('입력 {i} · 출력 {o}', { i: fmt(t.in), o: fmt(t.out) }))}</small></div>
@@ -111,9 +145,9 @@
       <div class="card"><small>${esc(T('대화(세션)'))}</small><b>${full(s.sessions)}</b><small>${esc(T('응답 {n}번', { n: fmt(t.n) }))}</small></div>
     </div>`);
     html.push(`<div class="card"><h2>${esc(T('최근 6개월 사용 기록'))}</h2>${heatmap(s.heat)}</div>`);
-    html.push(`<div class="card"><h2>${esc(T('에이전트별'))}</h2>
-      <div class="stack">${s.byAgent.map((x) => `<div style="width:${((x.tokens / agentTotal) * 100).toFixed(2)}%;background:${COLORS[x.key] || '#888'}" title="${esc(NAMES[x.key] || x.key)} · ${full(x.tokens)}"></div>`).join('')}</div>
-      ${bars(s.byAgent, { color: (x) => COLORS[x.key] || '#888', label: (x) => `<span class="dot" style="background:${COLORS[x.key] || '#888'}"></span>${esc(NAMES[x.key] || x.key)} · ${x.tokens / agentTotal < 0.01 ? '&lt;1' : Math.round((x.tokens / agentTotal) * 100)}%`, dim: (x) => x.tokens / agentTotal < 0.01 })}</div>`);
+    html.push(`<div class="card"><h2>${esc(T('에이전트별'))} · ${esc(withCache ? T('캐시 읽기 포함') : T('캐시 읽기 제외'))} <button class="tool" id="cacheMode" style="float:right;padding:2px 8px;font-size:11px">${esc(withCache ? T('캐시 읽기 빼고 보기') : T('캐시 읽기 포함해서 보기'))}</button></h2>
+      <div class="stack">${agents.map((x) => `<div style="width:${(share(x) * 100).toFixed(2)}%;background:${COLORS[x.key] || '#888'}" title="${esc(NAMES[x.key] || x.key)} · ${full(amt(x))}"></div>`).join('')}</div>
+      ${bars(s.byAgent, { color: (x) => COLORS[x.key] || '#888', label: (x) => `<span class="dot" style="background:${COLORS[x.key] || '#888'}"></span>${esc(NAMES[x.key] || x.key)} · ${share(x) < 0.01 ? '&lt;1' : Math.round(share(x) * 100)}%`, dim: (x) => share(x) < 0.01 })}</div>`);
     html.push(`<div class="split">
       <div class="card"><h2>${esc(T('모델별'))}</h2>${bars(s.byModel, { color: (x) => COLORS[x.agent] || 'var(--gold)', label: (x) => `<span title="${esc(x.key)}">${esc(prettyModel(x.key))}</span>` })}</div>
       <div class="card"><h2>${esc(T('프로젝트별'))} <button class="tool" id="hideProj" style="float:right;padding:2px 8px;font-size:11px">${esc(hideProjects ? T('이름 보이기') : T('이름 가리기'))}</button></h2>${s.byProject.length ? bars(s.byProject, { label: (x) => proj(x.key) }) : `<p class="note">${esc(T('폴더 정보가 있는 기록이 없어요'))}</p>`}</div>
@@ -132,9 +166,10 @@
     html.push(`<div class="card"><h2>${esc(T('기록'))}</h2><div class="rows">${rows.join('')}</div></div>`);
     if (s.bySrc.length) html.push(`<div class="card"><h2>${esc(T('Codex 실행 방식'))}</h2>${bars(s.bySrc, { color: () => COLORS.codex, label: (x) => esc(SRC[x.key] ? SRC[x.key]() : x.key) })}<p class="note">${esc(T('자동 실행은 다른 도구나 스크립트가 codex exec로 Codex를 대신 부른 경우예요.'))}</p></div>`);
     const when = meta && meta.scannedAt ? new Date(meta.scannedAt).toLocaleString(lang === 'en' ? 'en-US' : 'ko-KR') : '';
-    html.push(`<p class="note">${esc(T('이 컴퓨터에 남은 Claude Code · Codex · Antigravity 기록에서 토큰 수 · 시각 · 모델 · 폴더 이름만 읽어 집계해요. 대화 내용은 읽지 않고, 어디로도 보내지 않아요. claude.ai 웹 · Claude 앱 · Cursor처럼 이 컴퓨터에 토큰 기록을 남기지 않는 사용은 빠져요. 토큰 수는 캐시에서 읽은 토큰까지 포함해요.'))}${when ? ` ${esc(T('마지막 계산: {t}', { t: when }))}` : ''}</p>`);
+    html.push(`<p class="note">${esc(T('이 컴퓨터에 남은 Claude Code · Codex · Antigravity 기록에서 토큰 수 · 시각 · 모델 · 폴더 이름만 읽어 집계해요. 대화 내용은 읽지 않고, 어디로도 보내지 않아요. claude.ai 웹 · Claude 앱 · Cursor처럼 이 컴퓨터에 토큰 기록을 남기지 않는 사용은 빠져요. 총 토큰은 캐시에서 읽은 토큰까지 포함하고, 에이전트 · 모델 · 프로젝트별 막대는 기본으로 캐시 읽기를 뺀 값이에요. 캐시 읽기는 응답할 때마다 대화 전체를 다시 읽은 양이라 대화가 긴 에이전트일수록 크게 늘어나요.'))}${when ? ` ${esc(T('마지막 계산: {t}', { t: when }))}` : ''}</p>`);
     $('#main').innerHTML = html.join('');
     const hp = $('#hideProj');
+    $('#cacheMode').addEventListener('click', () => { withCache = !withCache; try { localStorage.setItem('ts.stats.withCache', withCache ? '1' : '0'); } catch {} render(s, meta); });
     if (hp) hp.addEventListener('click', () => { hideProjects = !hideProjects; try { localStorage.setItem('ts.stats.hideProjects', hideProjects ? '1' : '0'); } catch {} render(s, meta); });
   }
 
