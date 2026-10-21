@@ -101,7 +101,9 @@ const t = async (name, fn) => { await fn(); pass++; console.log('ok -', name); }
     if (typeof zlib.zstdCompressSync !== 'function') { console.log('  (이 Node에는 zstd 없음, 건너뜀)'); return; }
     const home = fs.mkdtempSync(path.join(os.tmpdir(), 'cz-'));
     process.env.CODEX_HOME = home;
-    const dir = path.join(home, 'sessions/2026/09/20');
+    // 최근 며칠 폴더만 훑으므로 오늘 날짜 폴더에 둔다 (고정 날짜면 시간이 지나 저절로 깨짐)
+    const now = new Date();
+    const dir = path.join(home, 'sessions', String(now.getFullYear()), String(now.getMonth() + 1).padStart(2, '0'), String(now.getDate()).padStart(2, '0'));
     fs.mkdirSync(dir, { recursive: true });
     const line = JSON.stringify({ type: 'event_msg', payload: { type: 'token_count', rate_limits: { primary: { used_percent: 33, window_minutes: 300, resets_at: 4102444800 } } } });
     fs.writeFileSync(path.join(dir, 'rollout-x.jsonl.zst'), zlib.zstdCompressSync(Buffer.from(line + '\n')));
@@ -274,6 +276,77 @@ const t = async (name, fn) => { await fn(); pass++; console.log('ok -', name); }
       const files = ag.activityFiles().map((f) => path2.relative(home, f)).sort();
       assert.deepStrictEqual(files, ['brain/c1/.system_generated/logs/transcript.jsonl', 'conversations/c1.db-wal']);
     } finally { if (prevH === undefined) delete process.env.ANTIGRAVITY_HOME; else process.env.ANTIGRAVITY_HOME = prevH; }
+  });
+
+  await t('사용 통계: Claude · Codex · Antigravity 기록에서 토큰만 집계 (중복 응답 1번, Codex 캐시 분리, 이어 읽기, 연속 사용일)', async () => {
+    const st = require('../src/stats');
+    const fs2 = require('fs'), os2 = require('os'), path2 = require('path');
+    const root = fs2.mkdtempSync(path2.join(os2.tmpdir(), 'stats-'));
+    const prev = { c: process.env.CLAUDE_CONFIG_DIR, x: process.env.CODEX_HOME, a: process.env.ANTIGRAVITY_HOME };
+    process.env.CLAUDE_CONFIG_DIR = path2.join(root, 'claude'); process.env.CODEX_HOME = path2.join(root, 'codex'); process.env.ANTIGRAVITY_HOME = path2.join(root, 'ag');
+    try {
+      const now = Date.now();
+      const iso = (msAgo) => new Date(now - msAgo).toISOString();
+      // Claude: 같은 응답(id+requestId)이 두 줄로 나뉘어도 한 번만, 대화 내용은 집계에 쓰이지 않음
+      const cdir = path2.join(root, 'claude', 'projects', '-Users-me-proj'); fs2.mkdirSync(cdir, { recursive: true });
+      const msg = (id, t) => JSON.stringify({ type: 'assistant', timestamp: t, requestId: 'r' + id, cwd: '/Users/me/my-app', message: { id, model: 'claude-x', content: [{ type: 'text', text: 'SECRET' }], usage: { input_tokens: 10, output_tokens: 5, cache_read_input_tokens: 100, cache_creation_input_tokens: 1 } } });
+      const cf = path2.join(cdir, 's1.jsonl');
+      fs2.writeFileSync(cf, [msg('a', iso(3600e3)), msg('a', iso(3600e3)), msg('b', iso(60e3)), JSON.stringify({ type: 'user', message: { content: 'hi' } })].join('\n') + '\n');
+      // Codex: input에 캐시가 포함된 형식 → 새 입력 = input - cached, 모델은 turn_context에서, exec면 자동 실행
+      const xdir = path2.join(root, 'codex', 'sessions', '2026', '10', '21'); fs2.mkdirSync(xdir, { recursive: true });
+      fs2.writeFileSync(path2.join(xdir, 'rollout-1.jsonl'), [
+        JSON.stringify({ type: 'session_meta', payload: { cwd: '/w/tool', originator: 'codex_exec', source: 'exec' } }),
+        JSON.stringify({ type: 'turn_context', payload: { model: 'gpt-x' } }),
+        JSON.stringify({ type: 'token_usage_record', timestamp: iso(120e3), payload: { usage: { input_tokens: 1000, cached_input_tokens: 800, output_tokens: 50, reasoning_output_tokens: 7 } } }),
+      ].join('\n') + '\n');
+      // Antigravity
+      const adir = path2.join(root, 'ag', 'brain', 'c1', '.system_generated', 'logs'); fs2.mkdirSync(adir, { recursive: true });
+      fs2.writeFileSync(path2.join(adir, 'transcript.jsonl'), JSON.stringify({ type: 'PLANNER_RESPONSE', created_at: iso(30e3), input_tokens: 70, output_tokens: 3, cache_read_tokens: 0 }) + '\n');
+      let cache = await st.scan(null);
+      let s = st.summarize(cache, { days: 7, now });
+      const ag = Object.fromEntries(s.byAgent.map((x) => [x.key, x.tokens]));
+      assert.strictEqual(ag.claude, 2 * (10 + 5 + 100 + 1), 'Claude 응답 2개(중복 제거)');
+      assert.strictEqual(ag.codex, 200 + 50 + 800, 'Codex: 새 입력 200 + 출력 50 + 캐시 800');
+      assert.strictEqual(ag.antigravity, 73);
+      assert.strictEqual(s.totals.rs, 7);
+      assert.deepStrictEqual(s.bySrc.map((x) => x.key), ['exec']);
+      assert.ok(s.byProject.some((x) => x.key === 'my-app') && s.byProject.some((x) => x.key === 'tool'));
+      assert.ok(s.byModel.some((x) => x.key === 'gpt-x' && x.agent === 'codex'));
+      assert.strictEqual(st.projectOf('/Users/me/app/.claude/worktrees/keen-rhodes-ce5e39'), 'app', 'Claude Code 임시 작업 폴더는 원래 프로젝트로');
+      assert.strictEqual(st.projectOf('/Users/me/.codex/worktrees/ab12/my-app'), 'my-app');
+      assert.strictEqual(st.projectOf('C:\\Users\\me\\proj\\'), 'proj');
+      // 기간 밖에서 쓴 양은 대화 크기에 들어가지 않는다 (여러 날 이어진 대화가 짧은 기간 합계보다 커 보이던 문제)
+      const big = { v: st.CACHE_VERSION, at: now, files: { f: { agent: 'codex', project: 'p', first: now - 20 * 86400e3, last: now, n: 2, rows: {
+        [`${now - 20 * 86400e3}|m|p|app`]: { in: 1000, out: 0, cr: 0, cw: 0, rs: 0, n: 1 },
+        [`${now - 3600e3}|m|p|app`]: { in: 10, out: 0, cr: 0, cw: 0, rs: 0, n: 1 } } } } };
+      const s7 = st.summarize(big, { days: 7, now });
+      assert.strictEqual(s7.topSession.tokens, 10); assert.strictEqual(s7.longestSession === null || s7.longestSession.tokens === 10, true);
+      assert.strictEqual(s7.totals.tokens, 10);
+      assert.strictEqual(s.streak.current, 1);
+      assert.ok(!JSON.stringify(cache).includes('SECRET'), '대화 내용은 캐시에 남지 않음');
+      // 이어 읽기: 파일 끝에 덧붙은 줄만 더해진다 (이미 센 응답을 다시 세지 않음)
+      fs2.appendFileSync(cf, msg('c', iso(10e3)) + '\n');
+      cache = await st.scan(cache);
+      s = st.summarize(cache, { days: 7, now });
+      assert.strictEqual(Object.fromEntries(s.byAgent.map((x) => [x.key, x.tokens])).claude, 3 * 116);
+      // 덜 써진 마지막 줄(줄바꿈 없음)은 다음에 이어서 센다
+      fs2.appendFileSync(cf, msg('d', iso(5e3)).slice(0, 40));
+      cache = await st.scan(cache);
+      assert.strictEqual(Object.fromEntries(st.summarize(cache, { days: 7, now }).byAgent.map((x) => [x.key, x.tokens])).claude, 3 * 116, '덜 써진 줄은 아직 안 셈');
+      fs2.appendFileSync(cf, msg('d', iso(5e3)).slice(40) + '\n');
+      cache = await st.scan(cache);
+      assert.strictEqual(Object.fromEntries(st.summarize(cache, { days: 7, now }).byAgent.map((x) => [x.key, x.tokens])).claude, 4 * 116, '다 써지면 셈');
+    } finally {
+      for (const [k, v] of [['CLAUDE_CONFIG_DIR', prev.c], ['CODEX_HOME', prev.x], ['ANTIGRAVITY_HOME', prev.a]]) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
+    }
+  });
+
+  await t('설치 파일 구성: main.js가 쓰는 preload 파일이 모두 빌드 파일 목록에 들어 있다', () => {
+    const main = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
+    const files = require('../package.json').build.files;
+    const used = [...new Set([...main.matchAll(/'(preload[\w-]*\.js)'/g)].map((m) => m[1]))];
+    assert.ok(used.length >= 4);
+    for (const f of used) assert.ok(files.includes(f), `${f}가 package.json build.files에 없음 (설치본에서 창이 빈 화면이 됨)`);
   });
 
   await t('Cursor 세션 쿠키: sub에서 userId 추출, 만료 감지', () => {

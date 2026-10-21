@@ -1,5 +1,5 @@
 // Token Slayer — Claude / Codex / Cursor 남은 사용량을 화면에 떠 있는 캐릭터로 보여주는 앱
-const { app, BrowserWindow, ipcMain, screen, Tray, Menu, nativeImage, net, shell, Notification, clipboard, dialog, globalShortcut } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, Tray, Menu, nativeImage, net, shell, Notification, clipboard, dialog, globalShortcut, utilityProcess } = require('electron');
 const fs = require('fs');
 const { spawn } = require('child_process');
 const path = require('path');
@@ -575,6 +575,60 @@ function setScale(v, { commit = true } = {}) {
   if (commit) buildMenu();
 }
 
+// ── 사용 통계 창 ──
+// 에이전트들이 이 컴퓨터에 남긴 기록에서 토큰 수 · 시각 · 모델 · 폴더 이름만 읽어 집계한다 (src/stats.js).
+// 처음 한 번은 기록을 다 읽고(수십 초), 그 뒤로는 바뀐 파일만 이어 읽는다. 결과 캐시는 이 컴퓨터의 stats-cache.json에만 둔다
+const statsLib = require('./src/stats');
+let statsWin = null, statsCache = null, statsScan = null;
+const statsCachePath = () => path.join(app.getPath('userData'), 'stats-cache.json');
+function loadStatsCache() {
+  if (statsCache) return statsCache;
+  try { statsCache = JSON.parse(fs.readFileSync(statsCachePath(), 'utf8')); } catch { statsCache = null; }
+  return statsCache;
+}
+function refreshStats(force) {
+  if (statsScan) return statsScan;
+  const c = loadStatsCache();
+  if (!force && c && c.v === statsLib.CACHE_VERSION && Date.now() - (c.at || 0) < 60000) return Promise.resolve(c);
+  const send = (v) => { if (statsWin && !statsWin.isDestroyed()) statsWin.webContents.send('stats:progress', v); };
+  const fallback = () => c || { v: statsLib.CACHE_VERSION, at: Date.now(), files: {} };
+  statsScan = new Promise((resolve) => {
+    // 계산은 별도 프로세스에서 (메인에서 하면 수십 초 동안 위젯과 창이 멈춘다)
+    let child;
+    try { child = utilityProcess.fork(path.join(__dirname, 'src', 'stats-worker.js'), [], { serviceName: 'Token Slayer stats' }); }
+    catch (e) { logErr('stats', String((e && e.message) || e)); resolve(fallback()); return; }
+    let finished = false;
+    const end = (cache) => { if (finished) return; finished = true; try { child.kill(); } catch {} resolve(cache); };
+    child.on('message', (m) => {
+      if (!m) return;
+      if (m.type === 'progress') send({ done: m.done, total: m.total });
+      if (m.type === 'done') {
+        if (!m.ok) logErr('stats', m.error || 'scan failed');
+        statsCache = null;
+        end(loadStatsCache() || fallback());
+      }
+    });
+    child.on('exit', () => end(loadStatsCache() || fallback()));
+    child.postMessage({ cachePath: statsCachePath() });
+  }).finally(() => { statsScan = null; });
+  return statsScan;
+}
+ipcMain.handle('stats:get', async (_e, opts = {}) => {
+  const c = await refreshStats(!!opts.refresh);
+  const days = Number.isFinite(opts.days) ? opts.days : 30;
+  return { summary: statsLib.summarize(c, { days }), scannedAt: c.at, files: Object.keys(c.files || {}).length };
+});
+function openStatsWindow() {
+  if (statsWin && !statsWin.isDestroyed()) { statsWin.show(); statsWin.focus(); return; }
+  statsWin = new BrowserWindow({
+    width: 760, height: 860, minWidth: 560, minHeight: 600, title: tr('사용 통계'), backgroundColor: '#141626', autoHideMenuBar: true,
+    webPreferences: { preload: path.join(__dirname, 'preload-stats.js'), contextIsolation: true, sandbox: true },
+  });
+  statsWin.loadFile(path.join(__dirname, 'renderer', 'stats.html'), { query: { lang: I18N.getLang() } });
+  if (IS_MAC) focusApp();
+  statsWin.on('closed', () => { statsWin = null; });
+}
+
 // ── 크기 조절 창 (슬라이더) ──
 let scaleWin = null;
 function openScaleWindow() {
@@ -771,6 +825,7 @@ function buildMenu() {
     { label: '꾸미기', submenu: customizeMenu() },
     achievementsMenu(),
     { label: '이번 주 기록 카드 만들기', click: () => makeCard() },
+    { label: '사용 통계 보기…', click: () => openStatsWindow() },
     { label: '클릭 통과 (마우스 무시)', type: 'checkbox', checked: c.clickThrough, click: (i) => { store.set({ clickThrough: i.checked }); setIgnore(); buildMenu(); } },
     { label: 'Claude 계정 로그인…', click: () => openLogin('claude') },
     { label: 'Claude 계정 로그아웃 (이 앱에서만)', click: async () => { await claudeWeb.logout(); usage.provider('claude').reader.orgId = null; usage.poll('claude'); } },

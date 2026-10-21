@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'" />
+  <title>사용 통계</title>
+  <style>
+    :root { color-scheme: dark; --bg: #141626; --card: #1B1E33; --line: #2C3150; --ink: #E8E8F0; --muted: #8A8FA8; --gold: #FFD166;
+      --claude: #E07A5F; --codex: #6C8CFF; --antigravity: #3FCF8E; --cursor: #B98CFF; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 13px -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
+    header { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: rgba(20,22,38,0.96); border-bottom: 1px solid var(--line); }
+    h1 { margin: 0; font-size: 16px; letter-spacing: 0.02em; }
+    .tabs { display: flex; gap: 4px; margin-left: auto; }
+    .tabs button, .tool { padding: 5px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); color: var(--ink); font: inherit; cursor: pointer; }
+    .tabs button.on { border-color: var(--gold); color: var(--gold); }
+    .tool { color: var(--muted); }
+    main { padding: 16px 20px 28px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+    .card, .split > *, .big > * { min-width: 0; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+    .card h2 { margin: 0 0 10px; font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 0.04em; }
+    .big { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .big .card { padding: 12px 14px; }
+    .big b { display: block; font: 700 22px ui-monospace, Menlo, monospace; color: var(--gold); margin-top: 4px; }
+    .big small { color: var(--muted); }
+    .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+    .bar { display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr) 62px; align-items: center; gap: 8px; margin: 6px 0; }
+    .bar .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bar .track { height: 10px; background: #262A46; border-radius: 3px; overflow: hidden; }
+    .bar .fill { height: 100%; border-radius: 3px; background: var(--gold); }
+    .bar .v { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .cols { display: flex; align-items: flex-end; gap: 3px; height: 90px; }
+    .cols div { flex: 1; background: #3A3F66; border-radius: 2px 2px 0 0; min-height: 1px; }
+    .cols div.hot { background: var(--gold); }
+    .axis { display: flex; justify-content: space-between; color: var(--muted); font-size: 10.5px; margin-top: 4px; }
+    .heatwrap { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+    /* 요일 칸은 잔디 칸과 같은 높이(12px)·간격(3px)으로 맞추고 글자를 칸 가운데에. 맨 위 16px은 월 표시 줄 높이 */
+    .days { display: grid; grid-template-rows: 16px repeat(7, 12px); row-gap: 3px; font-size: 9.5px; color: var(--muted); }
+    .days span { display: flex; align-items: center; height: 12px; line-height: 1; }
+    .months { position: relative; height: 16px; margin-bottom: 3px; font-size: 10px; color: var(--muted); }
+    .months span { position: absolute; top: 0; white-space: nowrap; }
+    .heat { display: flex; gap: 3px; }
+    .wk { display: grid; grid-template-rows: repeat(7, 12px); gap: 3px; }
+    .heat i, .legend i { width: 12px; height: 12px; border-radius: 2px; display: inline-block; background: #23263F; }
+    .heat i.blank { background: transparent; }
+    .l1 { background: #4B4420 !important; } .l2 { background: #8A7426 !important; } .l3 { background: #C9A42E !important; } .l4 { background: #FFD166 !important; }
+    .legend { display: flex; align-items: center; gap: 4px; justify-content: flex-end; color: var(--muted); font-size: 10.5px; margin-top: 6px; }
+    .legend i { width: 10px; height: 10px; }
+    .bar.dim { opacity: 0.45; font-size: 12px; }
+    .rows { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; }
+    .rows span { color: var(--muted); }
+    .note { color: var(--muted); font-size: 11.5px; line-height: 1.55; }
+    .dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; vertical-align: 1px; }
+    #progress { color: var(--muted); }
+    .stack { display: flex; height: 14px; border-radius: 3px; overflow: hidden; background: #262A46; margin: 4px 0 10px; }
+    .stack div { height: 100%; }
+    @media (max-width: 640px) { .big { grid-template-columns: repeat(2, 1fr); } .split { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="title"></h1>
+    <span id="progress"></span>
+    <div class="tabs" id="tabs"></div>
+    <button class="tool" id="refresh"></button>
+  </header>
+  <main id="main"></main>
+  <script src="i18n-en.js"></script>
+  <script src="i18n.js"></script>
+  <script src="dom-i18n.js"></script>
+  <script src="stats.js"></script>
+</body>
+</html>
