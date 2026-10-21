@@ -1,7 +1,7 @@
 // 사용 통계 공유 카드 (도트 스타일 PNG). 통계 창이 고른 기간의 요약을 받아 그린다.
 // 프로젝트 이름·세션 시간대는 넣지 않는다 (회사 프로젝트명이 퍼지지 않게).
 (function () {
-  const W = 640, H = 380, T = 2; // 1280 x 760 PNG
+  const W = 640, H = 420, T = 2; // 1280 x 840 PNG
   const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
   const LEVELS = ['#23263F', '#4B4420', '#8A7426', '#C9A42E', '#FFD166'];
 
@@ -46,9 +46,19 @@
     // 왼쪽: 큰 숫자
     sc.text('TOTAL TOKENS', 24, 70, '#8A8FA8', { s: 1 });
     sc.text(compact(data.tokens), 24, 82, '#FFD166', { s: 6, outline: '#0B0C16' });
+    if (data.noCache != null) sc.text(`EXCL. CACHE READS ${compact(data.noCache)}`, 24, 116, '#8A8FA8', { s: 1 });
+    // 에이전트별 합계 (총 토큰과 같은 기준: 캐시 포함)
+    const totals = (data.agentTotals || []).slice(0, 3);
+    totals.forEach((a, i) => {
+      const y = 130 + i * 14;
+      sc.px(24, y + 2, 6, 6, a.color);
+      sc.text(a.name, 34, y, lighten(a.color, 0.2), { s: 2 });
+      sc.text(compact(a.tokens), 230, y, '#F4F4F8', { s: 2, align: 'right' });
+    });
+    const rowTop = 136 + Math.max(1, totals.length) * 14;
     const rows = [['ACTIVE DAYS', String(data.activeDays)], ['STREAK', `${data.streak} DAYS`], ['SESSIONS', String(data.sessions)]];
     rows.forEach(([k, v], i) => {
-      const y = 128 + i * 18;
+      const y = rowTop + i * 16;
       sc.text(k, 24, y, '#8A8FA8', { s: 2 });
       sc.text(v, 230, y, '#F4F4F8', { s: 2, align: 'right' });
     });
@@ -57,19 +67,29 @@
     const ax = 262, aw = 250;
     sc.text(data.withCache ? 'SHARE  INCL. CACHE READS' : 'SHARE  EXCL. CACHE READS', ax, 60, '#6B6F86', { s: 1 });
     (data.agents || []).filter((a) => a.share >= 1).slice(0, 3).forEach((a, i) => {
-      const y = 74 + i * 26;
+      const y = 74 + i * 24;
       sc.text(a.name, ax, y, lighten(a.color, 0.2), { s: 2 });
       sc.text(`${a.share}%`, ax + aw, y, '#F4F4F8', { s: 2, align: 'right' });
+      if (a.tokens != null) sc.text(compact(a.tokens), ax + aw - sc.textWidth(`${a.share}%`, 2) - 14, y, '#8A8FA8', { s: 2, align: 'right' });
       sc.px(ax, y + 14, aw, 6, 'rgba(255,255,255,0.06)');
       const w = Math.max(2, Math.round((aw * a.share) / 100));
       sc.px(ax, y + 14, w, 6, a.color);
       sc.px(ax, y + 14, w, 1, 'rgba(255,255,255,0.35)');
     });
-    if (data.topModel) {
-      sc.text('TOP MODEL', ax, 160, '#8A8FA8', { s: 1 });
-      let m = String(data.topModel).toUpperCase();
-      while (m.length > 4 && sc.textWidth(m, 2) > aw) m = m.slice(0, -1);
-      sc.text(m, ax, 170, '#F4F4F8', { s: 2 });
+    // 모델별 상위 3개와 토큰 수 (막대와 같은 기준)
+    const models = (data.models || []).filter((m) => m.tokens > 0).slice(0, 3);
+    if (models.length) {
+      sc.text('MODELS', ax, 158, '#6B6F86', { s: 1 });
+      models.forEach((m, i) => {
+        const y = 170 + i * 16;
+        const v = compact(m.tokens);
+        const room = aw - sc.textWidth(v, 2) - 16;
+        let name = String(m.name).toUpperCase();
+        while (name.length > 4 && sc.textWidth(name, 2) > room) name = name.slice(0, -1);
+        sc.px(ax, y + 2, 6, 6, m.color);
+        sc.text(name, ax + 10, y, '#F4F4F8', { s: 2 });
+        sc.text(v, ax + aw, y, '#8A8FA8', { s: 2, align: 'right' });
+      });
     }
 
     // 오른쪽 위: 가장 많이 쓴 에이전트의 용사
@@ -92,7 +112,7 @@
     }
 
     // 아래: 최근 6개월 히트맵 (진하기는 쓴 날들 안에서의 순위, 통계 창과 같은 기준)
-    for (let x = 20; x < W - 20; x += 5) sc.px(x, 196, 2, 1, 'rgba(255,255,255,0.10)');
+    for (let x = 20; x < W - 20; x += 5) sc.px(x, 228, 2, 1, 'rgba(255,255,255,0.10)');
     const vals = (data.heat && data.heat.values) || {};
     const nz = Object.values(vals).filter((v) => v > 0).sort((a, b) => a - b);
     const q = (p) => (nz.length ? nz[Math.min(nz.length - 1, Math.floor(p * nz.length))] : 0);
@@ -102,7 +122,7 @@
     start.setHours(0, 0, 0, 0);
     start.setDate(start.getDate() - start.getDay());
     const end = new Date(); end.setHours(0, 0, 0, 0);
-    const cell = 15, gap = 3, hx0 = 52, hy0 = 218;
+    const cell = 15, gap = 3, hx0 = 52, hy0 = 254;
     ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].forEach((d, i) => sc.text(d, 24, hy0 + i * (cell + gap) + 4, '#6B6F86', { s: 1 }));
     let lastMonthCol = -9;
     for (let d = new Date(start), c = 0; d <= end; c++) {

@@ -63,10 +63,12 @@
     const data = {
       days: s.days || 0,
       from: s.days ? (() => { const d = new Date(s.since); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })() : null,
-      tokens: s.totals.tokens, activeDays: s.activeDays, streak: s.streak.current, longest: s.streak.longest, sessions: s.sessions,
-      agents: agents.slice(0, 3).map((a) => ({ id: a.key, name: NAMES[a.key] || a.key, color: COLORS[a.key] || '#FFD166', share: Math.round((amt(a) / agentTotal) * 100) })),
+      tokens: s.totals.tokens, noCache: s.totals.tokens - s.totals.cr, activeDays: s.activeDays, streak: s.streak.current, longest: s.streak.longest, sessions: s.sessions,
+      agents: agents.slice(0, 3).map((a) => ({ id: a.key, name: NAMES[a.key] || a.key, color: COLORS[a.key] || '#FFD166', share: Math.round((amt(a) / agentTotal) * 100), tokens: amt(a) })),
       withCache,
-      topModel: models[0] ? prettyModel(models[0].key) : null,
+      // 총 토큰(캐시 포함) 아래에 적는 에이전트별 합계
+      agentTotals: s.byAgent.filter((a) => a.tokens > 0).slice(0, 3).map((a) => ({ name: NAMES[a.key] || a.key, color: COLORS[a.key] || '#FFD166', tokens: a.tokens })),
+      models: models.slice(0, 3).map((m) => ({ name: prettyModel(m.key), color: COLORS[m.agent] || '#FFD166', tokens: amt(m) })),
       heat: s.heat,
     };
     $('#share').disabled = true;
