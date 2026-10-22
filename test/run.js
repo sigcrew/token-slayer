@@ -285,7 +285,8 @@ const t = async (name, fn) => { await fn(); pass++; console.log('ok -', name); }
     const prev = { c: process.env.CLAUDE_CONFIG_DIR, x: process.env.CODEX_HOME, a: process.env.ANTIGRAVITY_HOME };
     process.env.CLAUDE_CONFIG_DIR = path2.join(root, 'claude'); process.env.CODEX_HOME = path2.join(root, 'codex'); process.env.ANTIGRAVITY_HOME = path2.join(root, 'ag');
     try {
-      const now = Date.now();
+      // 오늘 정오 기준: 'N분 전' 기록이 자정을 넘어 전날로 가면 연속 사용일이 달라진다 (CI는 UTC 자정 무렵에도 돈다)
+      const now = new Date().setHours(12, 0, 0, 0);
       const iso = (msAgo) => new Date(now - msAgo).toISOString();
       // Claude: 같은 응답(id+requestId)이 두 줄로 나뉘어도 한 번만, 대화 내용은 집계에 쓰이지 않음
       const cdir = path2.join(root, 'claude', 'projects', '-Users-me-proj'); fs2.mkdirSync(cdir, { recursive: true });
