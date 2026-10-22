@@ -223,9 +223,10 @@ const dayKey = (ms) => { const d = new Date(ms); return `${d.getFullYear()}-${St
 const dayStart = (ms) => { const d = new Date(ms); d.setHours(0, 0, 0, 0); return d.getTime(); };
 const tot = (r) => r.in + r.out + r.cr + r.cw;
 
-function summarize(cache, { days = 30, now = Date.now(), heatDays = 182 } = {}) {
+// 히트맵은 고른 기간과 같은 범위 (전체면 처음 쓴 날부터)
+function summarize(cache, { days = 30, now = Date.now(), heatDays = days } = {}) {
   const since = days ? dayStart(now) - (days - 1) * DAY : 0;
-  const heatSince = dayStart(now) - (heatDays - 1) * DAY;
+  const heatSince = heatDays ? dayStart(now) - (heatDays - 1) * DAY : 0;
   const totals = { in: 0, out: 0, cr: 0, cw: 0, rs: 0, n: 0, tokens: 0 };
   const byAgent = {}, byModel = {}, byProject = {}, bySrc = {}, byDay = {}, heat = {}, byHour = new Array(24).fill(0), byWeekday = new Array(7).fill(0);
   const sessions = [];
@@ -282,6 +283,8 @@ function summarize(cache, { days = 30, now = Date.now(), heatDays = 182 } = {}) 
   const topSession = sessions.slice().sort((a, b) => b.tokens - a.tokens)[0] || null;
   const longestSession = sessions.filter((s) => s.n >= 2).sort((a, b) => b.activeHours - a.activeHours || b.tokens - a.tokens)[0] || null;
   const activeDays = Object.keys(byDay).length;
+  const first = [...allDays].sort()[0];
+  const firstDay = first ? new Date(`${first}T00:00:00`).getTime() : dayStart(now);
   return {
     days, since, now,
     totals, activeDays, avgPerActiveDay: activeDays ? Math.round(totals.tokens / activeDays) : 0,
@@ -290,7 +293,7 @@ function summarize(cache, { days = 30, now = Date.now(), heatDays = 182 } = {}) 
     byAgent: rank(byAgent, 10), byModel: rank(byModel, 12), byProject: rank(byProject, 10), bySrc: rank(bySrc, 5),
     byHour, byWeekday,
     daily: Object.keys(byDay).sort().map((k) => ({ day: k, tokens: byDay[k].tokens, byAgent: byDay[k].byAgent })),
-    heat: { since: heatSince, days: heatDays, values: heat },
+    heat: { since: heatSince || firstDay, days: heatDays || Math.round((dayStart(now) - firstDay) / DAY) + 1, values: heat },
     peakDay: peak ? { day: peak.day, tokens: peak.tokens } : null,
     longestSession: longestSession ? { agent: longestSession.agent, project: longestSession.project, start: longestSession.start, end: longestSession.end, n: longestSession.n, activeHours: longestSession.activeHours, tokens: longestSession.tokens } : null,
     topSession: topSession ? { agent: topSession.agent, project: topSession.project, start: topSession.start, end: topSession.end, n: topSession.n, activeHours: topSession.activeHours, tokens: topSession.tokens } : null,

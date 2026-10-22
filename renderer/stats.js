@@ -93,17 +93,33 @@
     const q = (p) => (nz.length ? nz[Math.min(nz.length - 1, Math.floor(p * nz.length))] : 0);
     const cut = [q(0.25), q(0.5), q(0.75)];
     const level = (v) => (v <= 0 ? 0 : v < cut[0] ? 1 : v < cut[1] ? 2 : v < cut[2] ? 3 : 4);
-    const start = new Date(h.since);
-    start.setHours(0, 0, 0, 0);
+    const first = new Date(h.since); first.setHours(0, 0, 0, 0);
+    const start = new Date(first);
     start.setDate(start.getDate() - start.getDay()); // 일요일부터 한 주
     const end = new Date(); end.setHours(0, 0, 0, 0);
+    const key = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const legend = `<div class="legend">${esc(T('적음'))} <i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i> ${esc(T('많음'))}</div>`;
+    // 6주 이하(7일 · 30일)는 달력 모양: 가로 7칸이 요일, 한 줄이 한 주
+    if ((end - start) / 86400e3 < 42) {
+      const rows = [];
+      for (let d = new Date(start); d <= end;) {
+        const cells = [];
+        for (let w = 0; w < 7; w++, d.setDate(d.getDate() + 1)) {
+          if (d < first || d > end) { cells.push('<i class="blank"></i>'); continue; }
+          const k = key(d), v = vals[k] || 0;
+          cells.push(`<i class="l${level(v)}" title="${esc(dateText(k))} · ${full(v)}"><span>${d.getDate() === 1 ? `${d.getMonth() + 1}/1` : d.getDate()}</span></i>`);
+        }
+        rows.push(cells.join(''));
+      }
+      return `<div class="cal">${WEEK().map((w) => `<b>${esc(w)}</b>`).join('')}${rows.join('')}</div>` + legend;
+    }
     const cols = [];
     let months = [];
     for (let d = new Date(start), c = 0; d <= end; c++) {
       const cells = [];
       for (let w = 0; w < 7; w++, d.setDate(d.getDate() + 1)) {
-        if (d > end) { cells.push('<i class="blank"></i>'); continue; }
-        const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        if (d < first || d > end) { cells.push('<i class="blank"></i>'); continue; }
+        const k = key(d);
         const v = vals[k] || 0;
         if (d.getDate() === 1 || (c === 0 && w === 0)) months.push({ c, label: d.toLocaleDateString(lang === 'en' ? 'en-US' : 'ko-KR', { month: 'short' }) });
         cells.push(`<i class="l${level(v)}" title="${esc(dateText(k))} · ${full(v)}"></i>`);
@@ -116,7 +132,7 @@
     // 요일은 일요일부터 7개 모두 표시 (월·수·금만 있으면 어느 줄이 무슨 요일인지 헷갈림)
     return `<div class="heatwrap"><div class="days"><span></span>${week.map((w) => `<span>${esc(w)}</span>`).join('')}</div>`
       + `<div><div class="months">${months.map((m) => `<span style="left:${m.c * 15}px">${esc(m.label)}</span>`).join('')}</div><div class="heat">${cols.join('')}</div></div></div>`
-      + `<div class="legend">${esc(T('적음'))} <i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i> ${esc(T('많음'))}</div>`;
+      + legend;
   }
 
   function columns(arr, labels, every) {
@@ -146,7 +162,7 @@
       <div class="card"><small>${esc(T('연속 사용'))}</small><b>${esc(T('{n}일', { n: s.streak.current }))}</b><small>${esc(T('최장 {n}일', { n: s.streak.longest }))}</small></div>
       <div class="card"><small>${esc(T('대화(세션)'))}</small><b>${full(s.sessions)}</b><small>${esc(T('응답 {n}번', { n: fmt(t.n) }))}</small></div>
     </div>`);
-    html.push(`<div class="card"><h2>${esc(T('최근 6개월 사용 기록'))}</h2>${heatmap(s.heat)}</div>`);
+    html.push(`<div class="card"><h2>${esc(T('날짜별 사용량'))}</h2>${heatmap(s.heat)}</div>`);
     html.push(`<div class="card"><h2>${esc(T('에이전트별'))} · ${esc(withCache ? T('캐시 읽기 포함') : T('캐시 읽기 제외'))} <button class="tool" id="cacheMode" style="float:right;padding:2px 8px;font-size:11px">${esc(withCache ? T('캐시 읽기 빼고 보기') : T('캐시 읽기 포함해서 보기'))}</button></h2>
       <div class="stack">${agents.map((x) => `<div style="width:${(share(x) * 100).toFixed(2)}%;background:${COLORS[x.key] || '#888'}" title="${esc(NAMES[x.key] || x.key)} · ${full(amt(x))}"></div>`).join('')}</div>
       ${bars(s.byAgent, { color: (x) => COLORS[x.key] || '#888', label: (x) => `<span class="dot" style="background:${COLORS[x.key] || '#888'}"></span>${esc(NAMES[x.key] || x.key)} · ${share(x) < 0.01 ? '&lt;1' : Math.round(share(x) * 100)}%`, dim: (x) => share(x) < 0.01 })}</div>`);

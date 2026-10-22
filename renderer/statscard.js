@@ -111,28 +111,53 @@
       if (data.longest) sc.text(`BEST STREAK ${data.longest}`, hx + 36, hy + 80, '#FF9F1C', { s: 1, align: 'center' });
     }
 
-    // 아래: 최근 6개월 히트맵 (진하기는 쓴 날들 안에서의 순위, 통계 창과 같은 기준)
+    // 아래: 고른 기간의 날짜별 사용량 (진하기는 쓴 날들 안에서의 순위, 통계 창과 같은 기준)
     for (let x = 20; x < W - 20; x += 5) sc.px(x, 228, 2, 1, 'rgba(255,255,255,0.10)');
     const vals = (data.heat && data.heat.values) || {};
     const nz = Object.values(vals).filter((v) => v > 0).sort((a, b) => a - b);
     const q = (p) => (nz.length ? nz[Math.min(nz.length - 1, Math.floor(p * nz.length))] : 0);
     const cut = [q(0.25), q(0.5), q(0.75)];
     const level = (v) => (v <= 0 ? 0 : v < cut[0] ? 1 : v < cut[1] ? 2 : v < cut[2] ? 3 : 4);
-    const start = new Date((data.heat && data.heat.since) || Date.now() - 182 * 86400e3);
-    start.setHours(0, 0, 0, 0);
+    const first = new Date((data.heat && data.heat.since) || Date.now() - 182 * 86400e3);
+    first.setHours(0, 0, 0, 0);
+    let start = new Date(first);
     start.setDate(start.getDate() - start.getDay());
     const end = new Date(); end.setHours(0, 0, 0, 0);
-    const cell = 15, gap = 3, hx0 = 52, hy0 = 254;
-    ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].forEach((d, i) => sc.text(d, 24, hy0 + i * (cell + gap) + 4, '#6B6F86', { s: 1 }));
-    let lastMonthCol = -9;
-    for (let d = new Date(start), c = 0; d <= end; c++) {
-      for (let w = 0; w < 7; w++, d.setDate(d.getDate() + 1)) {
-        if (d > end) continue;
-        const x = hx0 + c * (cell + gap), y = hy0 + w * (cell + gap);
-        if (d.getDate() === 1 && c - lastMonthCol >= 3) { sc.text(MONTHS[d.getMonth()], x, hy0 - 12, '#8A8FA8', { s: 1 }); lastMonthCol = c; }
-        const lv = level(vals[dk(d)] || 0);
-        sc.px(x, y, cell, cell, LEVELS[lv]);
-        if (lv) sc.px(x, y, cell, 1, 'rgba(255,255,255,0.25)');
+    const DOW = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const weeks = Math.ceil(((end - start) / 86400e3 + 1) / 7);
+    if (weeks <= 6) {
+      // 7일 · 30일: 달력 모양 (가로 7칸이 요일, 한 줄이 한 주, 칸에 날짜)
+      const cw = 80, ch = 18, gx = 4, gy = 4, x0 = 24, y0 = 252;
+      DOW.forEach((d, i) => sc.text(d, x0 + i * (cw + gx) + cw / 2, y0 - 12, '#8A8FA8', { s: 1, align: 'center' }));
+      let r = 0;
+      for (let d = new Date(start); d <= end; r++) {
+        for (let w = 0; w < 7; w++, d.setDate(d.getDate() + 1)) {
+          if (d < first || d > end) continue;
+          const x = x0 + w * (cw + gx), y = y0 + r * (ch + gy);
+          const lv = level(vals[dk(d)] || 0);
+          sc.px(x, y, cw, ch, LEVELS[lv]);
+          if (lv) sc.px(x, y, cw, 1, 'rgba(255,255,255,0.25)');
+          sc.text(d.getDate() === 1 ? `${d.getMonth() + 1}/1` : String(d.getDate()), x + 4, y + 4, lv >= 3 ? '#3A3320' : '#8A8FA8', { s: 1 });
+        }
+      }
+    } else {
+      // 긴 기간: 가로가 주. 카드 폭에 맞춰 칸 크기를 줄이고, 그래도 넘치면 최근 주만
+      const hx0 = 52, hy0 = 254, room = W - 24 - hx0;
+      const step = Math.max(5, Math.min(18, Math.floor(room / weeks)));
+      const maxWeeks = Math.floor(room / step);
+      if (weeks > maxWeeks) start.setDate(start.getDate() + (weeks - maxWeeks) * 7);
+      const cell = step >= 10 ? step - 3 : step - 1;
+      DOW.forEach((d, i) => sc.text(d, 24, hy0 + i * step + Math.max(0, (cell - 5) / 2), '#6B6F86', { s: 1 }));
+      let lastMonthX = -99;
+      for (let d = new Date(start), c = 0; d <= end; c++) {
+        for (let w = 0; w < 7; w++, d.setDate(d.getDate() + 1)) {
+          if (d < first || d > end) continue;
+          const x = hx0 + c * step, y = hy0 + w * step;
+          if (d.getDate() === 1 && x - lastMonthX >= 28) { sc.text(MONTHS[d.getMonth()], x, hy0 - 12, '#8A8FA8', { s: 1 }); lastMonthX = x; }
+          const lv = level(vals[dk(d)] || 0);
+          sc.px(x, y, cell, cell, LEVELS[lv]);
+          if (lv && cell >= 8) sc.px(x, y, cell, 1, 'rgba(255,255,255,0.25)');
+        }
       }
     }
 

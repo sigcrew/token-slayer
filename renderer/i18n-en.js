@@ -425,6 +425,7 @@
   "기록 읽는 중…": "Reading records…",
   "통계를 계산하지 못했어요": "Couldn't calculate stats",
   "카드로 공유": "Share card",
+  "날짜별 사용량": "Usage by day",
   "캐시 읽기 포함": "incl. cache reads",
   "캐시 읽기 제외": "excl. cache reads",
   "캐시 읽기 빼고 보기": "Hide cache reads",
