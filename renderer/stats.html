@@ -59,6 +59,8 @@
     #progress { color: var(--muted); }
     .stack { display: flex; height: 14px; border-radius: 3px; overflow: hidden; background: #262A46; margin: 4px 0 10px; }
     .stack div { height: 100%; }
+    .playcard { text-align: center; }
+    .playcard canvas { display: block; width: 100%; max-width: 600px; margin: 4px auto 10px; image-rendering: pixelated; }
     @media (max-width: 640px) { .big { grid-template-columns: repeat(2, 1fr); } .split { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -74,6 +76,9 @@
   <script src="i18n-en.js"></script>
   <script src="i18n.js"></script>
   <script src="dom-i18n.js"></script>
+  <script src="backdrop.js"></script>
+  <script src="scene.js"></script>
+  <script src="stats-play.js"></script>
   <script src="stats.js"></script>
 </body>
 </html>

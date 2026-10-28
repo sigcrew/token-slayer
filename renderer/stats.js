@@ -78,7 +78,26 @@
     } catch { $('#progress').textContent = T('카드를 만들지 못했어요'); }
     $('#share').disabled = false;
   });
-  bridge.onProgress(({ done, total }) => { $('#progress').textContent = T('기록 읽는 중… {n}%', { n: total ? Math.round((done / total) * 100) : 0 }); });
+  bridge.onProgress(({ done, total }) => {
+    const msg = T('기록 읽는 중… {n}%', { n: total ? Math.round((done / total) * 100) : 0 });
+    $('#progress').textContent = msg;
+    const pm = $('#playmsg'); if (pm) pm.textContent = msg;
+  });
+
+  // 처음 기록을 읽는 동안(수십 초 걸릴 수 있음) 위젯의 용사들이 술래잡기하는 화면을 보여 준다. 금방 끝나면 띄우지 않음
+  let playTimer = null;
+  function showPlay() {
+    playTimer = setTimeout(async () => {
+      playTimer = null;
+      if (last || !window.StatsPlay || !bridge.heroes) return;
+      let heroes = [];
+      try { heroes = await bridge.heroes(); } catch {}
+      if (last || !heroes.length) return;
+      $('#main').innerHTML = `<div class="card playcard"><canvas id="play"></canvas><p class="note" id="playmsg">${esc($('#progress').textContent || T('기록 읽는 중…'))}</p><p class="note">${esc(T('처음 한 번만 오래 걸려요. 다음부터는 바뀐 기록만 읽어서 금방 열려요.'))}</p></div>`;
+      window.StatsPlay.start($('#play'), heroes);
+    }, 400);
+  }
+  function hidePlay() { clearTimeout(playTimer); playTimer = null; if (window.StatsPlay) window.StatsPlay.stop(); }
 
   const bars = (list, { color, label, max, dim } = {}) => {
     list = byAmt(list);
@@ -194,12 +213,15 @@
   let last = null;
   async function load(refresh) {
     $('#progress').textContent = refresh || !last ? T('기록 읽는 중…') : '';
+    if (!last) showPlay();
     try {
       const r = await bridge.get({ days, refresh });
+      hidePlay();
       last = r;
       $('#progress').textContent = '';
       render(r.summary, r);
     } catch (e) {
+      hidePlay();
       $('#progress').textContent = T('통계를 계산하지 못했어요');
     }
   }

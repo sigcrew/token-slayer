@@ -644,6 +644,18 @@ ipcMain.on('stats-card-done', (_e, dataUrl) => {
     if (done) done({ ok: false });
   }
 });
+// 통계 창이 기록을 읽는 동안 놀이 화면에 나올 용사들 (위젯에 지금 보이는 서비스, 꾸미기 그대로)
+ipcMain.handle('stats:heroes', () => {
+  const c = cfg();
+  const skins = { ...DEFAULT_SKINS, ...(c.skins || {}) };
+  const hd = c.heroRes === 'hd' && unlocked();
+  const find = (id) => packs.find((p) => p.type === 'hero' && p.id === id && packOpen(p)) || packs.find((p) => p.type === 'hero' && p.id === 'knight');
+  return usage.meta().filter((m) => effectiveShow(m.id)).slice(0, 4).map((m) => {
+    let p = find(skins[m.id]);
+    if (p && hd && p.hd && !p.hires) p = { ...p, hires: true, grid: p.hd.grid, faces: p.hd.faces, palette: { ...(p.palette || {}), ...(p.hd.palette || {}) } };
+    return { id: m.id, color: m.color, skin: p || null };
+  });
+});
 function openStatsWindow() {
   if (statsWin && !statsWin.isDestroyed()) { statsWin.show(); statsWin.focus(); return; }
   statsWin = new BrowserWindow({

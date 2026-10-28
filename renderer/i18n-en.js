@@ -426,6 +426,7 @@
   "통계를 계산하지 못했어요": "Couldn't calculate stats",
   "카드로 공유": "Share card",
   "날짜별 사용량": "Usage by day",
+  "처음 한 번만 오래 걸려요. 다음부터는 바뀐 기록만 읽어서 금방 열려요.": "Only the first time takes a while. After that it reads just the new records and opens quickly.",
   "캐시 읽기 포함": "incl. cache reads",
   "캐시 읽기 제외": "excl. cache reads",
   "캐시 읽기 빼고 보기": "Hide cache reads",
