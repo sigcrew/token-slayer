@@ -909,6 +909,13 @@ function setupUpdater() {
   updater.on('state', (st) => { if (st.status !== lastStatus) { lastStatus = st.status; buildMenu(); if (st.status === 'error') logErr('updater', st.error || 'update failed'); } });
   updater.on('ready', (u) => {
     buildMenu();
+    // 윈도우: 지난번에 받아 두고 설치하지 못한 업데이트(PC를 끄면서 앱이 그냥 꺼진 경우)는 이번에 켜질 때 바로 설치한다.
+    // 한 버전에 한 번만 시도해서, 설치가 실패해도 켤 때마다 앱이 꺼지지 않게 한다
+    if (process.platform === 'win32' && !u.manual && cfg().autoUpdate !== false && updater.shouldInstallNow()) {
+      logErr('updater', `installing v${u.version} downloaded in an earlier session`);
+      updater.installAndRestart();
+      return;
+    }
     if (u.manual) {
       messageBox({ type: 'info', message: tr('v{v} 업데이트가 준비됐어요', { v: u.version }), detail: '지금 재시작하면 새 버전으로 바뀌어요. 레벨·업적·설정은 그대로예요.', buttons: ['지금 재시작', '나중에'], defaultId: 0, cancelId: 1 })
         .then((r) => { if (r.response === 0) updater.installAndRestart(); });

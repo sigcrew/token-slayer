@@ -131,7 +131,7 @@ class Updater extends EventEmitter {
   set(patch) { Object.assign(this.state, patch); this.emit('state', { ...this.state }); }
 
   start() {
-    this.cleanup();
+    this.cleanupStale();
     setTimeout(() => this.check(), FIRST_CHECK_MS);
     this.timer = setInterval(() => this.check(), CHECK_EVERY);
   }
@@ -139,6 +139,25 @@ class Updater extends EventEmitter {
   stop() { clearInterval(this.timer); }
 
   cleanup() { removeDir(this.dir); }
+
+  // 지난번에 받아 두고 설치하지 못한 새 버전 파일은 남긴다 (윈도우는 PC를 끄면 앱이 종료 처리 없이 꺼져서
+  // 설치가 안 되는데, 그때마다 지우고 다시 받으면 같은 파일을 부팅할 때마다 내려받게 된다). 설치가 끝난 옛 파일만 지운다
+  cleanupStale() {
+    let names = [];
+    try { names = fs.readdirSync(this.dir); } catch { return; }
+    const newer = names.some((n) => { const m = n.match(/(\d+\.\d+\.\d+)/); return m && compareVersions(m[1], this.state.current) > 0; });
+    if (!newer) this.cleanup();
+  }
+
+  // 설치를 한 번 시도한 버전 (설치 파일이 실패해도 매번 다시 시도하며 앱을 끄지 않게)
+  attemptedVersion() {
+    try { return JSON.parse(fs.readFileSync(path.join(this.dir, 'install-attempt.json'), 'utf8')).version || null; } catch { return null; }
+  }
+
+  // 지난 실행에서 받아 둔 업데이트를 이번 실행에서 다시 찾았고, 아직 설치를 시도해 보지 않았으면 바로 설치해도 된다
+  shouldInstallNow() {
+    return !!(this.ready && this.ready.reused && this.attemptedVersion() !== this.ready.version);
+  }
 
   async fetchJson(url) {
     const r = await this.net.fetch(url, { headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'token-slayer-updater' } });
@@ -197,9 +216,15 @@ class Updater extends EventEmitter {
     this.set({ status: 'downloading', progress: 0 });
     const want = await this.expectedHash(rel, asset);
     if (!want) throw new Error(tr('파일 확인값(SHA-256)이 없어서 설치하지 않았어요'));
+    const file = path.join(this.dir, asset.name.replace(/[^\w.-]/g, '_'));
+    // 지난 실행에서 받아 둔 같은 파일이 있고 확인값이 맞으면 다시 받지 않는다
+    let reused = false;
+    try { reused = crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex') === want; } catch {}
+    if (reused) return this.prepare(file, version, where, manual, true);
+    const attempted = this.attemptedVersion();
     removeDir(this.dir);
     fs.mkdirSync(this.dir, { recursive: true });
-    const file = path.join(this.dir, asset.name.replace(/[^\w.-]/g, '_'));
+    if (attempted) fs.writeFileSync(path.join(this.dir, 'install-attempt.json'), JSON.stringify({ version: attempted }));
     const r = await this.net.fetch(asset.browser_download_url, { headers: { 'User-Agent': 'token-slayer-updater' } });
     if (!r.ok || !r.body) throw new Error(tr('다운로드 실패 (HTTP {n})', { n: r.status }));
     const total = +r.headers.get('content-length') || asset.size || 0;
@@ -218,15 +243,19 @@ class Updater extends EventEmitter {
     }
     await new Promise((res, rej) => out.end((e) => (e ? rej(e) : res())));
     if (hash.digest('hex') !== want) { fs.rmSync(file, { force: true }); throw new Error(tr('내려받은 파일이 확인값과 달라서 버렸어요')); }
+    return this.prepare(file, version, where, manual, false);
+  }
 
+  async prepare(file, version, where, manual, reused) {
     if (process.platform === 'darwin') {
       const unpack = path.join(this.dir, 'app');
+      removeDir(unpack);
       await new Promise((res, rej) => execFile('/usr/bin/ditto', ['-x', '-k', file, unpack], (e) => (e ? rej(e) : res())));
       const name = fs.readdirSync(unpack).find((n) => n.endsWith('.app'));
       if (!name) throw new Error(tr('업데이트 파일 안에 앱이 없어요'));
-      this.ready = { version, kind: 'mac', path: path.join(unpack, name), bundle: where.bundle };
+      this.ready = { version, kind: 'mac', path: path.join(unpack, name), bundle: where.bundle, reused };
     } else {
-      this.ready = { version, kind: 'win', path: file };
+      this.ready = { version, kind: 'win', path: file, reused };
     }
     this.set({ status: 'ready', progress: 100 });
     this.emit('ready', { ...this.ready, manual });
@@ -246,6 +275,7 @@ class Updater extends EventEmitter {
     const u = this.ready;
     if (!u || this.installing) return false;
     this.installing = true;
+    try { fs.writeFileSync(path.join(this.dir, 'install-attempt.json'), JSON.stringify({ version: u.version, at: Date.now() })); } catch {}
     if (u.kind === 'mac') {
       const script = path.join(os.tmpdir(), `token-slayer-update-${process.pid}.sh`);
       fs.writeFileSync(script, [

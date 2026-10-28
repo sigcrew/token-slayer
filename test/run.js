@@ -1229,6 +1229,58 @@ const t = async (name, fn) => { await fn(); pass++; console.log('ok -', name); }
     }
   });
 
+  await t('업데이트(윈도우): 받아 둔 설치 파일은 다시 켜도 다시 받지 않고, 다음 실행에 한 번만 바로 설치', async () => {
+    const cp = require('child_process'), realSpawn = cp.spawn;
+    cp.spawn = () => ({ unref() {} }); // 설치 파일을 실제로 실행하지 않게 (updater가 require할 때 spawn을 가져감)
+    delete require.cache[require.resolve('../src/updater')];
+    const { Updater } = require('../src/updater');
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'upd2-'));
+    const payload = Buffer.from('installer v0.99');
+    const hash = require('crypto').createHash('sha256').update(payload).digest('hex');
+    const name = process.arch === 'arm64' ? 'TokenSlayer-Setup-0.99.0-arm64.exe' : 'TokenSlayer-Setup-0.99.0-x64.exe';
+    const rel = { tag_name: 'v0.99.0', assets: [{ name, size: payload.length, digest: `sha256:${hash}`, browser_download_url: 'https://dl/x.exe' }] };
+    let downloads = 0;
+    const mk = (current = '0.20.0') => {
+      const net = { fetch: async (url) => {
+        if (url.includes('api.github.com')) return { ok: true, json: async () => rel };
+        downloads++;
+        return { ok: true, status: 200, headers: { get: () => String(payload.length) }, body: new Blob([payload]).stream() };
+      } };
+      const app = { getPath: (k) => (k === 'exe' ? 'C:\\Program Files\\Token Slayer\\Token Slayer.exe' : dir), getVersion: () => current, isPackaged: true, quit() {} };
+      return new Updater({ app, net, shell: {} });
+    };
+    const plat = Object.getOwnPropertyDescriptor(process, 'platform');
+    Object.defineProperty(process, 'platform', { value: 'win32' });
+    try {
+      const first = mk();
+      await first.check();
+      assert.strictEqual(downloads, 1);
+      assert.strictEqual(first.ready.reused, false);
+      assert.strictEqual(first.shouldInstallNow(), false, '이번 실행에서 받은 건 알림만');
+      // PC를 껐다 켬: 종료 처리 없이 꺼졌다가 다시 실행
+      const second = mk();
+      second.cleanupStale();
+      await second.check();
+      assert.strictEqual(downloads, 1, '같은 파일을 다시 받지 않음');
+      assert.strictEqual(second.ready.reused, true);
+      assert.strictEqual(second.shouldInstallNow(), true, '지난번에 받아 둔 건 바로 설치');
+      second.installAndRestart();
+      // 설치가 실패해서 옛 버전으로 다시 켜짐 → 또 바로 설치하지 않음 (켤 때마다 꺼지는 일 방지)
+      const third = mk();
+      third.cleanupStale();
+      await third.check();
+      assert.strictEqual(downloads, 1);
+      assert.strictEqual(third.shouldInstallNow(), false);
+      // 설치가 끝나 새 버전으로 켜지면 받아 둔 파일을 지운다
+      mk('0.99.0').cleanupStale();
+      assert.ok(!fs.existsSync(path.join(dir, 'updates')), '설치 끝난 업데이트 파일 정리');
+    } finally {
+      cp.spawn = realSpawn;
+      delete require.cache[require.resolve('../src/updater')];
+      Object.defineProperty(process, 'platform', plat);
+    }
+  });
+
   // ── 라이선스 (가짜 fetch) ──
   const licConfig = require('../src/license-config');
   const licLib = require('../src/license');
