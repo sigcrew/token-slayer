@@ -82,9 +82,10 @@
     const msg = T('기록 읽는 중… {n}%', { n: total ? Math.round((done / total) * 100) : 0 });
     $('#progress').textContent = msg;
     const pm = $('#playmsg'); if (pm) pm.textContent = msg;
+    if (window.StatsPlay) window.StatsPlay.setProgress(total ? done / total : 0);
   });
 
-  // 처음 기록을 읽는 동안(수십 초 걸릴 수 있음) 위젯의 용사들이 술래잡기하는 화면을 보여 준다. 금방 끝나면 띄우지 않음
+  // 처음 기록을 읽는 동안(수십 초 걸릴 수 있음) 위젯의 용사들이 노는 화면(토큰 줍기 · 술래잡기 · 공놀이 중 하나)을 보여 준다. 금방 끝나면 띄우지 않음
   let playTimer = null;
   function showPlay() {
     playTimer = setTimeout(async () => {

@@ -234,6 +234,12 @@ html, body {
 #toast.show { opacity: 1; transform: none; }
 #toast b { color: #FFD166; }
 #toast span { color: #A1A1AA; font-size: 10px; }
+/* 누를 수 있는 토스트 (통계 안내) */
+#toast.link { cursor: pointer; padding-right: 22px; }
+#toast.link.show { pointer-events: auto; }
+#toast.link:hover { background: #262241; }
+#toast .x { position: absolute; top: 3px; right: 4px; width: 16px; height: 16px; padding: 0; border: 0; border-radius: 4px; background: none; color: #A1A1AA; font: 13px/16px sans-serif; cursor: pointer; }
+#toast .x:hover { color: #F4F4F8; background: rgba(255,255,255,0.08); }
 .live { font-size: 9.5px; color: #8A8FA8; }
 .meta { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-top: 5px; }
 

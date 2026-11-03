@@ -7,6 +7,9 @@ const path = require('path');
 const { parseLatestFromText, applyResets, CodexReader } = require('../src/codex');
 const { parseUsage, ClaudeReader, pickOrder } = require('../src/claude');
 
+// Codex 기록 날짜 폴더(년/월/일). 리더는 최근 30일 폴더만 보므로 테스트는 고정 날짜 대신 오늘 기준으로 만든다
+const codexDay = (ms = Date.now()) => { const d = new Date(ms); return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`; };
+
 let pass = 0;
 const t = async (name, fn) => { await fn(); pass++; console.log('ok -', name); };
 
@@ -61,12 +64,12 @@ const t = async (name, fn) => { await fn(); pass++; console.log('ok -', name); }
       fs.writeFileSync(f, JSON.stringify({ type: 'event_msg', payload: { type: 'token_count', rate_limits: { primary: { used_percent: used, window_minutes: 300, resets_at: 4102444800 } } } }) + '\n');
       fs.utimesSync(f, mtime, mtime);
     };
-    mk('2026/09/28', 'rollout-a.jsonl', 11, 1000);
-    mk('2026/09/29', 'rollout-b.jsonl', 42, 2000);
-    mk('2026/09/29', 'rollout-c.jsonl', 99, 1500);
-    fs.mkdirSync(path.join(home, 'sessions/2026/09/29'), { recursive: true });
-    fs.writeFileSync(path.join(home, 'sessions/2026/09/29/rollout-d.jsonl'), '{"type":"session_meta"}\n');
-    fs.utimesSync(path.join(home, 'sessions/2026/09/29/rollout-d.jsonl'), 3000, 3000);
+    const today = codexDay(), yday = codexDay(Date.now() - 86400e3);
+    mk(yday, 'rollout-a.jsonl', 11, 1000);
+    mk(today, 'rollout-b.jsonl', 42, 2000);
+    mk(today, 'rollout-c.jsonl', 99, 1500);
+    fs.writeFileSync(path.join(home, 'sessions', ...today.split('/'), 'rollout-d.jsonl'), '{"type":"session_meta"}\n');
+    fs.utimesSync(path.join(home, 'sessions', ...today.split('/'), 'rollout-d.jsonl'), 3000, 3000);
     const r = await new CodexReader().read();
     assert.ok(r.ok);
     assert.strictEqual(r.fiveHour.usedPercent, 42);
@@ -181,7 +184,7 @@ const t = async (name, fn) => { await fn(); pass++; console.log('ok -', name); }
   await t('Codex 로그인 여부: auth.json 없으면 needsLogin, 데이터는 유지', async () => {
     const home = fs.mkdtempSync(path.join(os.tmpdir(), 'ca-'));
     process.env.CODEX_HOME = home;
-    const dir = path.join(home, 'sessions/2026/09/29');
+    const dir = path.join(home, 'sessions', ...codexDay().split('/'));
     fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(path.join(dir, 'rollout-a.jsonl'), JSON.stringify({ type: 'event_msg', payload: { type: 'token_count', rate_limits: { secondary: { used_percent: 49, window_minutes: 10080, resets_at: 4102444800 } } } }) + '\n');
     const r1 = await new CodexReader().read();
@@ -1524,7 +1527,7 @@ const t = async (name, fn) => { await fn(); pass++; console.log('ok -', name); }
     const NOW = 1_800_000_000_000;
     const writeAuth = (expSec) => fs.writeFileSync(path.join(home, 'auth.json'), JSON.stringify({ auth_mode: 'chatgpt', tokens: { access_token: jwt(expSec), refresh_token: 'RT-SECRET', account_id: 'acct-1' } }));
     // 로컬 기록: 오래된 값 22% (주간 창)
-    const dir = path.join(home, 'sessions/2026/10/12'); fs.mkdirSync(dir, { recursive: true });
+    const dir = path.join(home, 'sessions', ...codexDay().split('/')); fs.mkdirSync(dir, { recursive: true });
     const f = path.join(dir, 'rollout-x.jsonl');
     fs.writeFileSync(f, JSON.stringify({ type: 'event_msg', timestamp: '2026-10-12T07:33:28.921Z', payload: { type: 'token_count', rate_limits: { primary: { used_percent: 22, window_minutes: 10080, resets_at: 1_800_100_000 } } } }) + '\n');
     const server = { plan_type: 'pro', rate_limit: { primary_window: { used_percent: 28, limit_window_seconds: 604800, reset_at: 1_800_100_000 }, secondary_window: null } };

@@ -440,7 +440,10 @@ ipcMain.on('ready', () => {
   sendSettings();
   applyBounds();
   win.webContents.send('usage', usage.snapshot());
+  // 켜고 1분 뒤(시작 알림들과 겹치지 않게), 그 뒤로 1시간마다 통계 안내를 띄울 때인지 본다
+  if (!statsHintTimer) { setTimeout(maybeStatsHint, 60e3); statsHintTimer = setInterval(maybeStatsHint, 3600e3); }
 });
+let statsHintTimer = null;
 
 ipcMain.on('set-interactive', (_e, v) => {
   interactive = v;
@@ -667,6 +670,39 @@ function openStatsWindow() {
   statsWin.on('closed', () => { statsWin = null; });
 }
 
+// 통계 안내 배너: 통계 창이 있다는 걸 알리는 위젯 위 토스트. 누르면 통계 창이 열린다.
+//  - 처음 한 번: 업데이트 뒤 '사용 통계가 생겼어요'
+//  - 그 뒤로 매주 월요일 첫 실행(또는 월요일에 켜져 있으면 그때) 한 번: 지난 7일 사용량과 함께
+//  - 메뉴 '주간 통계 안내'를 끄면 더 띄우지 않는다. 이 컴퓨터에 Claude Code · Codex · Antigravity 기록이 없으면 띄우지 않는다
+const weekKey = (ms = Date.now()) => { const d = new Date(ms); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return statsLib.dayKey(d.getTime()); };
+let statsHintBusy = false;
+async function maybeStatsHint() {
+  const c = cfg();
+  if (statsHintBusy || c.statsHint === false || !win || win.isDestroyed() || !win.isVisible()) return;
+  const intro = !c.statsHintIntro;
+  const monday = new Date().getDay() === 1 && c.statsHintWeek !== weekKey();
+  if (!intro && !monday) return;
+  statsHintBusy = true;
+  try {
+    if (!(await statsLib.listFiles()).length) return;
+    let body = tr('사용량 · 모델 · 프로젝트별 기록과 히트맵을 볼 수 있어요. 눌러서 열기');
+    if (!intro) {
+      const s = statsLib.summarize(await refreshStats(false), { days: 7 });
+      if (!s.totals.tokens) return;
+      const n = new Intl.NumberFormat(I18N.getLang() === 'en' ? 'en' : 'ko', { notation: 'compact', maximumFractionDigits: 1 }).format(s.totals.tokens);
+      body = tr('지난 7일 동안 {n} 토큰 썼어요. 눌러서 통계 보기', { n });
+    }
+    if (!win || win.isDestroyed() || !win.isVisible()) return;
+    win.webContents.send('stats-hint', { title: intro ? tr('📊 사용 통계가 생겼어요') : tr('📊 지난주 사용 통계'), body });
+    store.set({ statsHintIntro: true, statsHintWeek: weekKey() });
+  } catch (e) {
+    logErr('stats-hint', String((e && e.message) || e));
+  } finally {
+    statsHintBusy = false;
+  }
+}
+ipcMain.on('open-stats', () => openStatsWindow());
+
 // ── 크기 조절 창 (슬라이더) ──
 let scaleWin = null;
 function openScaleWindow() {
@@ -864,6 +900,7 @@ function buildMenu() {
     achievementsMenu(),
     { label: '이번 주 기록 카드 만들기', click: () => makeCard() },
     { label: '사용 통계 보기…', click: () => openStatsWindow() },
+    { label: '주간 통계 안내', type: 'checkbox', checked: c.statsHint !== false, click: (i) => { store.set({ statsHint: i.checked }); buildMenu(); } },
     { label: '클릭 통과 (마우스 무시)', type: 'checkbox', checked: c.clickThrough, click: (i) => { store.set({ clickThrough: i.checked }); setIgnore(); buildMenu(); } },
     { label: 'Claude 계정 로그인…', click: () => openLogin('claude') },
     { label: 'Claude 계정 로그아웃 (이 앱에서만)', click: async () => { await claudeWeb.logout(); usage.provider('claude').reader.orgId = null; usage.poll('claude'); } },

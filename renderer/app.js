@@ -298,7 +298,8 @@
     if (now !== interactive) {
       interactive = now;
       bridge.setInteractive(now);
-      now ? onEnter() : onLeave();
+      // 토스트 위에서는 상세 패널을 열지 않는다
+      if (now && el.id !== 'toast') onEnter(); else if (!now) onLeave();
     }
   });
   document.addEventListener('mouseleave', () => {
@@ -434,13 +435,22 @@
   // 업적 달성 토스트
   const toast = document.getElementById('toast');
   let toastTimer = null;
-  function showToast(html) {
+  function showToast(html, { ms = 4500, onClick = null } = {}) {
     toast.innerHTML = html;
+    // 누를 수 있는 토스트(통계 안내)만 마우스를 받는다. 나머지는 지금처럼 클릭이 뒤로 통과
+    toast.classList.toggle('hit', !!onClick);
+    toast.classList.toggle('link', !!onClick);
+    toast.onclick = onClick ? (e) => { toast.classList.remove('show', 'hit', 'link'); if (!e.target.closest('.x')) onClick(); } : null;
     toast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 4500);
+    toastTimer = setTimeout(() => toast.classList.remove('show', 'hit', 'link'), ms);
   }
   if (bridge.onAchievement) bridge.onAchievement((a) => showToast(`<b>${esc(a.icon)} ${T('업적 달성')}</b> · ${esc(T(a.name))}<br><span>${esc(T(a.desc))}</span>`));
+  // 통계 안내 배너: 누르면 통계 창, ×는 닫기만. 10초 뒤 저절로 사라짐
+  if (bridge.onStatsHint) bridge.onStatsHint((h) => showToast(
+    `<button class="x" type="button" aria-label="${esc(T('닫기'))}">×</button><b>${esc(h.title)}</b><br><span>${esc(h.body)}</span>`,
+    { ms: 10000, onClick: () => bridge.openStats && bridge.openStats() },
+  ));
 
   // 주간 기록 카드 그리기 요청 → PNG로 돌려줌
   if (bridge.onMakeCard) bridge.onMakeCard((payload) => {
