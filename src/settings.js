@@ -2,7 +2,8 @@ const fs = require('fs');
 const path = require('path');
 
 const DEFAULTS = {
-  pos: null,            // 캐릭터 영역의 화면 좌표 {x, y}
+  pos: null,            // 마지막으로 옮긴 캐릭터 영역의 화면 좌표 {x, y}
+  positions: {},        // 모니터 구성별 위치 { '0,0,1512x982|1512,0,2560x1440': {x, y} }
   scale: 1,
   hpBasis: {},          // 서비스별 HP 기준 한도 { claude: 'weekly' }: 'auto'(가장 적은 것, 기본) | 'fiveHour'(5시간) | 'weekly'(주간·월간 같은 긴 한도)
   codexServer: true,    // Codex 사용량을 서버에서 조회 (끄면 로컬 기록만)

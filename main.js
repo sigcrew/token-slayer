@@ -312,17 +312,39 @@ function defaultPos() {
   return { x: wa.x + wa.width - w - 16, y: wa.y + wa.height - charH - 16 };
 }
 
-// 캐릭터 영역 위치(cfg.pos)를 화면 안으로 맞추고, 위쪽 공간이 모자라면 패널을 아래로 뒤집는다
+// 모니터 구성(연결된 화면들의 위치·크기)마다 위치를 따로 기억한다. 노트북만 쓸 때와 모니터를 연결했을 때 각자 자리로 돌아감
+const layoutKey = () => screen.getAllDisplays().map((d) => `${d.bounds.x},${d.bounds.y},${d.bounds.width}x${d.bounds.height}`).sort().join('|');
+
+// 처음 보는 구성이면 마지막 위치가 화면 안에 다 보일 때만 그대로 쓰고, 아니면 기본 위치(주 화면 오른쪽 아래)
+function savedPos() {
+  const own = (cfg().positions || {})[layoutKey()];
+  if (own) return own;
+  const last = cfg().pos;
+  if (!last) return null;
+  const { w, charH } = dims();
+  const fits = screen.getAllDisplays().some(({ workArea: a }) =>
+    last.x >= a.x && last.y >= a.y && last.x + w <= a.x + a.width && last.y + charH <= a.y + a.height);
+  return fits ? last : null;
+}
+
+function setPos(pos) {
+  const positions = { ...(cfg().positions || {}) };
+  if (pos) positions[layoutKey()] = pos; else delete positions[layoutKey()];
+  store.set({ positions, ...(pos ? { pos } : {}) });
+}
+
+// 캐릭터 영역 위치를 화면 안으로 맞추고, 위쪽 공간이 모자라면 패널을 아래로 뒤집는다
 function applyBounds(send = true) {
   const { w, charH, panelH } = dims();
-  let pos = cfg().pos || defaultPos();
+  let pos = savedPos() || defaultPos();
   const d = screen.getDisplayNearestPoint({ x: Math.round(pos.x + w / 2), y: Math.round(pos.y + charH / 2) }).workArea;
   pos = {
     x: Math.min(Math.max(pos.x, d.x - w / 3), d.x + d.width - (w * 2) / 3),
     y: Math.min(Math.max(pos.y, d.y), d.y + d.height - charH),
   };
   pos = { x: Math.round(pos.x), y: Math.round(pos.y) };
-  store.set({ pos });
+  // 화면 안으로 맞춘 위치는 이 구성에만 기록 (다른 구성에서 쓰던 위치를 덮지 않음)
+  store.set({ positions: { ...(cfg().positions || {}), [layoutKey()]: pos } });
   flipped = pos.y - d.y < panelH;
   win.setBounds({ x: pos.x, y: flipped ? pos.y : pos.y - panelH, width: w, height: charH + panelH });
   if (send) win.webContents.send('layout', { flipped });
@@ -453,7 +475,7 @@ ipcMain.on('set-interactive', (_e, v) => {
 ipcMain.on('drag-start', () => {
   if (cfg().clickThrough) return;
   const start = screen.getCursorScreenPoint();
-  const pos = cfg().pos || defaultPos();
+  const pos = savedPos() || defaultPos();
   const { panelH, w, charH } = dims();
   clearInterval(drag && drag.timer);
   drag = {
@@ -472,7 +494,7 @@ ipcMain.on('drag-end', () => {
   if (!drag) return;
   clearInterval(drag.timer);
   if (drag.last) {
-    store.set({ pos: drag.last });
+    setPos(drag.last);
     applyBounds();
   }
   drag = null;
@@ -923,7 +945,7 @@ function buildMenu() {
         { label: 'Token Slayer 사이트 열기', click: () => shell.openExternal('https://token-slayer.vercel.app') },
       ],
     },
-    { label: '위치 초기화', click: () => { store.set({ pos: null }); applyBounds(); } },
+    { label: '위치 초기화', click: () => { setPos(null); store.set({ pos: null }); applyBounds(); } },
     { type: 'separator' },
     { label: '데모 모드 (효과 미리보기)', type: 'checkbox', checked: c.demo, click: (i) => update({ demo: i.checked }) },
     { label: 'Codex 사용량을 서버에서 조회 (더 정확 · 끄면 이 컴퓨터 기록만 사용)', type: 'checkbox', checked: c.codexServer !== false, click: (i) => update({ codexServer: i.checked }) },
@@ -1144,6 +1166,7 @@ app.whenReady().then(() => {
   setTimeout(checkAchievements, 8000);
   setInterval(checkAchievements, 3600e3); // 시간이 지나야 받는 업적(동면 등)은 이벤트 없이도 확인
 
+  screen.on('display-added', () => applyBounds());
   screen.on('display-removed', () => applyBounds());
   screen.on('display-metrics-changed', () => applyBounds());
 });
