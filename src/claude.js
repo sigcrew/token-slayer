@@ -282,11 +282,15 @@ class ClaudeReader {
     try { has = await web.hasSession(); } catch {}
     if (!has) return { ok: false, error: 'no-session' };
     const expired = { ok: false, error: 'expired', needsLogin: true, message: 'claude.ai 로그인이 만료됐어요. 다시 로그인해 주세요' };
+    const blocked = { ok: false, error: 'http', message: 'claude.ai 보안 확인에 막혔어요. 잠시 후 다시 시도해요' };
+    // 401이거나, 403이라도 claude.ai가 보낸 오류(JSON)일 때만 로그인 만료. 보안 확인(Cloudflare) 화면의 403은 만료가 아님
+    const denied = (r) => r.status === 401 || (r.status === 403 && !r.challenge && !!r.json);
     try {
       if (!this.orgId) {
         const last = await web.cookie('lastActiveOrg').catch(() => null);
         const r = await web.get('/organizations');
-        if (r.status === 401 || r.status === 403) return expired;
+        if (denied(r)) return expired;
+        if (r.status === 403) return blocked;
         if (r.status !== 200 || !Array.isArray(r.json)) return { ok: false, error: 'http', message: tr('claude.ai 조회 실패 ({n})', { n: r.status }) };
         const orgs = r.json;
         const pick = orgs.find((o) => o.uuid === last)
@@ -296,7 +300,8 @@ class ClaudeReader {
         this.orgId = pick.uuid;
       }
       const u = await web.get(`/organizations/${this.orgId}/usage`);
-      if (u.status === 401 || u.status === 403) { this.orgId = null; return expired; }
+      if (denied(u)) { this.orgId = null; return expired; }
+      if (u.status === 403) return blocked;
       if (u.status === 404) { this.orgId = null; return { ok: false, error: 'http', message: '사용량 정보를 찾지 못했어요' }; }
       if (u.status === 429) return { ok: false, error: 'rate-limited', message: '조회가 너무 잦아요. 잠시 후 다시 시도해요' };
       if (u.status !== 200 || !u.json) return { ok: false, error: 'http', message: tr('claude.ai 조회 실패 ({n})', { n: u.status }) };

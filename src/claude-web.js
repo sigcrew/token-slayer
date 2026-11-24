@@ -56,11 +56,19 @@ async function viaWindow(path) {
   await hidden.loadURL(ORIGIN + '/api' + path);
   for (let i = 0; i < 8; i++) {
     const text = await hidden.webContents.executeJavaScript('document.body ? document.body.innerText : ""');
-    try { return { status: 200, json: JSON.parse(text) }; } catch {}
+    let json;
+    try { json = JSON.parse(text); } catch {}
+    if (json !== undefined) {
+      // 로그인이 풀린 세션은 오류 JSON이 온다
+      const err = json && json.type === 'error' && json.error && json.error.type;
+      if (err && /authentication|permission/.test(err)) return { status: 401, json };
+      return { status: 200, json };
+    }
     if (/401|unauthorized|permission/i.test(text) && text.length < 400) return { status: 401, json: null };
     await new Promise((r) => setTimeout(r, 1500));
   }
-  return { status: 403, json: null };
+  // 보안 확인을 끝내 통과하지 못함: 로그인 만료로 보지 않는다
+  return { status: 403, json: null, challenge: true };
 }
 
 async function get(path) {
@@ -73,6 +81,8 @@ async function get(path) {
 let loginWin = null;
 function openLogin(onDone) {
   if (loginWin && !loginWin.isDestroyed()) { loginWin.focus(); return; }
+  // 만료된 로그인 쿠키가 남아 있으면 창이 열리자마자 '로그인 끝'으로 보고 닫혀 버리므로 먼저 지운다
+  getSession().cookies.remove(ORIGIN, 'sessionKey').catch(() => {});
   loginWin = new BrowserWindow({
     width: 480,
     height: 720,

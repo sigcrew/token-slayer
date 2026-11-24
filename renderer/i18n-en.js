@@ -347,6 +347,7 @@
   "새 토큰을 저장하지 못했어요": "Couldn't save the new token",
   "Claude 계정으로 로그인하면 사용량이 보여요": "Sign in with your Claude account to see usage",
   "claude.ai 로그인이 만료됐어요. 다시 로그인해 주세요": "Your claude.ai login expired. Please sign in again",
+  "claude.ai 보안 확인에 막혔어요. 잠시 후 다시 시도해요": "Blocked by the claude.ai security check. Trying again shortly",
   "계정 정보를 찾지 못했어요": "Couldn't find your account info",
   "사용량 정보를 찾지 못했어요": "Couldn't find usage info",
   "조회가 너무 잦아요. 잠시 후 다시 시도해요": "Too many requests. Trying again shortly",

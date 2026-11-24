@@ -494,15 +494,24 @@ const t = async (name, fn) => { await fn(); pass++; console.log('ok -', name); }
     delete process.env.CLAUDE_CONFIG_DIR;
   });
 
-  await t('Claude: 로그인 둘 다 없으면 로그인 안내, 웹 세션 만료면 만료 안내', async () => {
+  await t('Claude: 로그인 둘 다 없으면 로그인 안내, 웹 세션 만료면 만료 안내, 보안 확인에 막히면 만료가 아님', async () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cw-'));
     process.env.CLAUDE_CONFIG_DIR = dir;
     if (process.platform === 'darwin') return;
     const none = await new ClaudeReader(null, { hasSession: async () => false, cookie: async () => null, get: async () => ({}) }).read();
     assert.ok(none.needsLogin);
-    const exp = await new ClaudeReader(null, { hasSession: async () => true, cookie: async () => null, get: async () => ({ status: 403, json: null }) }).read();
+    const web = (r) => new ClaudeReader(null, { hasSession: async () => true, cookie: async () => null, get: async () => r }).read();
+    const exp = await web({ status: 401, json: null });
     assert.ok(exp.needsLogin);
     assert.ok(exp.message.includes('만료'));
+    const denied = await web({ status: 403, json: { type: 'error', error: { type: 'permission_error' } } });
+    assert.ok(denied.needsLogin);
+    // 보안 확인(Cloudflare)에 막힌 403은 로그인 만료가 아님
+    for (const r of [{ status: 403, json: null }, { status: 403, json: null, challenge: true }]) {
+      const b = await web(r);
+      assert.ok(!b.needsLogin);
+      assert.ok(b.message.includes('보안 확인'));
+    }
     delete process.env.CLAUDE_CONFIG_DIR;
   });
 
